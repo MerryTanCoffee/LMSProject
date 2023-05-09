@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.exam.vo.ExamVO;
+
+public interface ExamMapper {
+
+	// 시험정보에 과목정보 뿌리기
+	public List<ExamVO> selectExamSubjectList(String proId);
+
+}

@@ -1,0 +1,410 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+<style>
+
+.flatpickr-calendar .flatpickr-innerContainer .flatpickr-weekdays .flatpickr-weekday:nth-child(7n + 1),
+.flatpickr-calendar .flatpickr-innerContainer .flatpickr-days .flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay):nth-child(7n + 1) {
+    color: #f95959;
+}
+ 
+.flatpickr-calendar .flatpickr-innerContainer .flatpickr-weekdays .flatpickr-weekday:nth-child(7),
+.flatpickr-calendar .flatpickr-innerContainer .flatpickr-days .flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay):nth-child(7n) {
+    color: #007cb9;
+}
+
+.locker {
+   cursor: pointer;
+}
+
+</style>
+<div class="page-titles">
+   <ol class="breadcrumb">
+      <li><h5 class="bc-title">시설</h5></li>
+      <li class="breadcrumb-item"><a href="#">
+         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M7.11086 10.2878V13.7208" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M8.86244 12.0045H5.35974" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M13.0856 10.3924H12.9875" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M14.748 13.6691H14.6499" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M6.39948 0.833328C6.39948 1.5121 6.96092 2.06236 7.65349 2.06236H8.62193C9.69042 2.06617 10.5559 2.9144 10.5608 3.9616V4.5804" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M14.0593 19.1324C11.3045 19.1791 8.60026 19.1771 5.94166 19.1324C2.99069 19.1324 0.833313 17.0275 0.833313 14.1354V9.87325C0.833313 6.98107 2.99069 4.8762 5.94166 4.8762C8.61483 4.83051 11.321 4.83146 14.0593 4.8762C17.0102 4.8762 19.1666 6.98203 19.1666 9.87325V14.1354C19.1666 17.0275 17.0102 19.1324 14.0593 19.1324Z" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+		</svg>
+         시설 예약</a>
+      </li>
+      <li class="breadcrumb-item active"><a href="#">사물함</a></li>
+   </ol>
+</div>
+<div class="container-fluid">
+
+<div class="row">
+
+   <!-- 사물함 사용현황 -->
+   <div class="col-xl-6">
+      <div class="card" id="card-title-1">
+<!--          <div class="card-header border-0 pb-0 "> -->
+<!--             <h3>사물함 이용현황</h3> -->
+<!--          </div> -->
+         <div class="card-body d-flex flex-column align-items-center vh-150">
+            <div class="col-sm-4" style="margin: 20px 0;">
+            &nbsp;&nbsp; <i class="fa-solid fa-school fa-sm"></i>&nbsp;
+               <label class="form-label" for="hallCode">건물</label>
+               <div class="dropdown bootstrap-select default-select form-control">
+                  <select name="hallName" class="default-select form-control" id="hallName">
+                     <option data-display="Select" value="empty">선택해 주세요.</option>
+                     <c:forEach items="${hallList }" var="hall">
+                        <option value="${hall.hallCode }" id="hallCode">${hall.hallName }</option>
+                     </c:forEach>
+                  </select>
+               </div>
+            </div>
+            
+            <div id="lockerDiv" style="display: none;">
+               <ul class="showcase">
+                  <li>
+                     <div class="status "></div> <small>사용 불가</small>
+                  </li>
+                  <li>
+                     <div class="status available"></div> <small>사용가능</small>
+                  </li>
+                  <li>
+                     <div class="status selected"></div> <small>선택</small>
+                  </li>
+                  <li>
+                     <div class="status myLocker"></div> <small>사용중</small>
+                  </li>
+               </ul>
+               <div class="locker-container" id="lockerBox"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- 사물함 예약 폼 -->
+   <div class="col-xl-6" id="lockerInsertForm">
+      <div class="card">
+         <div class="card-header" style="padding-bottom:10px;">
+            <h4><span style="font-size: 20px; color: #f96d00;">|</span><strong>&nbsp;사물함 예약</strong></h4>
+         </div>
+         <div class="card-body">
+            <div class="card-body pb-3 pt-0" style="background-color: #eb060633; border-radius: 5px;">
+                  <p class="pt-3 m-0" style="font-size:16px;">&lt; 사물함 예약시 유의사항 &gt;</p>
+                    <code style="background-color: #ffe2e200; color:red; ">1.</code> 사물함 이용은 <strong style="font-size:16px;">최대  30일까지 </strong>이용이 가능합니다.<br>
+                    <code style="background-color: #ffe2e200; color:red; ">2.</code> 학교의 모든 건물 중 <strong style="font-size:16px;">하나의 건물에서만</strong> 이용이 가능합니다.<br>
+                 </div>
+            <div class="basic-form pt-3">
+               <form id="lockerForm" action="/locker/lockerReservation" method="post">
+                  <input type="hidden" id="lockerNum" name="locNum" value="">
+                  <input type="hidden" id="lockerHallCode" name="hallCode" value="">
+                  <div class="row justify-content-evenly">
+                     <div class="mb-3 col-md-5">
+                        <i class="fa-solid fa-check"></i>&nbsp;&nbsp;
+                        <label class="col-lg-4 col-form-label" for="validationCustom02">학번
+                           <span class="text-danger">*</span>
+                        </label> <input type="text" class="form-control" placeholder="학번"
+                           id="stuId" name="stuId"
+                           value="${sessionScope.userInfo.userId }">
+                     </div>
+                     <div class="mb-3 col-md-5">
+                        <i class="fa-solid fa-check"></i>&nbsp;&nbsp;
+                        <label class="col-lg-4 col-form-label" for="validationCustom02">사용자
+                           <span class="text-danger">*</span>
+                        </label> <input type="text" class="form-control" placeholder="이름"
+                           value="${sessionScope.userInfo.studentVO.stuNameKo }">
+                     </div>
+
+
+                  </div>
+                  <div class="row justify-content-evenly">
+                     <div class="mb-3 col-md-5">
+                     <i class="fa-solid fa-check"></i>&nbsp;&nbsp;
+                        <label class="col-lg-4 col-form-label" for="validationCustom02">
+                           시작일 <span class="text-danger">*</span>
+                        </label> 
+                        <input type="text" class="form-control" id="lrSdate" placeholder="사용 시작일을 선택해주세요." name="lrSdate">
+                     </div>
+                     <div class="mb-3 col-md-5">
+                        <label class="col-lg-5 col-form-label" for="validationCustom02">
+                        <i class="fa-solid fa-check"></i>&nbsp;&nbsp;
+                           종료일 <span class="text-danger">*</span>
+                        </label> <input type="text" class="form-control" id="lrEdate" placeholder="사용 종료일을 선택해주세요."
+                           name="lrEdate">
+                     </div>
+                  </div>
+
+                  <div
+                     class="card-footer d-sm-flex justify-content-between align-items-center">
+                     <div class="card-footer-link mb-4 mb-sm-0">
+                        <p class="card-text d-inline">
+                           <span id="lockerNumber"
+                              style="color: #f95959; font-size: 20px; font-weight: 600;"></span><span
+                              id="text"></span>
+                        </p>
+                     </div>
+                     <button type="button" class="btn light btn-primary" id="alertStart">신청하기</button>
+
+                  </div>
+               </form>
+
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+
+
+
+</div>
+<!-- row end -->
+</div>
+
+<script>
+
+//데이터 피커
+$("#lrSdate").flatpickr(
+   {
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      maxDate: new Date().fp_incr(30),
+      "locale" : "ko",
+   }
+);
+$("#lrEdate").flatpickr(
+   {
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      maxDate: new Date().fp_incr(30),
+      "locale" : "ko",
+   }
+);
+   $(function() {
+
+      var hallCode = "";
+      // 사물함 이용현황 - 건물(홀)을 선택할 때 이벤트
+      // 건물(홀)을 변경할 때마다 이벤트가 발생한다.
+      $("#hallName").on("change",function() {
+         // select, 즉 건물을 선택할 때마다 select 내 option 값을 가져온다.
+         var code = $(this).val();
+         
+         // option 값이 empty 인경우엔 "선택해주세요"를 선택한 것이기 때문에 display none으로 가려준다.
+         // empty가 아닌 경우엔 해당 건물(홀)을 선택한 것이기 때문에 display block으로 사물함을 예약할 수 있는 폼을 제공한다.
+         if (code == "empty") {
+            $("#lockerDiv").css("display", "none");
+         } else {
+            $("#lockerDiv").css("display", "block");
+         }
+
+         // 내가 선택한 건물의 코드(키)에 맞는 사물함 정보를 리스트(목록)로 가져온다.
+         // 비동기 처리로 해당 목록을 가져오도록 한다.
+         var data = {
+            hallCode : code
+         };
+
+         hallCode = code;
+
+         $.ajax({
+            url : "/locker/getLockerList",
+            type : "post",
+            data : JSON.stringify(data),
+            contentType : "application/json;charset=utf-8",
+            dataType : "json",
+            success : function(res) {
+               // locker : 다른 사람이 사용중인 사물함
+               // locker selected : 선택한 사물함
+               // locker available : 사용가능한 사물함
+               // locker myLocker: 내가 사용중인 사물함
+               var html = "";
+               html += "<div class='locker-row'>";
+               
+               if(res.mylocker != null){
+                  if(res.mylocker.LOC_NUM != null || res.mylocker.LOC_NUM != ""){
+                     $("#alertStart").attr("disabled", true);
+                     $("#alertStart").text("예약된 정보가 존재합니다.");
+                  }else{
+                     $("#alertStart").attr("disabled", false);
+                     $("#alertStart").text("신청하기");
+                  }
+               }
+               
+               res.list.map(function(value, idx) {
+                  
+                  var status = "available";   // 사용가능
+                  
+                  console.log("value::", value);
+                  
+                  if (value.locStatus == "Y") {
+                     status = "";   // 사용중
+                  }
+                  
+                  if(res.mylocker != null){
+                     // 사물함 번호가 내가 사용한 사물함 번호라는걸 필터처리해야함.
+                     if(value.locNum == res.mylocker.LOC_NUM){   // 현재 내가 사용한 사물함 정보를 표현해주기 위함
+                        status = "myLocker";
+                     } 
+                  }
+                  
+                  
+                  
+                  html += "   <div class='locker " + status + "' id='lockerData' data-no='" + value.locNum + "'>";
+                  if(status == ""){
+                     html += "      <p></p>";
+                  }else if(status == "myLocker"){
+                     html += "      <p><font color='white'>" + (idx + 1) + "</font></p>";
+                  }else{
+                     html += "      <p>" + (idx + 1) + "</p>";
+                  }
+                  html += "   </div>";
+                  
+                  if ((idx + 1) != 0 && (idx + 1) % 10 == 0) { // 9 18 27 36 45 
+                     html += "</div>";
+                     html += "<div class='locker-row'>";
+                  }
+                  
+               });
+               html += "</div>";
+               
+               $("#lockerBox").html(html);
+               
+            }
+         });
+      });
+      
+
+      var elementBox = null;
+      var flag = true;
+      // 사물함 단일 하나씩 선택했을때 이벤트(사물함 한개의 클릭 이벤트)
+      $("#lockerBox").on("click", "#lockerData", function() {
+         console.log("click...!");
+
+         var classVal = $(this).attr("class");
+         console.log("classVal ::: ", classVal);
+         
+         if(classVal == "locker myLocker"){
+            return false;
+         }
+
+         if (classVal.trim() == "locker") {
+            $(this).off("click");
+            Swal.fire({
+               title : "실패",
+               text : "사용중인 사물함 입니다!",
+               icon : "warning",
+               closeOnClickOutside : false
+            });
+            return;
+         }
+         
+
+         if (flag) {
+            $(this).removeClass("available");
+            $(this).addClass("selected");
+            if (elementBox != null) {
+               elementBox.removeClass("selected");
+               elementBox.addClass("available");
+            }
+            elementBox = $(this); // 방금 누른 사물함
+            flag = false;
+         } else {
+            elementBox.removeClass("selected");
+            elementBox.addClass("available");
+            elementBox = $(this); // 방금 누른 사물함
+
+            $(this).removeClass("available");
+            $(this).addClass("selected");
+            flag = true;
+         }
+         let lockNum = $(this).data("no");
+         console.log(lockNum);
+         $("#lockerNum").val(lockNum); // 내가 선택한 사물함 번호 lockNum을 셋팅
+         $("#lockerHallCode").val(hallCode); // 내가 선택한 사물함의 건물번호인 hallCode를 셋팅
+
+         var num = $("#lockerNum").val().substr(-2);
+
+         console.log("num ::: ", num);
+
+         $("#lockerNumber").text(num);
+         $("#text").text("번 사물함을 사용하시겠습니까?");
+
+      });
+
+      var insertForm = document.querySelector("#lockerForm");
+
+      // 사물함 예약에서 신청하기 버튼을 클릭했을때
+//       $("#alertStart").click(function() {
+//          Swal.fire({
+//             title : "OK!",
+//             text : "예약이 완료되었습니다.",
+//             icon : "success",
+//             closeOnClickOutside : false      // 백그라운드 클릭해도 안꺼짐
+//          }).then(function() {
+//             // 이벤트
+//             insertForm.submit();
+//          });
+//       });
+      
+
+   $("#alertStart").click(function(e) {
+         if ($(lockerNum).val() == "") {
+            e.preventDefault();
+//             alert("사용하실 건물과 사물함을 선택해주세요!");
+            Swal.fire({
+               title : "예약 실패",
+               text : "사용하실 건물과 사물함을 선택해주세요!",
+               icon : "error",
+               closeOnClickOutside : false
+            });
+         } else if ($("#lrSdate").val() == "") {
+        	 e.preventDefault();
+             Swal.fire({
+                title : "예약 실패",
+                text : "사용 시작일을 선택해 주세요.",
+                icon : "error",
+                closeOnClickOutside : false
+             });
+         } else if ($("#lrEdate").val() == "") {
+        	 e.preventDefault();
+             Swal.fire({
+                title : "예약 실패",
+                text : "사용 종료일을 선택해 주세요.",
+                icon : "error",
+                closeOnClickOutside : false
+             });
+         } else {
+     		Swal.fire({
+  			  title: '예약 신청',
+  			  html : "사물함을 사용하시겠습니까?",
+  			  icon: 'question',
+  			  showCancelButton: true,
+  			  confirmButtonText: 'Yes'
+  			}).then((result) => {
+  			  if (result.isConfirmed) {
+  				 Swal.fire(
+  				      '예약 성공',
+  				      '사물함 사용예약이 완료되었습니다!',
+  				      'success'
+  				 ).then((result)=>{
+  					insertForm.submit();
+  				 })
+  			  } else {
+  				  Swal.fire(
+  				      '예약 중단',
+  				      '예약 신청이 중단되었습니다!',
+  				      'error'
+  				  )
+  			  }
+  			});
+         }
+        
+      });
+
+   });
+   
+   
+   
+</script>
+

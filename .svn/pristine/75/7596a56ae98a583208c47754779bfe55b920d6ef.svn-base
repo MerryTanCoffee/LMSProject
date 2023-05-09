@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ExamMapper">
+
+	<resultMap type="examVO" id="examMap">
+		<id property="examGubun" column="exam_gubun"/>
+		<result property="examGubun" column="exam_gubun"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="examDate" column="exam_date"/>
+		<result property="subName" column="sub_name"/>
+		<result property="subCode" column="sub_code"/>
+		<result property="lecOpenYear" column="lec_open_year"/>
+		<result property="lecOpenSemester" column="lec_open_semester"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="lecLanguage" column="lec_language"/>
+		<result property="lecGrade" column="lec_grade"/>
+		<result property="subSort" column="sub_sort"/>
+		<result property="subApplicant" column="sub_application"/>
+		<collection property="examList" resultMap="examListMap"/>
+<!-- 		<collection property="subjectVO" resultMap="subjectMap"/> -->
+<!-- 		<collection property="subjectOpenVO" resultMap="subjectOpenMap"/> -->
+<!-- 		<collection property="lectureVO" resultMap="lectureMap"/> -->
+	</resultMap>
+	
+	<resultMap type="examListVO" id="examListMap">
+		<id property="exNum" column="ex_num"/>
+		<result property="exNum" column="ex_num"/>
+		<result property="examGubun" column="exam_gubun"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="exContent" column="ex_content"/>
+		<result property="exSolution" column="ex_solution"/>
+		<collection property="examSelectList" resultMap="examSelectListMap"/>
+	</resultMap>
+	
+	<resultMap type="ExamSelectVO" id="examSelectListMap">
+		<id property="exsNum" column="exs_num"/>
+		<result property="exsNum" column="exs_num"/>
+		<result property="exNum" column="ex_num"/>
+		<result property="examGubun" column="exam_gubun"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="exsContent" column="exs_content"/>
+	</resultMap>
+	
+<!-- 	<resultMap type="subjectVO" id="subjectMap"> -->
+<!-- 		<result property="subCode" column="sub_code"/> -->
+<!-- 		<result property="deptCode" column="dept_code"/> -->
+<!-- 		<result property="subSort" column="sub_sort"/> -->
+<!-- 		<result property="subName" column="sub_name"/> -->
+<!-- 		<result property="subCredit" column="sub_credit"/> -->
+<!-- 		<result property="subLecTime" column="sub_lec_time"/> -->
+<!-- 		<result property="subPracTime" column="sub_prac_time"/> -->
+<!-- 		<result property="subOutlineKo" column="sub_outline_ko"/> -->
+<!-- 		<result property="subOutlineEn" column="sub_outline_en"/> -->
+<!-- 		<result property="subType" column="sub_type"/> -->
+<!-- 	</resultMap> -->
+	
+<!-- 	<resultMap type="subjectOpenVO" id="subjectOpenMap"> -->
+<!-- 		<result property="subApplicant" column="sub_applicant"/> -->
+<!-- 	</resultMap> -->
+	
+<!-- 	<resultMap type="lectureVO" id="lectureMap"> -->
+<!-- 		<result property="lecOpenSemester" column="lec_open_semester"/> -->
+<!-- 		<result property="lecDivide" column="lec_divide"/> -->
+<!-- 		<result property="lecLanguage" column="lec_language"/> -->
+<!-- 		<result property="lecGrade" column="lec_grade"/> -->
+<!-- 	</resultMap> -->
+
+<!-- 	<resultMap type="examQuestionsVO" id="examQuestionsMap"> -->
+<!-- 		<result property="subApplicant" column="sub_applicant"/> -->
+<!-- 	</resultMap> -->
+	
+	<!-- 시험출제할 과목 -->
+	<select id="selectExamSubjectList" parameterType="string" resultType="examVO">
+<!-- 		select  -->
+<!-- 			l.lec_code,  -->
+<!-- 			l.sub_code,  -->
+<!-- 			l.lec_open_year,  -->
+<!-- 			l.lec_open_semester,  -->
+<!-- 			l.lec_divide,  -->
+<!-- 			l.lec_language,  -->
+<!-- 			l.lec_grade, -->
+<!-- 			e.exam_gubun,  -->
+<!-- 			e.exam_date,  -->
+<!-- 			s.sub_sort,  -->
+<!-- 			s.sub_name, -->
+<!-- 			so.sub_applicant -->
+<!-- 		from  -->
+<!-- 			lecture l, subject_open so, exam e, subject s -->
+<!-- 		where l.lec_code = e.lec_code -->
+<!-- 		and so.lec_code = l.lec_code -->
+<!-- 		and l.sub_code = s.sub_code -->
+<!-- 		and l.pro_id = #{proId}  -->
+		
+		
+		select 
+			l.lec_code, 
+			l.sub_code, 
+			l.lec_open_year, 
+			l.lec_open_semester, 
+			l.lec_divide, 
+			l.lec_language, 
+			l.lec_grade,
+			s.sub_sort, 
+			s.sub_name,
+			so.sub_applicant
+		from 
+			lecture l, subject_open so, subject s
+		where l.lec_code = so.lec_code
+		and l.sub_code = s.sub_code
+		and l.pro_id = #{proId}
+
+<!-- 		select  -->
+<!-- 		    e.exam_gubun, e.exam_date,  -->
+<!-- 		    s.sub_sort, s.sub_name, -->
+<!-- 		    so.sub_applicant,  -->
+<!-- 		    l.lec_code, l.sub_code, l.lec_open_year, l.lec_open_semester, l.lec_divide, l.lec_language, l.lec_grade -->
+<!-- 		from exam e left outer join lecture l on(l.lec_code = e.lec_code)  -->
+<!-- 		            left outer join subject_open so on(so.lec_code = l.lec_code) -->
+<!-- 		            left outer join subject s on(l.sub_code = s.sub_code) -->
+<!-- 		where l.pro_id = #{proId} -->
+	</select>
+	
+	<!-- 시험 등록 -->
+	<insert id="insertExam" parameterType="examVO">
+		insert into exam (
+			exam_gubun,
+			lec_code,
+			exam_date
+		) values (
+			#{examGubun},
+			#{lecCode},
+			#{examDate}
+		)
+	</insert>
+	
+	<!-- 시험 문제 질문 등록 -->
+	<insert id="insertExamQuestions" parameterType="examListVO">
+		insert into exam_list (
+			ex_num, 
+			exam_gubun, 
+			lec_code, 
+			ex_content, 
+			ex_solution
+		) values(
+			#{exNum}, 
+			#{examGubun}, 
+			#{lecCode}, 
+			#{exContent}, 
+			#{exSolution}
+			)
+	</insert>
+	
+	<!-- 시험 문제 보기 등록 -->
+	<insert id="insertExamMultipleChoice" parameterType="examSelectVO">
+		insert into exam_select (
+			exs_num, 
+			ex_num, 
+			exam_gubun, 
+			lec_code, 
+			exs_content 
+		) values (
+			#{exsNum}, 
+			#{exNum}, 
+			#{examGubun}, 
+			#{lecCode}, 
+			#{exsContent}
+		)
+	</insert>
+	
+	<!-- 한 강의에 해당하는 문제 정보(질문+보기) 가져오기 -->
+	<select id="selectExamInfo" parameterType="examVO" resultMap="examMap" >
+		select 
+			el.ex_num, 
+			el.exam_gubun, 
+			el.lec_code, 
+			el.ex_content, 
+			el.ex_solution, 
+			es.exs_num, 
+			es.exs_content,
+			s.sub_name
+		from 
+			exam_list el, exam_select es, lecture l, subject s
+		where el.ex_num = es.ex_num
+        and l.sub_code = s.sub_code
+        and l.lec_code = el.lec_code
+        and el.lec_code = es.lec_code
+		and el.lec_code = #{lecCode}
+		and el.exam_gubun = #{examGubun}
+	</select>
+	
+	<!-- 1번 문제에대한 보기 업데이트 -->
+	<update id="updateExamSelect" parameterType="examSelectVO">
+		update 
+			exam_select
+		set 
+			exs_content = #{exsContent}
+		where exs_num = #{exsNum}
+		and ex_num = #{exNum}
+        and lec_code = #{lecCode}
+        and exam_gubun = #{examGubun}
+	</update>
+	
+	
+	<!-- 1번 문제 업데이트  -->
+	<update id="updateExamList" parameterType="examListVO">
+        update 
+        	exam_list
+        set 
+        	ex_content = #{exContent},
+        	ex_solution = #{exSolution}
+        where ex_num = #{exNum}
+        and lec_code = #{lecCode}
+        and exam_gubun = #{examGubun}
+	</update>
+    
+    
+    <!-- 1번 문제에 해당하는 보기 삭제 -->
+    <delete id="deleteExamSelect" parameterType="examSelectVO">
+		delete from 
+			exam_select
+		where ex_num = #{exNum}
+		and exs_num = #{exsNum}
+		and lec_code = #{lecCode}
+		and exam_gubun = #{examGubun}
+	</delete>
+	
+	<!-- 1번 문제 삭제 -->
+	<delete id="deleteExamList" parameterType="examListVO">
+		delete from 
+			exam_list
+		where ex_num = #{exNum}
+		and lec_code = #{lecCode}
+		and exam_gubun = #{examGubun}
+	</delete>
+	
+	<!-- 시험 삭제 -->
+	<delete id="deleteExam" parameterType="examVO">
+		delete from
+			exam
+		where exam_gubun = #{examGubun}
+		and lec_code = #{lecCode}
+	
+	</delete>
+	
+	<!-- 시험 구분 리스트, 한 과목에 대한 시험구분(중간, 기말, 쪽지시험 등등) -->
+	<select id="examGubunList" parameterType="hashmap" resultMap="examMap">
+		select 
+			l.lec_code, 
+			l.sub_code, 
+			l.lec_open_year, 
+			l.lec_open_semester, 
+			l.lec_divide, 
+			l.lec_language, 
+			l.lec_grade,
+			e.exam_gubun, 
+			e.exam_date, 
+			s.sub_sort, 
+			s.sub_name,
+			so.sub_applicant
+		from 
+			lecture l, subject_open so, exam e, subject s
+		where l.lec_code = e.lec_code
+		and so.lec_code = l.lec_code
+		and l.sub_code = s.sub_code
+		and l.pro_id = #{proId}
+        and l.lec_code = #{lecCode}
+	</select>
+	
+	<!-- 내가 수강중인 강의 불러오기 -->
+	<select id="stuExamList" parameterType="string" resultType="examAnswerVO">
+<!-- 		select  -->
+<!-- 			ea.ex_num,  -->
+<!-- 			ea.exam_gubun,  -->
+<!-- 			ea.lec_code,  -->
+<!-- 			ea.stu_id,  -->
+<!-- 			ea.exa_answer,  -->
+<!-- 			ea.exa_check,  -->
+<!-- 			e.exam_date,  -->
+<!-- 			l.lec_open_year,  -->
+<!-- 			l.lec_open_semester,  -->
+<!-- 			l.lec_divide,  -->
+<!-- 			l.lec_grade,  -->
+<!-- 			lec_language,  -->
+<!-- 			s.sub_name -->
+<!-- 	    from  -->
+<!-- 	    	exam_answer ea, course_list cl, lecture l, subject s, exam e -->
+<!-- 	    where ea.stu_id = cl.stu_id -->
+<!-- 	    and ea.lec_code = cl.lec_code -->
+<!-- 	    and ea.lec_code = l.lec_code -->
+<!-- 	    and l.sub_code = s.sub_code -->
+<!-- 	    and ea.lec_code = e.lec_code -->
+<!-- 	    and ea.exa_check = 'N' -->
+<!-- 	    and ea.stu_id = #{stuId} -->
+	    
+	    select 
+	    	cl.lec_code , 
+	    	l.lec_open_year, 
+	    	l.lec_open_semester, 
+	    	l.lec_divide, 
+	    	l.lec_quota, 
+	    	l.lec_grade, 
+	    	lec_language, 
+	    	s.sub_name,  
+	    	e.exam_date,
+	    	e.exam_gubun
+	    from 
+	    	course_list cl, lecture l, subject s, exam e
+	    where cl.lec_code = l.lec_code
+	    and l.lec_code = e.lec_code
+	    and cl.lec_code = e.lec_code
+	    and l.sub_code = s.sub_code
+	    and cl.stu_id = #{stuId}
+	</select>
+	
+	<!-- 학생이 푸는 시험지 내용 불러오기-->
+	<select id="stuExamForm" parameterType="examVO" resultMap="examMap">
+	     select 
+	    	e.exam_gubun, 
+	    	e.lec_code, 
+	    	e.exam_date, 
+	    	el.ex_num, 
+	    	el.ex_content, 
+	    	el.ex_solution, 
+	    	es.exs_num, 
+	    	es.exs_content,
+            s.sub_name
+	    from 
+	    	exam e, exam_list el, exam_select es, lecture l, subject s
+	    where e.exam_gubun = el.exam_gubun
+        and l.sub_code = s.sub_code
+        and e.lec_code = l.lec_code
+	    and e.lec_code = el.lec_code
+	    and el.lec_code = es.lec_code
+	    and el.ex_num = es.ex_num
+	    and e.exam_gubun = #{examGubun}
+        and e.lec_code = #{lecCode}
+    </select>
+
+	<!-- 학생이 시험지 풀기(학생 답안 인서트) -->
+	<insert id="stuExamAnswerInsert" parameterType="examAnswerVO">
+		insert into exam_answer
+    	values (
+    		#{exNum}, #{examGubun}, #{lecCode}, #{stuId}, #{exaAnswer}, 'N', sysdate
+    	)
+	</insert>
+	
+	<!-- 학생이 시험지를 풀고나면 exa_check가 y로 -->
+	<update id="stuExamAnswerUpdate" parameterType="examAnswerVO">
+		update exam_answer
+   		 set exa_check = 'Y'
+   		 where stu_id = #{stuId}
+   		 and exam_gubun = #{examGubun}
+   		 and lec_code = #{lecCode}
+	</update>
+    
+	<!-- 학생 답안 + 문제 불러오기 -->
+	<select id="stuAnswerSelect" parameterType="examAnswerVO" resultType="examAnswerVO">
+		select 
+			ea.ex_num, 
+			ea.exam_gubun, 
+			ea.lec_code, 
+			ea.stu_id, 
+			ea.exa_answer, 
+			ea.exa_check,
+			ea.exa_take_date, 
+			el.ex_content, 
+			el.ex_solution,
+			e.exam_date
+		from exam_answer ea, exam_list el, exam e
+		where ea.lec_code = el.lec_code
+		and ea.ex_num = el.ex_num
+		and ea.lec_code = e.lec_code
+		and ea.stu_id = #{stuId}
+		and ea.exam_gubun = #{examGubun}
+		and ea.lec_code = #{lecCode}
+	</select>
+	
+	<!-- 학생이 시험본 내역의 상태에 따라 결과 제공 -->
+	<select id="checkExamStatus" parameterType="examAnswerVO" resultType="examAnswerVO">
+		select ex_num, exam_gubun, lec_code, stu_id, exa_answer, exa_check, exa_take_date
+		from exam_answer
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+		and exam_gubun = #{examGubun}
+	</select>
+	
+	<!-- 시험시간 초과시 0점 처리 -->
+	<insert id="insertZeroScore" parameterType="examAnswerVO">
+		insert into exam_answer(
+			ex_num, exam_gubun, lec_code, stu_id, exa_answer, exa_check, exa_take_date
+		)values (
+			1, #{examGubun}, #{lecCode}, #{stuId}, '1', 'N', sysdate
+		)
+	</insert>
+	
+	<!-- 교수가 해당과목에 대해 이미 출제한 정보가 있다면 상태 결과 제공 -->
+	<select id="checkExamSubmitStatus" parameterType="examVO" resultMap="examMap">
+		select 
+			ex_num, exam_gubun, lec_code, ex_content, ex_solution
+		from exam_list
+		where exam_gubun = #{examGubun}
+		and lec_code = #{lecCode}
+	</select>
+	
+	<update id="stuExamScoreUpdate" parameterType="examAnswerVO">
+		update score_record
+		set 
+			<if test='examGubun == "M"'>
+				mdt_score= #{correctCount} 
+			</if>
+			<if test='examGubun == "F"'>
+				fnl_score = #{correctCount} 
+			</if>
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+	</update>
+	
+</mapper>

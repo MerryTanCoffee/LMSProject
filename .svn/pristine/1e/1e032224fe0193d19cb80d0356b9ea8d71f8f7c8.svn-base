@@ -1,0 +1,92 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css"
+	rel="stylesheet" type="text/css">
+
+
+
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th>전공필수</th>
+				<th>전공선택</th>
+				<th>교양필수</th>
+				<th>교양선택</th>
+				<th>학점총계</th>
+				<th>평점환산</th>
+				<th>평점평균</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<div id="chart"></div>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+<script>
+	var chart = c3.generate({
+		data : {
+			columns : [ [ '전필이수결과', 9 ], [ '전필이수기준', 40 ], [ '전선이수결과', 12 ],
+					[ '전선이수기준', 40 ], [ '교필이수결과', 18 ], [ '교필이수기준', 30 ],
+					[ '교선이수결과', 17 ], [ '교선이수기준', 30 ], ],
+			colors : {
+				'전필이수결과' : '#3ADF00',
+				'전필이수기준' : '#31B404',
+				'전선이수결과' : '#00FFFF',
+				'전선이수기준' : '#01A9DB',
+				'교필이수결과' : '#BF00FF',
+				'교필이수기준' : '#B404AE',
+				'교선이수결과' : '#FFBF00',
+				'교선이수기준' : '#DBA901',
+			},
+			type : 'bar',
+			labels : {
+				format : function(value, id, index) { // label 포맷을 지정하는 함수
+					return value; // 막대 위에 직접 표시할 값을 반환
+				}
+			}
+		},
+
+		axis : {
+			rotated : true, // x축과 y축을 90도씩 회전시키는 옵션
+			x : {
+				show : false
+			// y축에 값 표시 안 함
+			},
+			y : {
+				label : {
+					text : '점',
+					position : 'outer-right' // x축 끝에 위치하도록 지정
+				}
+			}
+		},
+		bar : {
+			width : 30, // 각 막대별 너비 조절 옵션
+			space : 20
+		// 각 막대별 간격 조절 옵션
+		},
+		grid : {
+			y : {
+				lines : [ {
+					value : 0
+				} ]
+			}
+		}
+	});
+</script>

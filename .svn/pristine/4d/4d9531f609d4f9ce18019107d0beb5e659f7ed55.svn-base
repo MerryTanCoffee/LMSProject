@@ -1,0 +1,96 @@
+package kr.or.ddit.common.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.portlet.service.PortletService;
+import kr.or.ddit.portlet.vo.PortletVO;
+import kr.or.ddit.user.vo.StudentVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/main")
+public class mainController {
+	
+	@Inject
+	private PortletService portletService;
+	
+
+	/*
+	@GetMapping("/mainPage")
+	public String stuMainPage(HttpServletRequest request, @ModelAttribute StudentVO studentVO, Model model) {
+		
+		HttpSession session = request.getSession();
+		
+		String userId = null;
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		if(userVO == null) {
+			userId = "a001";
+		}else {
+			userId = userVO.getUserId();
+		}
+		
+		model.addAttribute("userId", userId);
+		
+//		List<PortletVO> portletList = portletService.portletSelect(userVO);
+//		log.info("portletList: " + portletList);
+//		model.addAttribute("list", portletList);
+		
+		return "main/mainPage";
+	}
+	*/
+	
+	@RequestMapping(value = "/mainPage/{stuId}", method = RequestMethod.GET)
+	public String selectPortlet(@PathVariable int stuId, @ModelAttribute StudentVO studentVO, Model model) {
+		
+		model.addAttribute("stuId", stuId);
+		
+		
+		
+		return "main/mainPage";
+				
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/insertPortlet", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public ServiceResult insertPortlet(@RequestBody List<PortletVO> portletList) {
+		ServiceResult result = null;
+		
+		System.out.println(portletList.toString());
+		for (int i = 0; i < portletList.size(); i++) {
+			portletList.get(i).setPoCateId(portletList.get(i).getId());
+			portletList.get(i).setStuId("2023160104");
+			portletList.get(i).setPoH(2);
+			portletList.get(i).setPoW(portletList.get(i).getW());
+			portletList.get(i).setPoY(portletList.get(i).getY());
+			portletList.get(i).setPoX(portletList.get(i).getX());
+			
+			
+			portletList.get(i).setPoYn(1);
+		}
+		return portletService.insertPortlet(portletList);
+	}
+	
+}

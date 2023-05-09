@@ -1,0 +1,343 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>대원대학교 포털시스템</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+        <link rel="stylesheet" href="/resources/css/boot.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <aside class="main-sidebar">
+                <div class="sublogo fs-5">대원대학교</div>
+                <p class="uniTextEng">DAEWON UNIVERSITY</p>
+                <div class="sectit">학생포털</div>
+                <div class="user-w stb-w">
+                    <div class="user-img">
+                        <img src="https://nwas.woosuk.ac.kr/WsFile/imageView.do?propCd=StdCsrImage&amp;fileName=2015/2015_3110125.jpg"
+                            alt="">
+                    </div>
+                    <div class="user-t">
+                        <div class="user-tw">
+                            <span class="user-name">이름</span> <span class="user-subname">단과대학정보넣기</span>
+                            <span class="user-subname">학과정보넣기</span>
+                        </div>
+                        <div class="user-logcw">
+                            <span class="user-logc"><a href="./logout.php">로그아웃</a></span> <span class="user-logc"><a
+                                    href="myPage.php">마이페이지</a></span>
+                        </div>
+                    </div>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#">통합정보시스템</a></li>
+                    <li><a href="#">스터디 모집현황</a></li>
+                    <li><a href="#">일반공지</a></li>
+                    <li><a href="#">학사공지</a></li>
+                    <li><a href="#">채용정보</a></li>
+                </ul>
+
+                <div style="background-color: #e3f1ffcc; border-radius: 20px; padding-top: 20px;">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="4" style="border: none; text-align: center;"> 대전 중구 오류동</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center pt-0">
+                                    <div class="cicon">
+                                        <img src="/resources/weathericons/images/01d.png">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                            <td colspan="4" class="text-center p-0">
+                                <div class="cdes ></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=" 4" class="text-center">
+                                        <div class="ctemp"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    <div class="chum">
+                                        <i class="fa-solid fa-droplet" style="color: #96cbff;">&nbsp;&nbsp;&nbsp;</i>
+                                    </div>
+                                </td>
+                                <td colspan="2" class="text-center">
+                                    <div class="cwind">
+                                        <i class="fa-solid fa-wind" style="color: #bbbdbf;">&nbsp;&nbsp;&nbsp;</i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="cdate" style="padding-left: 50px; color: #fff; padding-bottom: 25px;"></div>
+                </div>
+            </aside>
+
+            <section class="content stucontent">
+                <div class="conL">
+                    <div class="wschInfo">
+                        <div class="conmailboxw">
+                            <div class="conmailbox">
+                                <span class="cmtxt">무슨정보넣지</span> <span class="pointc" id="champ1"
+                                    data-value="203M">203M</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="restboxw">
+                        <div class="content-bbs">
+                            <div class="gratit">수강정보</div>
+                            <div class="suinfo">
+                                <table class="table primary-table-bordered text-center" style="color: #fff;">
+                                    <thead class="thead-primary">
+                                        <tr>
+                                            <th scope="col">과목명</th>
+                                            <th scope="col">학점</th>
+                                            <th scope="col">담당교수</th>
+                                            <th scope="col">강의실</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="restboxw">
+                        <div class="content-bbs">
+                            <div class="gratit">무슨정보?</div>
+                            <div class="suinfo">
+                                <table class="table primary-table-bordered text-center" style="color: #fff;">
+                                    <thead class="thead-primary">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">1</th>
+                                            <th scope="col">2</th>
+                                            <th scope="col">3</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="conR">
+                    <div class="contcw">
+                        <div class="notit">교내 공지사항</div>
+                        <div class="noticezone tabox1">
+                            <div class="noticetop">
+                                <!-- Nav tabs -->
+                                <div class="default-tab">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab"
+                                                href="#home"><i class="la la-home me-2"></i> 일반공지</a></li>
+                                        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#profile"><i
+                                                    class="la la-user me-2"></i> 학사공지</a></li>
+                                        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#contact"><i
+                                                    class="la la-phone me-2"></i> 채용정보</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel">
+                                            <div class="pt-4">
+                                                <table class="table">
+                                                    <tbody class="">
+                                                        <tr style="width: 100%;">
+                                                            <td style="width: 65%;">내용</td>
+                                                            <td>날짜</td>
+                                                        </tr>
+                                                        <tr style="width: 100%;">
+                                                            <td style="width: 65%;">내용</td>
+                                                            <td>날짜</td>
+                                                        </tr>
+                                                        <tr style="width: 100%;">
+                                                            <td style="width: 65%;">내용</td>
+                                                            <td>날짜</td>
+                                                        </tr>
+                                                        <tr style="width: 100%;">
+                                                            <td style="width: 65%;">내용</td>
+                                                            <td>날짜</td>
+                                                        </tr>
+                                                        <tr style="width: 100%;">
+                                                            <td style="width: 65%;">내용</td>
+                                                            <td>날짜</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile">
+                                            <div class="pt-4"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="contact">
+                                            <div class="pt-4"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="banzonew">
+                            <div class="banboxw">
+                                <div class="banbox">
+                                    <a href="#">
+                                        <p class="banimg">
+                                            <img src="img/stuicon_01.png" alt="">
+                                        </p>
+                                        <p>@메일</p>
+                                    </a>
+                                </div>
+                                <div class="banbox">
+                                    <a href="#">
+                                        <p class="banimg">
+                                            <img src="img/stuicon_02.png" alt="">
+                                        </p>
+                                        <p>전주도서관</p>
+                                    </a>
+                                </div>
+                                <div class="banbox">
+                                    <a href="https://jclibrary.woosuk.ac.kr/sso/index.jsp" target="_blank">
+                                        <p class="banimg">
+                                            <img src="img/stuicon_03.png" alt="">
+                                        </p>
+                                        <p>진천도서관</p>
+                                    </a>
+                                </div>
+                                <div class="banbox">
+                                    <a href="https://cert.woosuk.ac.kr/" target="_blank">
+                                        <p class="banimg">
+                                            <img src="img/stuicon_04.png" alt="">
+                                        </p>
+                                        <p>인터넷증명서발급</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            /*
+        $.getJSON('파일경로', function(data){
+            // data로 할일...
+        });
+        */
+            // http://api.openweathermap.org/data/2.5/weather?id=1835224&appid=ca0bb9a0d664dd00b81b108021c12b45&units=metric
+
+            $.getJSON('http://api.openweathermap.org/data/2.5/weather?id=1835224&appid=ca0bb9a0d664dd00b81b108021c12b45&units=metric', function (data) {
+                // data로 할일...
+                // alert(data.list[0].main.temp_min);
+                var $minTemp = data.main.temp_min;
+                var $maxTemp = data.main.temp_max;
+                var $cTemp = data.main.temp + "&deg;";
+                var $now = new Date($.now());
+                var $cDate = $now.getFullYear() + '-' + ($now.getMonth() + 1) + '-' + $now.getDate() + "&nbsp;&nbsp;&nbsp;" + $now.getHours() + ' : ' + $now.getMinutes() + " : " + $now.getSeconds();
+                var $wIcon = data.weather[0].icon;
+                var $cDes = data.weather[0].description;
+                var $cHum = data.main.humidity + "%";
+                var $cWind = data.wind.speed + "m/s";
+
+
+                // Date.now(); == $.now
+                // new Date(Date.now());
+                // alert(new Date($.now()));
+                // .getFullYear() 년도
+                // .getMonth() 월 0=1월
+                // .getDate()
+                // .getHours() 시간, .getMinutes() 분
+
+                // A.appendTo(B) B요소의 내용의 뒤에 A를 추가
+                // A.append(B) A요소의 내용의 뒤에 B를 추가
+                // A.prependTo(B) B요소의 내용의 앞에 A를 추가
+                // A.prepend(B) A요소의 내용의 앞에 B를 추가
+
+                $(".clowtemp").append($minTemp);
+                $(".chightemp").append($maxTemp);
+                $(".ctemp").append($cTemp);
+                $(".cdate").prepend($cDate);
+                $(".cdes").append($cDes);
+                $(".chum").append($cHum);
+                $(".cwind").append($cWind);
+                // $(".cicon").append('<img src="https://openweathermap.org/img/wn/' + $wIcon + '.png" />');
+
+                // <img src="https://openweathermap.org/img/wn/10d@2x.png">
+
+                let image = document.querySelector("img");
+
+                if ($wIcon == "01d") {
+                    image.src = "/resources/weathericons/images/01d.png";
+                } else if ($wIcon == "01n") {
+                    image.src = "/resources/weathericons/images/01n.png";
+                } else if ($wIcon == "02d") {
+                    image.src = "/resources/weathericons/images/02d.png";
+                } else if ($wIcon == "02n") {
+                    image.src = "/resources/weathericons/images/02n.png";
+                } else if ($wIcon == "03d") {
+                    image.src = "/resources/weathericons/images/03d.png";
+                } else if ($wIcon == "03n") {
+                    image.src = "/resources/weathericons/images/03n.png";
+                } else if ($wIcon == "04d") {
+                    image.src = "/resources/weathericons/images/04d.png";
+                } else if ($wIcon == "04n") {
+                    image.src = "/resources/weathericons/images/04n.png";
+                } else if ($wIcon == "09d") {
+                    image.src = "/resources/weathericons/images/09d.png";
+                } else if ($wIcon == "09n") {
+                    image.src = "/resources/weathericons/images/09n.png";
+                } else if ($wIcon == "10d") {
+                    image.src = "/resources/weathericons/images/10d.png";
+                } else if ($wIcon == "10n") {
+                    image.src = "/resources/weathericons/images/10n.png";
+                } else if ($wIcon == "11d") {
+                    image.src = "/resources/weathericons/images/11d.png";
+                } else if ($wIcon == "11n") {
+                    image.src = "/resources/weathericons/images/11n.png";
+                } else if ($wIcon == "13d") {
+                    image.src = "/resources/weathericons/images/13d.png";
+                } else if ($wIcon == "13n") {
+                    image.src = "/resources/weathericons/images/13n.png";
+                } else if ($wIcon == "50d") {
+                    image.src = "/resources/weathericons/images/50d.png";
+                } else if ($wIcon == "50n") {
+                    image.src = "/resources/weathericons/images/50n.png";
+                }
+
+
+            });
+        </script>
+</body>
+</html>

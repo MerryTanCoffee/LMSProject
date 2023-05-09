@@ -1,0 +1,30 @@
+package kr.or.ddit.study.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.StudyMapper;
+import kr.or.ddit.study.service.IStudyService;
+import kr.or.ddit.study.vo.StudyVO;
+
+@Service
+public class StudyServiceImpl implements IStudyService {
+
+	@Inject
+	private StudyMapper mapper;
+	
+	@Override
+	public List<StudyVO> selectMyStudy(String userId) {
+		return mapper.selectMyStudy(userId);
+	}
+
+	@Override
+	public StudyVO selectStudy(String studyCode) {
+		return mapper.selectOneStudy(studyCode);
+	}
+
+
+}

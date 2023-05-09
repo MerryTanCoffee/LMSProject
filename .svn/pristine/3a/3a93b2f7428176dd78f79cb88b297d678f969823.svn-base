@@ -1,0 +1,20 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.score.vo.ScoreVO;
+
+public interface ScoreMapper {
+
+	public void insert(ScoreVO score) throws Exception;
+
+	public List<ScoreVO> list() throws Exception;
+
+	public void delete(int stuId) throws Exception;
+
+	public void update(ScoreVO score) throws Exception;
+	//등록/수정 나누려고 추가
+	public ScoreVO read(int stuNo) throws Exception;
+
+	public ScoreVO read(String stuNo) throws Exception;
+}

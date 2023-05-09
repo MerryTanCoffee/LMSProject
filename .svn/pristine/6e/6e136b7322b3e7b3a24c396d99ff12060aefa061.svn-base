@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ExcelMapper">
+	
+<select resultType="modelVO" id="selectAll">select * from users </select>
+
+
+<insert id="insertExcel" parameterType="modelVO">
+
+<foreach close="SELECT * FROM DUAL" open="INSERT All" separator=" " index="cellIndex" item="item" collection="excelContent">INTO users (USER_ID,PASSWORD,ENABLED,USER_TYPE) VALUES(#{item.A}, #{item.B}, #{item.C}, #{item.D}) </foreach>
+
+</insert>
+
+</mapper>

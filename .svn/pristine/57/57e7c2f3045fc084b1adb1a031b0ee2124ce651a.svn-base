@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.SubmitMapper">
+
+	<!-- 학생이 과제 제출 -->
+	<insert id="insertSubmit" parameterType="submitVO">
+	    insert into SUBMIT (
+	    	ASS_NO, STU_ID, SUBM_FILE_NAME, SUBM_FILE_PATH
+	    ) values (
+	        #{assNo}, #{stuId}, #{submFileName}, #{submFilePath}
+	    )
+	</insert>
+	
+	<!-- 과제 리스트ㅡ -->
+	<select id="homeworkList" parameterType="String" resultType="homeworkVO">
+		select 													 
+			HW_NO, LEC_CODE, HW_TITLE, HW_CONTENT, HW_DEADLINE
+		from HOMEWORK
+		where LEC_CODE=#{lecCode}
+		order by HW_NO ASC
+	</select>
+	
+	<!-- 교수가 과제 제출 -->
+	<insert id="insertHomework" parameterType="homeworkVO" useGeneratedKeys="true">
+		<selectKey keyProperty="hwNo" order="BEFORE" resultType="int">
+			select SEQ_HOMEWORK.nextval from dual
+		</selectKey>
+		 insert into HOMEWORK (
+	    	HW_NO, LEC_CODE, HW_TITLE, HW_CONTENT, HW_DEADLINE
+	    ) values (
+	        #{hwNo}, #{lecCode}, #{hwTitle}, #{hwContent}, #{hwDeadline}
+	    )
+	</insert>
+	
+	<!-- 그 강의를 듣는 학생 -->
+	<select id="lecStuList" parameterType="String" resultType="studentVO">
+		select s.stu_name_ko, s.stu_id, a.aca_major, a.aca_grade
+		    from student s
+		        LEFT OUTER JOIN course_list c ON s.stu_id = c.stu_id
+		        LEFT OUTER JOIN academic a ON c.stu_id = a.stu_id
+		where c.lec_code= #{lecCode}
+	</select>	
+	
+	<!-- 과제 정보 가져오기 -->
+	<select id="homeworkSelectOne" parameterType="map" resultType="homeworkVO"> 
+		select HW_NO
+			,LEC_CODE
+			,HW_TITLE
+			,HW_CONTENT
+			,HW_DEADLINE
+		from homework	
+		where hw_no = #{hwNo}
+		  and lec_code = #{lecCode}	
+	</select>
+	
+	<!-- 학생의 제출 과제 가져오기 -->
+	<select id="submitFile" parameterType="map" resultType="submitVO"> 
+		SELECT s.stu_name_ko, s.stu_id, sub.SUBM_FILE_NAME, sub.SUBM_FILE_PATH, sub.SUBM_DATE
+			FROM student s
+			    LEFT OUTER JOIN course_list c ON s.stu_id = c.stu_id
+			    LEFT OUTER JOIN (
+			      SELECT s.SUBM_FILE_NAME, s.SUBM_FILE_PATH, s.SUBM_DATE, h.hw_no, s.stu_id
+			      FROM submit s
+			      LEFT OUTER JOIN homework h ON s.ass_no = h.hw_no
+			    ) sub ON s.stu_id = sub.stu_id
+			WHERE c.lec_code=#{lecCode}     
+			and sub.hw_no=#{hwNo}
+	</select>
+	
+	<!-- 제출 과제 점수 부여 -->
+	<update id="submitScore" parameterType="scoreVO">
+		update  SCORE_RECORD
+			set	ASG_SCORE = ASG_SCORE + #{asgScore}
+			where stu_id = #{stuId}  
+			and lec_code = #{lecCode}	
+	</update>
+	
+	<update id="submitScoreSub" parameterType="scoreVO">
+		update  SUBMIT
+			set	SUBM_SCORE = SUBM_SCORE + #{submScore}
+			where STU_ID = #{stuId}  
+			and ASS_NO = #{assNo}	
+	</update>
+</mapper>

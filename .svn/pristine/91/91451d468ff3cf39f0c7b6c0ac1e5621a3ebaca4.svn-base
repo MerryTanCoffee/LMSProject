@@ -1,0 +1,17 @@
+package kr.or.ddit.lecture.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/lecture")
+public class LecturePlanController {
+	
+	@RequestMapping(value = "/lecPlanForm", method = RequestMethod.GET)
+	public String lecPlanForm() {
+		
+		return "lecture/lecturePlan";
+	}
+
+}

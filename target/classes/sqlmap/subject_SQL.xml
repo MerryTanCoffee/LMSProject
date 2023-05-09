@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.SubjectMapper">
+	
+	<sql id="search">
+		<if test="deptCode != null and deptCode != 'ALL'">
+			and s.dept_code = #{deptCode}
+		</if>
+		<if test="subSort != null and subSort != 'ALL'">
+			and sub_sort = #{subSort}
+		</if>
+		<if test="subType != null and subType != 'ALL'">
+			and sub_type = #{subType}
+		</if>
+		<if test="subName != null and subName != ''">
+			and sub_name like '%'||#{subName}||'%'
+		</if>
+	</sql>
+	
+	<select id="subjectList" resultType="subjectVO">
+		select 
+	        d.DEPT_CODE, DEPT_NAME,
+	        SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, 
+	        SUB_PRAC_TIME, SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE
+   		from SUBJECT s inner join DEPARTMENT d on s.DEPT_CODE = d.DEPT_CODE
+	</select>
+	
+	<select id="deptList" resultType="departmentVO">
+		select
+		    DEPT_CODE, COLL_CODE, HALL_CODE, DEPT_NAME, DEPT_TEL, DEPT_TUITION, DEPT_ROOM
+		from department
+	</select>
+	
+	<select id="subjectSearch" resultType="subjectVO">
+		select
+		    d.DEPT_CODE, DEPT_NAME,
+		    SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, 
+		    SUB_PRAC_TIME, SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE
+		from SUBJECT s inner join DEPARTMENT d on s.DEPT_CODE = d.DEPT_CODE
+		where 1=1
+		<include refid="search"/>
+	</select>
+	
+	<select id="totalCount" resultType="String">
+		select count(*)
+		from (
+		    select 
+		        d.DEPT_CODE, DEPT_NAME,
+		        SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, 
+		        SUB_PRAC_TIME, SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE
+		    from SUBJECT s inner join DEPARTMENT d on s.DEPT_CODE = d.DEPT_CODE
+		    )
+	</select>
+	
+	<update id="lecPlanOk" parameterType="map">
+		<selectKey>
+		
+		</selectKey>
+	</update>
+</mapper>

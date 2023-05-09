@@ -1,0 +1,31 @@
+package kr.or.ddit.submit.service;
+
+import java.util.List;
+import java.util.Map;
+
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.submit.vo.HomeworkVO;
+import kr.or.ddit.submit.vo.SubmitVO;
+import kr.or.ddit.user.vo.StudentVO;
+
+public interface ISubmitService {
+
+	public List<HomeworkVO> homeworkList(String lecCode);
+	
+	public ServiceResult insertHomework(HomeworkVO homeworkVO);
+
+	public int insertSubmit(SubmitVO submit);
+
+	public List<StudentVO> lecStuList(String lecCode);
+
+	public HomeworkVO homeworkSelectOne(Map<String, Object> paramMap);
+
+	public List<SubmitVO> submitFile(Map<String, String> paramMap);
+
+	public int submitScore(ScoreVO scoreVO);
+
+	public int submitScoreSub(SubmitVO submitVO);
+
+}

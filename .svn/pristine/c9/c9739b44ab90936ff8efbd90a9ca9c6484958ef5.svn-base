@@ -1,0 +1,70 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<div class="card dz-card" id="accordion-five">
+	<div class="card-header flex-wrap d-flex justify-content-between">
+		<div>
+			<h4>보낸쪽지함</h4>
+		</div>
+	</div>
+	<div class="table-responsive" style="margin-bottom: 15px;">
+		<table id="example5" class="table table-hover" style="min-width: 845px">
+			<thead>
+				<tr>
+					<th>
+						<div class="form-check custom-checkbox ms-2 checkbox-success">
+							<input type="checkbox" class="form-check-input" id="checkAll"
+								required=""> <label class="form-check-label"
+								for="checkAll"></label>
+						</div>
+					</th>
+					<th>받는사람</th>
+					<th>제목</th>
+					<th>날짜</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:choose>
+					<c:when test="${empty msgList }">
+						<tr>
+							<td colspan="4">조회하신 게시글이 존재하지 않습니다.</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<c:forEach items="${msgList }" var="msg">
+							<tr>
+								<td>
+									<div class="form-check custom-checkbox ms-2 checkbox-success">
+										<input type="checkbox" class="form-check-input"
+											id="customCheckBox3" required=""> <label
+											class="form-check-label" for="customCheckBox3"></label>
+									</div>
+								</td>
+								<td>${msg.msgReceiver }</td>
+								<td><a href="">${msg.msgContent }</a></td>
+								<td>${msg.msgDate }</td>
+							</tr>
+
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</tbody>
+		</table>
+		<button type="button" class="btn btn-outline-success"
+			style="float: left;">삭제</button>
+		<button type="button" class="btn btn-success" onclick="f_send()"
+			style="float: right;">쪽지보내기</button>
+	</div>
+</div>
+
+<script>
+	let win1;
+	function f_send() {
+		win1 = open("/msg/msgSendForm", "winNew1",
+				"width=500, height=500, top=100, left=100");
+	}
+
+	function reload() {
+		location.reload();
+	}
+</script>

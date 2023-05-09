@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScholarshipMapper">
+	
+	<select id="scholarList" parameterType="scholarshipListVO" resultType="scholarshipListVO">
+		select 
+	    	c.*, row_number() over(order by c.sl_no desc) rnum
+		from(
+		    select b.sl_no, b.sl_year, b.sl_semester, a.si_name, a.si_gubun, b.sl_schlr
+		    from scholarship_info a, scholarship_list b
+		    where a.si_code = b.si_code
+		    and stu_id = #{userId}
+		    order by b.sl_no desc
+		)c
+	</select>
+	
+</mapper>

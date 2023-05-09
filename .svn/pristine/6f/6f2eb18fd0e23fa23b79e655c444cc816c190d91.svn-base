@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CoolSmsMapper">
+	<insert id="insert" parameterType="CoolSmsVO" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="coolsmsNo" resultType="int">
+			select seq_coolsms.nextval from dual
+		</selectKey>
+			insert into sms(
+				sms_no, sms_reciver, sms_content, sms_date
+			) values (
+				#{coolsmsNo}, #{coolsmsTo}, #{coolsmsText}, sysdate			
+			)
+	</insert>
+</mapper>

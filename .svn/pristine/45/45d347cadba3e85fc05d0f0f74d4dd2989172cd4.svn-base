@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org/DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 
+		[마이바티스] 스프링에서 "_"를 사용하는 컬럼명을 사용 시, (BOOK 테이블의 BOOK_ID)카멜케이스로 읽어줍니다.(bookId)
+		ex) 테이블 컬럼명이 member_id인 경우 jsp화면단에서 이 값을 사용 시, memberId로 사용
+	 -->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	 <typeAliases>
+	 	<typeAlias type="kr.or.ddit.user.vo.UserVO" alias="userVO"/>
+	 	<typeAlias type="kr.or.ddit.academic.vo.AcademicVO" alias="academicVO"/>
+	 	<typeAlias type="kr.or.ddit.academic.vo.AcademicChangeVO" alias="acChVO"/>
+	 	<typeAlias type="kr.or.ddit.user.vo.StudentVO" alias="studentVO"/>
+	 	<typeAlias type="kr.or.ddit.user.vo.ProfessorVO" alias="professorVO"/>
+	 	<typeAlias type="kr.or.ddit.user.vo.EmployeeVO" alias="employeeVO"/>
+	 	<typeAlias type="kr.or.ddit.reference.vo.ReferenceVO" alias="referenceVO"/>
+	 	<typeAlias type="kr.or.ddit.board.vo.BoardVO" alias="boardVO"/>
+	 	<typeAlias type="kr.or.ddit.board.vo.BoardAttachVO" alias="boardAttachVO"/>
+	 	<typeAlias type="kr.or.ddit.board.vo.PaginationInfoVO" alias="pagingVO"/>
+	 	<typeAlias type="kr.or.ddit.chat.vo.ChatVO" alias="chatVO"/>
+	 	<typeAlias type="kr.or.ddit.portlet.vo.PortletVO" alias="portletVO"/>
+	 	<typeAlias type="kr.or.ddit.profile.vo.ProfileVO" alias="profileVO"/>
+	 	<typeAlias type="kr.or.ddit.calendar.vo.CalendarVO" alias="calendarVO"/>
+	 	<typeAlias type="kr.or.ddit.schedule.vo.ScheduleVO" alias="scheduleVO"/>
+	 	<typeAlias type="kr.or.ddit.subject.vo.SubjectVO" alias="subjectVO"/>
+	 	<typeAlias type="kr.or.ddit.common.vo.DepartmentVO" alias="departmentVO"/>
+	 	<typeAlias type="kr.or.ddit.facilty.vo.LockerVO" alias="lockerVO"/>
+	 	<typeAlias type="kr.or.ddit.score.vo.ScoreVO" alias="scoreVO"/>
+	 	<typeAlias type="kr.or.ddit.facilty.vo.HallVO" alias="hallVO"/>
+	 	<typeAlias type="kr.or.ddit.tuition.vo.TuitionVO" alias="tuitionVO"/>
+ 		<typeAlias type="kr.or.ddit.portlet.vo.PortletVO" alias="portletVO"/>
+	 	<typeAlias type="kr.or.ddit.study.vo.StudyVO" alias="studyVO"/>
+	 	<typeAlias type="kr.or.ddit.lecture.vo.LectureVO" alias="lectureVO"/>
+	 	<typeAlias type="kr.or.ddit.lecture.vo.LecRoomScheduleVO" alias="lecRoomScheduleVO"/>
+	 	<typeAlias type="kr.or.ddit.lecture.vo.LectureIndexVO" alias="lectureIndexVO"/>
+	 	<typeAlias type="kr.or.ddit.lecture.vo.LectureEvalVO" alias="lectureEvalVO"/>
+	 	<typeAlias type="kr.or.ddit.facilty.vo.FacilityVO" alias="facilityVO"/>
+	 	<typeAlias type="kr.or.ddit.study.vo.StudyVO" alias="studyVO"/>
+	 	<typeAlias type="kr.or.ddit.academic.vo.AcademicVO" alias="academicVO"/>
+	 	<typeAlias type="kr.or.ddit.lecture.vo.LectureRoomVO" alias="lectureRoomVO"/>
+	 	<typeAlias type="kr.or.ddit.facilty.vo.FacilityReservationVO" alias="facilityReservationVO"/>
+	 	<typeAlias type="kr.or.ddit.scholarship.vo.ScholarshipInfoVO" alias="scholarshipInfoVO"/>
+	 	<typeAlias type="kr.or.ddit.scholarship.vo.ScholarshipListVO" alias="scholarshipListVO"/>
+	 	<typeAlias type="kr.or.ddit.facilty.vo.FacilityPaginationInfoVO" alias="facilityPaginationInfoVO"/>
+	 	<typeAlias type="kr.or.ddit.exam.vo.ExamVO" alias="examVO"/>
+	 	<typeAlias type="kr.or.ddit.subject.vo.SubjectOpenVO" alias="subjectOpenVO"/>
+	 	<typeAlias type="kr.or.ddit.exam.vo.ExamListVO" alias="examListVO"/>
+	 	<typeAlias type="kr.or.ddit.exam.vo.ExamSelectVO" alias="examSelectVO"/>
+	 	<typeAlias type="kr.or.ddit.exam.vo.ExamAnswerVO" alias="examAnswerVO"/>
+
+	 	<typeAlias type="kr.or.ddit.sms.vo.CoolSmsVO" alias="CoolSmsVO"/>
+
+	 	<typeAlias type="kr.or.ddit.certificate.vo.CertificateVO" alias="certificateVO"/>
+	 	<typeAlias type="kr.or.ddit.certificate.vo.CertificateInfoVO" alias="certificateinfoVO"/>
+
+		<typeAlias type="kr.or.ddit.consult.vo.ConsultVO" alias="consultVO"/>
+	 	
+	 	<typeAlias type="kr.or.ddit.classRoom.attendance.vo.AtdVO" alias="atdVO"/>
+	 	<typeAlias type="kr.or.ddit.course.vo.CourseOpenVO" alias="courseOpenVO"/>
+	 	<typeAlias type="kr.or.ddit.course.vo.CourseVO" alias="courseVO"/>
+	 	<typeAlias type="kr.or.ddit.score.vo.ObjectionVO" alias="objectionVO"/>
+	 	<typeAlias type="kr.or.ddit.classRoom.notice.vo.NoticeVO" alias="noticeVO"/>
+	 	<typeAlias type="kr.or.ddit.common.vo.CurrentInfoVO" alias="currentInfoVO"/>
+	 	<typeAlias type="kr.or.ddit.common.vo.SummaryCourseInfoVO" alias="summaryCourseInfoVO"/>
+		
+<!-- 		<package name="kr.or.ddit.user.vo"/> -->
+<!-- 		<package name="kr.or.ddit.board.vo"/> -->
+		<package name="kr.or.ddit.msg.vo"/>
+<!-- 		<package name="kr.or.ddit.portlet.vo"/> -->
+<!-- 		<package name="kr.or.ddit.academic.vo"/> --> 	
+	 </typeAliases>
+</configuration>

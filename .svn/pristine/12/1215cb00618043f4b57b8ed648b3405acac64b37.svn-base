@@ -1,0 +1,18 @@
+package kr.or.ddit.user.vo;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class UserVO {
+	private String userId;
+	private String password;
+	private String userType;
+	private String enabled;
+	
+	private StudentVO studentVO;
+	private ProfessorVO professorVO;
+	private EmployeeVO employeeVO;
+	private List<UserAuth> authList;	// 권한 목록
+}

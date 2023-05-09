@@ -1,0 +1,19 @@
+package kr.or.ddit.certificate.controller;
+
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class CertificateController {
+	private static final Logger logger = LoggerFactory.getLogger(CertificateController.class);
+	@RequestMapping(value = "/certificate", method = RequestMethod.GET)
+	public String certificate(Locale locale, Model model) {
+		return "certificate/certificateScore";
+	}
+}

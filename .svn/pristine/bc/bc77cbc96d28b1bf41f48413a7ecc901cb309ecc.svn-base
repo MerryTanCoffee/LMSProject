@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScoreMapper">
+	
+	<select id="list" resultType="scoreVO">
+		select
+			A.stu_id, A.lec_code, A.atd_score, A.mdt_score, A.fnl_score, A.asg_score, A.ove_score, B.stu_name_ko, C.aca_major, C.aca_grade, C.aca_semester, D.dept_name, E.sub_name, e.sub_credit
+		from score_record A, student B, academic C, department D, subject E, lecture F
+		where A.stu_id = B.stu_id
+		AND A.stu_id = C.stu_id
+        AND C.dept_code = D.dept_code
+        AND D.dept_code = E.dept_code
+        AND A.lec_code = F.lec_code
+        AND F.sub_code = E.sub_code
+	</select>
+	
+	<!-- id의 유무로 수정/삭제를 구분, 아이디로 모든걸 찾기-->
+	<select id="read" parameterType="String" resultType="scoreVO">
+		select
+			A.stu_id, A.lec_code, A.atd_score, A.mdt_score, A.fnl_score, A.asg_score, A.ove_score, B.stu_name_ko, C.aca_major, C.aca_grade, C.aca_semester, D.dept_name, E.sub_name, e.sub_credit
+		from score_record A, student B, academic C, department D, subject E, lecture F
+		where A.stu_id = B.stu_id
+		AND A.stu_id = C.stu_id
+        AND C.dept_code = D.dept_code
+        AND D.dept_code = E.dept_code
+        AND A.lec_code = F.lec_code
+        AND F.sub_code = E.sub_code
+		AND A.stu_id = #{stuId}
+	</select>
+	
+	<insert id="insert" parameterType="scoreVO">
+		insert into score_record(
+			stu_id, lec_code, atd_score, mdt_score, fnl_score, asg_score, ove_score
+		)values(
+			#{stuId}, #{lecCode}, #{atdScore}, #{mdtScore}, #{fnlScore}, #{asgScore}, #{oveScore}
+		)
+	</insert>
+	
+	<delete id="delete">
+		delete from score_record
+		where stu_id = #{stuId}
+	</delete>
+	
+	<update id="update" parameterType="calendarVO">
+		update score_record
+		set
+			atd_score = #{atdScore},
+			mdt_score = #{mdtScore},
+			fnl_score = #{fnlScore},
+			asg_score = #{asgScore},
+			ove_score = #{oveScore}
+		where stu_id = #{stuId}
+	</update>
+	
+</mapper>

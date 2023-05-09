@@ -1,0 +1,61 @@
+package kr.or.ddit.exam.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.exam.vo.ExamAnswerVO;
+import kr.or.ddit.exam.vo.ExamVO;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.user.vo.UserVO;
+
+public interface ExamService {
+
+	// 시험정보에 과목정보 뿌리기
+	public List<ExamVO> selectExamSubjectList(String proId);
+
+	// 시험 문제 등록
+	public void insertExam(ExamVO examVO);
+
+	// 한 강의에 해당하는 문제 정보(질문+보기) 가져오기
+	public List<ExamVO> selectExamInfo(ExamVO examVO);
+	
+	// 시험 문제 수정
+	public void examUpdate(ExamVO examVO);
+
+	// 시험 문제 삭제
+	public void examDelete(ExamVO examVO);
+
+	// 시험 구분 리스트, 한 과목에 대한 시험구분(중간, 기말, 쪽지시험 등등)
+	public List<ExamVO> examGubunList(Map<String, Object> examSubInfo);
+
+	// 내가 수강중인 강의중 미응시한 강의 불러오기 
+	public List<ExamAnswerVO> stuExamList(String stuId);
+
+	// 학생이 푸는 시험지 폼, 시험지 내용 불러오기
+	public List<ExamVO> stuExamForm(ExamVO examVO);
+
+	// 학생 답안 인서트(학생이 시험지를 푸는거임)
+	public void stuExamAnswerInsert(ExamAnswerVO examAnswerVO);
+
+	// 학생 답안 불러오기 
+	public List<ExamAnswerVO> stuAnswerSelect(ExamAnswerVO examAnswerVO);
+
+	// 본인이 시험본 내역이 있는거에 따라 상태 전달(ServiceResult)
+	public ServiceResult checkExamStatus(ExamAnswerVO examAnswerVO);
+	
+	// 학생 시험 시간 초과되서 0점됨
+	public ServiceResult insertZeroScore(ExamAnswerVO answerVO);
+
+	// 교수가 해당과목에 대해 이미 출제한 정보가 있다면 상태 결과 제공
+	public ServiceResult checkExamSubmitStatus(ExamVO examVO);
+
+	// 클래스룸 안 시험 정보(리스트)
+	public List<ExamVO> selectExamInfoInClassRoom(String lecCode);
+
+
+
+
+	
+
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.AttendanceMapper">
+	<select id="selectAtdList" parameterType="String" resultType="atdVO">
+		 select s.stu_name_ko, s.stu_id, s.profile_no, p.profile_path, p.profile_name, d.aca_major ,lec_code, week1, week2, week3, week4, week5, week6, week7, week8, week9, week10, week11, week12, week13, week14, week15, week16, atd_total
+		from attendance a
+		inner join student s on s.stu_id = a.stu_id
+		left outer join profile p on p.profile_no = s.profile_no
+        left outer join academic d on d.stu_id = s.stu_id
+		where lec_code = #{lecCode}
+	</select>
+	<select id = "selectSubName" parameterType="String" resultType="String">
+	select sub_code, sub_name
+	from subject
+	where sub_code = #{lecCode}
+	</select>
+	
+	<select id="selectOneAtd" parameterType="atdVO" resultType="atdVO">
+	 select s.stu_name_ko, s.stu_id, s.profile_no, p.profile_path, p.profile_name, d.aca_major ,lec_code, week1, week2, week3, week4, week5, week6, week7, week8, week9, week10, week11, week12, week13, week14, week15, week16, atd_total
+		from attendance a
+		inner join student s on s.stu_id = a.stu_id
+		left outer join profile p on p.profile_no = s.profile_no
+        left outer join academic d on d.stu_id = s.stu_id
+		where lec_code = #{lecCode}
+		and stu_id = ${stuId}
+	</select>
+	
+	<update id="updateAtd" parameterType="map">
+		update attendance
+		set week1 = #{week1},
+			week2 = #{week2},
+			week3 = #{week3},
+			week4 = #{week4},
+			week5 = #{week5},
+			week6 = #{week6},
+			week7 = #{week7},
+			week8 = #{week8},
+			week9 = #{week9},
+			week10 = #{week10},
+			week11 = #{week11},
+			week12 = #{week12},
+			week13 = #{week13},
+			week14 = #{week14},
+			week15 = #{week15},
+			week16 = #{week16},
+			atd_total = #{atdTotal}
+		where stu_id = #{stuId}
+	</update>
+	
+	<update id="scoreUpdate" parameterType="map">
+		update score_record
+		set 
+			atd_score = #{atdScore}
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+	</update>
+	
+</mapper>

@@ -1,0 +1,180 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<style>
+
+    #jinaMap,#jinaOrg{
+        width:700px;
+        height:480px;
+    }
+    #jinaMap {
+        position: relative;
+        left:100px;
+        top:-50px;
+    }
+    #jinaOrg {
+        position: absolute;
+    }
+    .point {
+        font-size: 12px;
+        font-weight: 2px;
+        color:aliceblue;
+        position: absolute;
+        border-radius: 50%;
+        width:20px;
+        height: 20px;
+        text-align: center;
+        /* background-color: #776962; */
+        background-color: red;
+        opacity: 0.7px;
+    }
+    .point:hover{
+        background-color: blue;
+    }
+</style>
+<div class="row">
+	<div class="col-md-8">
+	    <div id="jinaMap">
+	        <img src="/resources/images/map.png" id="jinaOrg">
+	    </div>
+	</div>
+	<div class="col-md-4">
+		<div class="card">
+			<div class="card-header">
+				<div class="card-title">
+					시설물 현황
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>시설명</th>
+									<th>예약 현황</th>
+								</tr>	
+							</thead>
+							<tbody id="tbody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header">
+				<div class="card-title">
+					시설 예약 현황
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>시간</th>
+									<th>상태</th>
+									<th>시간</th>
+									<th>상태</th>
+								</tr>	
+							</thead>
+							<tbody>
+								<tr>
+									<th>09:00 ~ 10:00</th>
+									<td>-</td>
+									<th>13:00 ~ 14:00</th>
+									<td>-</td>
+								</tr>
+								<tr>
+									<th>10:00 ~ 11:00</th>
+									<td>-</td>
+									<th>14:00 ~ 15:00</th>
+									<td>-</td>
+								</tr>
+								<tr>
+									<th>11:00 ~ 12:00</th>
+									<td>-</td>
+									<th>15:00 ~ 16:00</th>
+									<td>-</td>
+								</tr>
+								<tr>
+									<th>12:00 ~ 13:00</th>
+									<td>-</td>
+									<th>16:00 ~ 17:00</th>
+									<td>-</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+    
+<script>
+    const jinaMap = document.querySelector("#jinaMap");
+    const jinaCord = [
+        
+        {left:"228",top:"300"},     // 9    도서관(1)
+        {left:"505",top:"245"},     // 26    농구장(2)
+        {left:"353",top:"180"},     // 27    실내체육관(3) - 배드민턴장 / 스쿼시장 1, 2, 3 / 탁구장
+        {left:"195",top:"215"},     // 29    운동장(4)
+    ];
+
+
+    var facility = ["F-M", "F-BC", "F-G", "F-PG"];	// 도서관, 농구장, 실내체육관, 운동장
+    for(let i=1; i<=4; i++){
+        let jinaPoint = document.createElement("div");
+        jinaPoint.id = "p"+i;
+        jinaPoint.className = "point";
+        jinaPoint.style.left = jinaCord[i-1].left +"px";
+        jinaPoint.style.top = jinaCord[i-1].top + "px";
+        jinaPoint.innerHTML = i;
+        jinaPoint.setAttribute("data-no", facility[i-1]);
+        
+        // 클릭 이벤트
+        jinaPoint.onclick = ()=>{
+            let jina = event.currentTarget;
+            
+            console.log(jina.innerHTML);
+            console.log(jina.getAttribute("data-no"));
+            
+            let data = {
+            	facCode : jina.getAttribute("data-no")
+            }
+            
+            let xhr = new XMLHttpRequest();
+            xhr.open("post", "/facilty/getFacility", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    let listArr = JSON.parse(xhr.responseText);
+                    let html = "";
+                    for(let i = 0; i < listArr.length; i++){
+                    	html += "<tr>";
+                    	html += "	<td>" + i + "</td>";
+                    	html += "	<td data-no='" + listArr[i].facCode + "'>" + listArr[i].facName + "</td>";
+                    	html += "</tr>";
+                    }
+                    
+                   	
+                   	
+                   	
+                    tbody = document.querySelector("#tbody");
+                    tbody.innerHTML = html;
+                    
+                }
+            }
+            xhr.send(JSON.stringify(data));
+        }
+        jinaMap.appendChild(jinaPoint);
+    }
+
+</script>

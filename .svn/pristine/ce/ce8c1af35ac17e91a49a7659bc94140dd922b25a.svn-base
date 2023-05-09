@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LockerMapper">
+
+	<insert id="insertReserve" parameterType="lockerVO">
+		<selectKey keyProperty="lockerNo" resultType="int" order="BEFORE">
+			select seq_locker_record.nextval from dual
+		</selectKey>
+		insert into locker_record (
+			lr_no, 
+			hall_code, 
+			loc_num, 
+			stu_id, 
+			lr_sdate, 
+			lr_edate, 
+			lr_date)
+		values (
+			#{lockerNo}, 
+			#{hallCode}, 
+			#{locNum}, 
+			#{stuId}, 
+			#{lrSdate}, 
+			#{lrEdate}, 
+			sysdate)
+	</insert>
+
+</mapper>

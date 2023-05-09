@@ -1,0 +1,10 @@
+package kr.or.ddit.facilty.service;
+
+import kr.or.ddit.facilty.vo.LockerVO;
+
+public interface LockerService {
+
+	// 사물함 예약
+	public void insertReserve(LockerVO lockerVO);
+
+}

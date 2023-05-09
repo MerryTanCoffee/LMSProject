@@ -1,0 +1,354 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<style>
+	#cicon{
+		width:64px;
+		height:64px;
+	}
+	.cdes{
+		font-size: 16px;
+		color:grey;
+	}
+	
+	.ctemp{
+		font-size: 35px;
+	}
+	
+	.cwind, .chum {
+		font-size: 16px;
+	}
+	
+	#diet-info > ul{
+	    display: table;
+	    margin-left: auto;
+	    margin-right: auto;
+	    padding: 0px 0 10px 0;
+	}
+	#diet-info > ul > li{
+	    float: left;
+	    padding: 0 6px;
+	    color: #101010;
+	    font-size: 16px;
+	    cursor: pointer;
+	}
+	
+	.diet-table {
+		width: 23%;
+	    float: left;
+/* 	    height: 160px; */
+/* 	    margin-top: -7px; */
+	}
+	
+	.diet-table > ul > li {
+		width: 100%;
+	    height: 19px;
+	    border-radius: 30px;
+	    background: #FAB2A0;
+/* 	    color: #EC654A; */
+	    color: #fff;
+	    margin: 15px 0;
+	    cursor: pointer;
+	    line-height: 19px;
+	    text-align: center;
+	    font-size: 12px;
+	}
+
+	.menu-list {
+/* 		position: relative; */
+/* 	    width: 80%; */
+	    float: right;
+	    padding: 0 0 0 20px;
+	    box-sizing: border-box;
+/* 	    height: 103px; */
+	}
+	
+	.menu-list > ul > li {
+		color: #121212;
+	    font-size: 13px;
+	    display: inline-block;
+	    margin-right: 15px;
+	    margin-left: 15px;
+	    width: 125px;
+	    overflow: hidden;
+	    white-space: nowrap;
+	    text-overflow: ellipsis;
+	}
+
+
+</style>
+
+<section id="info" class="info">
+	<div class="container">
+		<div class="row">
+		
+			<!-- 내정보 s-->
+			<div class="col-xl-4">
+				<div class="card">
+					<div class="card-header pb-2 pt-3">
+						<h4><p class="mb-0" style="font-size:20px;">송지나</p><p class="mb-0" style="color:grey; font-size:14px;">컴퓨터공학과 1학년</p></h4>
+						
+						<h5>
+							<a href="#"><i class="bi bi-gear" style="font-size: 18px; color: black;" ></i></a>
+							&nbsp;&nbsp;
+							<a href="/loginForm"><i class="bi bi-box-arrow-right" style="font-size: 18px; color: black;"></i></a>
+						</h5>
+					</div>
+					
+					<div class="card-body">
+						  <p class="m-0">학점취득현황</p>
+						  <canvas id="myChart" width="200" height="200"></canvas>
+						
+					</div>		
+				</div>
+			</div>
+			<!-- 내정보 e -->
+		
+		
+			<!-- 날씨 정보 s -->
+			<div class="col-xl-4">
+				<div class="card">
+					<div class="card-header flex-wrap pb-0" style="border-color: #fff;">
+						<h5 class="card-title" style="color:#22313f; font-weight: 800; font-size: 18px;"> 오늘의 날씨</h5>
+					</div>									
+					<div class="card-body">
+					
+						<table class="table table-borderless">
+						  <thead>
+						    <tr>
+						      <th scope="col" colspan="4" style="border:none; text-align: center; padding:0;" >대전 중구 오류동</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr>
+						      <td colspan="4" class="text-center pt-0">
+						      	<div class="cicon"><img src="/resources/weathericons/images/01d.png"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="4" class="text-center p-0">
+						      	<div class="cdes"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="4" class="text-center">
+						      	<div class="ctemp"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="2" class="text-center">
+						      	<div class="chum"><i class="fa-solid fa-droplet" style="color:#96cbff;">&nbsp;&nbsp;&nbsp;</i></div>
+						      </td>
+						      <td colspan="2" class="text-center p-0">
+						      	<div class="cwind"><i class="fa-solid fa-wind" style="color:#bbbdbf;">&nbsp;&nbsp;&nbsp;</i></div>
+						      </td>
+						    </tr>
+						  </tbody>
+						</table>
+					
+					    <div class="cdate" style="padding-left:160px; color:gray;"></div>
+				    </div>
+				    
+				 </div>
+			</div>
+			<!-- 날씨 정보 e -->
+			
+			
+			<!-- 식단정보 s -->
+			<div class="col-xl-4">
+				<div class="card">
+					<div class="card-header flex-wrap pb-0" style="border-color: #fff;">
+						<h5 class="card-title" style="color:#22313f; font-weight: 800; font-size: 18px;"> 오늘의 식단</h5>
+					</div>	
+					
+					<div class="card-body" id="diet-info">
+					
+						 <ul>
+							<li><i class="bi bi-caret-left-fill"></i></li>						 
+							<li><span>2023.05.12&nbsp;&nbsp;&nbsp;</span><i class="bi bi-calendar-check"></i></li>						 
+							<li><i class="bi bi-caret-right-fill"></i></li>						 
+						 </ul>
+						 
+						 <div class="row">
+							 <div class="diet-table">
+							 	<ul>
+							 		<li>아침</li>
+<!-- 							 		<li>점심</li> -->
+<!-- 							 		<li>저녁</li> -->
+							 	</ul>
+							 </div>
+							 
+							 <div class="menu-list">
+							 	<ul>
+									<li>- 해물파전</li>
+									<li>- 닭다리백숙</li>
+									<br>
+									<li>- 깍두기</li>
+									<li>- 쌀밥</li>
+									<br>
+									<li>- 오렌지</li>
+									<li>- 어묵볶음</li>
+									<br>
+							 	</ul>
+							 </div>
+						 </div>
+						 
+						 <div class="row">
+							 <div class="diet-table">
+							 	<ul>
+							 		<li>점심</li>
+							 	</ul>
+							 </div>
+							 
+							 <div class="menu-list">
+							 	<ul>
+									<li>- 메밀전병</li>
+									<li>- 백김치</li>
+									<br>
+									<li>- 비빔밥</li>
+									<li>- 두부된장국</li>
+									<br>
+									<li>- 계란후라이</li>
+									<li>- 떠먹는 요거트</li>
+									<br>
+							 	</ul>
+							 </div>
+						 </div>
+					</div>		
+				</div>
+			</div>
+			<!-- 식단정보 e -->
+			
+			
+			
+			
+		</div>	<!-- row end -->
+	</div>	<!-- container end -->
+</section>		
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+	// chart js
+	const ctx = document.getElementById('myChart');
+
+	  new Chart(ctx, {
+	    type: 'doughnut',
+	    data: {
+	    	labels: ["전공", "교양", "기타"],
+	    	  datasets: [
+	    	    {
+	    	      labels: ["전공", "교양", "기타"],
+	    	      data: [60, 13, 27],
+	    	      borderWidth: 2,
+	    	      hoverBorderWidth: 3,
+	    	      backgroundColor: [
+	    	        "rgba(238, 102, 121, 1)",
+	    	        "rgba(98, 181, 229, 1)",
+	    	        "rgba(255, 198, 0, 1)"
+	    	      ],
+	    	      fill: true
+	    	    }
+	    	  ]
+        },
+        options: {
+        	responsive: false,
+            plugins: {
+            	legend: {
+                    display: true,
+                    position: 'right',
+                  }
+            },
+            cutoutPercentage: 80,
+        }
+	  });
+
+
+    /*
+    $.getJSON('파일경로', function(data){
+        // data로 할일...
+    });
+    */
+   // http://api.openweathermap.org/data/2.5/weather?id=1835224&appid=ca0bb9a0d664dd00b81b108021c12b45&units=metric
+
+    $.getJSON('http://api.openweathermap.org/data/2.5/weather?id=1835224&appid=ca0bb9a0d664dd00b81b108021c12b45&units=metric', function(data){
+        // data로 할일...
+        // alert(data.list[0].main.temp_min);
+        var $minTemp = data.main.temp_min;
+        var $maxTemp = data.main.temp_max;
+        var $cTemp = data.main.temp + "&deg;";
+        var $now = new Date($.now());
+        var $cDate = $now.getFullYear() + '-' + ($now.getMonth()+1) + '-' + $now.getDate() + "&nbsp;&nbsp;&nbsp;" + $now.getHours() + ' : ' + $now.getMinutes() + " : " + $now.getSeconds();
+        var $wIcon = data.weather[0].icon;
+        var $cDes = data.weather[0].description;
+        var $cHum = data.main.humidity + "%";
+        var $cWind = data.wind.speed + "m/s";
+        
+
+        // Date.now(); == $.now
+        // new Date(Date.now());
+        // alert(new Date($.now()));
+        // .getFullYear() 년도
+        // .getMonth() 월 0=1월
+        // .getDate()
+        // .getHours() 시간, .getMinutes() 분
+        
+        // A.appendTo(B) B요소의 내용의 뒤에 A를 추가
+        // A.append(B) A요소의 내용의 뒤에 B를 추가
+        // A.prependTo(B) B요소의 내용의 앞에 A를 추가
+        // A.prepend(B) A요소의 내용의 앞에 B를 추가
+
+        $(".clowtemp").append($minTemp);
+        $(".chightemp").append($maxTemp);
+        $(".ctemp").append($cTemp);
+        $(".cdate").prepend($cDate);
+        $(".cdes").append($cDes);
+        $(".chum").append($cHum);
+        $(".cwind").append($cWind);
+        // $(".cicon").append('<img src="https://openweathermap.org/img/wn/' + $wIcon + '.png" />');
+
+        // <img src="https://openweathermap.org/img/wn/10d@2x.png">
+
+        let image = document.querySelector("img");
+
+        if($wIcon == "01d"){
+            image.src = "/resources/weathericons/images/01d.png";
+        } else if ($wIcon == "01n"){
+            image.src = "/resources/weathericons/images/01n.png";
+        } else if ($wIcon == "02d"){
+            image.src = "/resources/weathericons/images/02d.png";
+        } else if ($wIcon == "02n"){
+            image.src = "/resources/weathericons/images/02n.png";
+        } else if ($wIcon == "03d"){
+            image.src = "/resources/weathericons/images/03d.png";
+        } else if ($wIcon == "03n"){
+            image.src = "/resources/weathericons/images/03n.png";
+        } else if ($wIcon == "04d"){
+            image.src = "/resources/weathericons/images/04d.png";
+        } else if ($wIcon == "04n"){
+            image.src = "/resources/weathericons/images/04n.png";
+        } else if ($wIcon == "09d"){
+            image.src = "/resources/weathericons/images/09d.png";
+        } else if ($wIcon == "09n"){
+            image.src = "/resources/weathericons/images/09n.png";
+        } else if ($wIcon == "10d"){
+            image.src = "/resources/weathericons/images/10d.png";
+        } else if ($wIcon == "10n"){
+            image.src = "/resources/weathericons/images/10n.png";
+        } else if ($wIcon == "11d"){
+            image.src = "/resources/weathericons/images/11d.png";
+        } else if ($wIcon == "11n"){
+            image.src = "/resources/weathericons/images/11n.png";
+        } else if ($wIcon == "13d"){
+            image.src = "/resources/weathericons/images/13d.png";
+        } else if ($wIcon == "13n"){
+            image.src = "/resources/weathericons/images/13n.png";
+        } else if ($wIcon == "50d"){
+            image.src = "/resources/weathericons/images/50d.png";
+        } else if ($wIcon == "50n"){
+            image.src = "/resources/weathericons/images/50n.png";
+        }
+
+
+    });
+
+
+</script>

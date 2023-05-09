@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FacilityMapper">
+	
+	<select id="getFacility" parameterType="string" resultType="facilityVO">
+		select fac_code, fac_name 
+		from facility
+		where fac_code like '%'||#{facCode}||'%'
+	</select>
+	
+	<insert id="reservation" parameterType="facilityReservationVO">
+		insert into facility_reservation(
+			fr_no,stu_id,fac_code,fr_purpose,fr_usercnt,fr_date,fr_stime,fr_etime
+		) values (
+			seq_facility.nextval,#{stuId},#{facCode},#{frPurpose},#{frUsercnt},sysdate,#{frStime},#{frEtime}
+		)
+	</insert>
+	
+	
+	<select id="getFacilityReservation" parameterType="string" resultType="facilityReservationVO">
+		select fr_no, stu_id ,fac_code, fr_purpose, fr_usercnt, fr_date,  fr_stime, fr_etime
+		from facility_reservation
+		where fac_code = #{facCode}
+	</select>
+	
+</mapper>

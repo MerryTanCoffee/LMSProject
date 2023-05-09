@@ -1,0 +1,9 @@
+/* 안쓸것 같음
+ * package kr.or.ddit.score.vo;
+ * 
+ * import lombok.Data;
+ * 
+ * @Data public class SelectScoreVO { private String proId; private String
+ * lecCode; private int lecOpenYear; private int lecOpenSemester; private String
+ * lecStatus; }
+ */

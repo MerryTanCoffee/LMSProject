@@ -1,0 +1,32 @@
+package kr.or.ddit.classRoom.main.service;
+
+import java.util.List;
+import java.util.Map;
+
+<<<<<<< .mine
+import kr.or.ddit.submit.vo.HomeworkVO;
+||||||| .r320980
+=======
+import kr.or.ddit.common.vo.CurrentInfoVO;
+>>>>>>> .r321291
+import kr.or.ddit.user.vo.UserVO;
+
+public interface ClassRoomService {
+
+	List<Map<String, Object>> getClassRoomList(UserVO userInfo);
+
+	List<Map<String, Object>> getMyClassYearList(UserVO userInfo);
+
+	List<Map<String, Object>> getSearchList(Map<String, Object> searchMap);
+
+	String selectSubName(String lecCode);
+
+<<<<<<< .mine
+	List<HomeworkVO> homeworkList(String lecCode);
+
+||||||| .r320980
+=======
+	CurrentInfoVO getCurrentInfo();
+
+>>>>>>> .r321291
+}

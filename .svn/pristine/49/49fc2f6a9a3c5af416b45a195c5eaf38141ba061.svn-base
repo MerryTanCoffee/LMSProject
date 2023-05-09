@@ -1,0 +1,18 @@
+package kr.or.ddit.schedule.service;
+
+import java.util.List;
+
+import kr.or.ddit.schedule.vo.ScheduleVO;
+
+public interface IScheduleService {
+
+	public List<ScheduleVO> list() throws Exception;
+
+	public void insert(ScheduleVO schedule) throws Exception;
+
+	public void delete(ScheduleVO schedule) throws Exception;
+
+	public void update(ScheduleVO schedule) throws Exception;
+
+
+}

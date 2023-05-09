@@ -1,0 +1,12 @@
+package kr.or.ddit.exam.service;
+
+import java.util.List;
+
+import kr.or.ddit.exam.vo.ExamVO;
+
+public interface ExamService {
+
+	// 시험정보에 과목정보 뿌리기
+	public List<ExamVO> selectExamSubjectList(String proId);
+
+}

@@ -1,0 +1,12 @@
+package kr.or.ddit.msg.service;
+
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.msg.vo.MsgVO;
+
+public interface IMsgService {
+
+	public void insertMsg(MsgVO msgVO);
+
+
+}

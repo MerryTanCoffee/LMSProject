@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.TuitionMapper">
+	
+	<select id="tuitionList" parameterType="string" resultType="tuitionVO">
+<!-- 		select  -->
+<!-- 			tl_no, tl_year, tl_semester, tl_tuition, tl_schlr, tl_payment, to_char(tl_due_date, 'yyyy.mm.dd') tl_due_date, tl_status -->
+<!-- 		from tuition_list -->
+<!-- 		where stu_id = #{userId} -->
+		
+			select
+				a.*, row_number() over (order by a.tl_no desc) rnum
+			from(
+				select
+					tl_no, tl_year, tl_semester, tl_tuition, tl_schlr, tl_payment, to_char(tl_due_date, 'yyyy.mm.dd') tl_due_date, tl_status
+				from tuition_list
+				where 1=1
+				and stu_id = #{userId}
+				order by tl_no desc
+			)a
+	</select>
+	
+	<select id="tuiDetail" parameterType="int" resultType="tuitionVO">
+		select
+			tl_no, tl_year, tl_semester, tl_tuition, tl_schlr, tl_payment, to_char(tl_due_date, 'yyyy.mm.dd') tl_due_date, tl_status
+		from tuition_list
+		where tl_no = #{tlNo}
+	</select>
+	
+	<select id="tuiBillDetail" parameterType="string" resultType="tuitionVO">
+		select tl_no, tl_year, tl_semester, tl_tuition, tl_schlr, tl_payment
+		from tuition_list
+		where tl_year = 2023
+		and stu_id = #{userId}
+	</select>
+	
+</mapper>

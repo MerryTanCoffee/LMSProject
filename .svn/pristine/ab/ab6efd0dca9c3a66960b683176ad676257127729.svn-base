@@ -1,0 +1,48 @@
+package kr.or.ddit.study.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.board.vo.BoardVO;
+import kr.or.ddit.study.service.IStudyService;
+import kr.or.ddit.study.vo.StudyVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/study")
+public class MyStudyController {
+	@Inject
+	private IStudyService service;
+	
+	@GetMapping("/list")
+	public String studyList(HttpSession session, StudyVO studyVO, Model model) {
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		String userId = userVO.getUserId();
+		
+		List<StudyVO> study = service.selectMyStudy(userId);
+		
+		model.addAttribute("studyVO", study);
+		log.info("userId" + userId);
+		log.info("studyVO" + studyVO);
+		
+		
+		return "study/list";
+	}
+	
+	@GetMapping("/detail/{studyCode}")
+	public String boardDetail(@PathVariable String studyCode, Model model) {
+		StudyVO study = service.selectStudy(studyCode);
+		model.addAttribute("study", study);
+		return "study/detail";
+	}
+}

@@ -1,0 +1,27 @@
+package kr.or.ddit.scholarship.service;
+
+import java.util.List;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+public interface IScholarshipService {
+
+	// 장학금 수혜 내역 조회
+	public List<ScholarshipListVO> scholarList(ScholarshipListVO sv);
+
+	// 장학금 신청 장학조회 리스트
+	public List<ScholarshipInfoVO> scholarInfoList(ScholarshipInfoVO si);
+
+	// 장학금 신청
+	public ServiceResult insertScholar(ScholarshipListVO sv);
+
+	// 장학금 신청 리스트 
+	public List<ScholarshipListVO> scholarListApp(ScholarshipListVO sv);
+
+	// 장학금 신청현황 상세보기
+	public ScholarshipListVO scholarDetail(int slNo);
+
+
+}

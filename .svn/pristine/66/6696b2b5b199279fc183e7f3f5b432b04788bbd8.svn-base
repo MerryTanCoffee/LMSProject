@@ -1,0 +1,47 @@
+//package kr.or.ddit.score.controller;
+//
+//import javax.inject.Inject;
+//
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import kr.or.ddit.score.service.IScoreService;
+//import kr.or.ddit.score.vo.ScoreVO;
+//
+//@Controller
+//@RequestMapping("/score")
+//public class ScoreController {
+//	
+//	@Inject 
+//	private IScoreService service;
+//	
+//	@GetMapping("/register")
+//	public String insert() {
+//		System.out.println("/score/register : GET 요청");
+//		return "score/register";
+//	}
+//	@PostMapping("/register")
+//    public String insert(ScoreVO score) {
+//        System.out.println("/score/register : POST 요청");
+//        System.out.println("Scontroller param: " + score);
+//        service.insert(score);
+//        return "score/register";
+//    }
+//	@GetMapping("/list")
+//    public void list(Model model) {
+//        System.out.println("/score/lsit : get 요청");
+//        model.addAttribute("sList",service.list());
+//    }
+//	@GetMapping("/delete")
+//    public String delete(@RequestParam("stuId") int stuId, RedirectAttributes ra) { //get으로 넘어오는 key명과 메서드의 파라미터 변수 명이 같으면 @RequestParam과 같은 역할을 한다.
+//        System.out.println(stuId + "<- 삭제되었습니다");
+//        service.delete(stuId);
+//        ra.addFlashAttribute("message","delSuccess");
+//        return "redirect:/score/list";
+//    }
+//}

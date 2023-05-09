@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	
+	<form:form method="post" id="smsForm">
+		<ul>
+			<div id="textbox-container">
+				<li>보낼사람 : <input type="text" name="toList[0]" /></li>
+			</div>
+			<li>내용 : <textarea name="coolsmsText"></textarea></li>
+			<li><input type="button" onclick="sendSMS('sms')" value="전송하기" /></li>
+		</ul>
+	</form:form>
+	
+	
+	
+	
+	<button onclick="addTextBox()">번호추가하기</button>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		function sendSMS(pageName) {
+			console.log("문자를 전송합니다.");
+			$("#smsForm").attr("action", pageName);
+			console.log("텍스트 :" + $('text').val());
+			$("#smsForm").submit();
+		}
+	</script>
+	<script type="text/javascript">
+		var index = 1; // toList 배열 인덱스 초기값 설정
+		function addTextBox() {
+			// 새로운 텍스트박스 생성
+			var newTextBox = document.createElement('input');
+			newTextBox.type = 'text';
+			newTextBox.className = 'textbox';
+			newTextBox.name = 'toList[' + index + ']'; // 배열 인덱스 추가
+			index++; // 인덱스 증가
+			
+			// 기존 텍스트박스의 하단에 새로운 텍스트박스 추가
+			var container = document.getElementById('textbox-container');
+			container.appendChild(newTextBox);
+	    }	
+	</script>
+</body>

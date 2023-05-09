@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScheduleMapper">
+	<select id="list" resultType="scheduleVO">
+		select
+			us_no, us_title, us_content, us_sdate, us_edate, us_bar_color, us_font_color
+		from university_schedule
+	</select>
+	<insert id="insert" parameterType="scheduleVO" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="usNo" resultType="int">
+			select SEQ_UNIVERSITY_SCHEDULE.nextval from dual
+		</selectKey>
+		insert into university_schedule(
+			us_no, us_title, us_content, us_sdate, us_edate, us_bar_color, us_font_color
+		)values(
+			#{usNo}, #{usTitle}, #{usContent}, #{usSdate}, #{usEdate}, #{usBarColor,jdbcType=VARCHAR}, #{usFontColor,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="delete">
+		delete from university_schedule
+		where us_no = #{usNo}
+	</delete>
+	
+	<update id="update" parameterType="scheduleVO">
+		update university_schedule
+		set
+			us_title = #{usTitle},
+			us_content = #{usContent},
+			us_sdate = #{usSdate},
+			us_edate = #{usEdate},
+			us_bar_color = #{usBarColor,jdbcType=VARCHAR},
+			us_font_color = #{usFontColor,jdbcType=VARCHAR}
+		where us_no = #{usNo}
+	</update>
+	
+	<!-- 미니달력으로 학사일정 표현 -->
+	<select id="miniSchedule" parameterType="string" resultType="scheduleVO">
+		select 
+			us_no, us_title, us_content, us_sdate, us_edate 
+		from 
+			university_schedule 
+		where #{datetime} between substr(us_sdate, 0,10) and substr(us_edate, 0,10)
+	</select>
+	
+	<!-- 미니달력 : 해당 월의 일정 불러오기 -->
+	<select id="miniScheduleMonth" parameterType="string" resultType="scheduleVO">
+		select 
+			us_no, us_title, us_content, us_sdate, us_edate
+		from 
+			university_schedule 
+		where substr(us_sdate,0,7) = #{usSdate}
+	</select>
+	
+	
+	
+</mapper>

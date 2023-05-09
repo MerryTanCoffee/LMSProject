@@ -1,0 +1,29 @@
+package kr.or.ddit.consult.controller;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.consult.service.IConsultService;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/consult")
+public class ConsultController {
+
+	@Autowired
+	private IConsultService consultService;
+	
+	@GetMapping("/info")	// 상담 신청 시간 조회
+	public String consultInfo() {
+		return "consult/consultInfo";
+	}
+	
+	@GetMapping("/list")	// 상담 신청내역 리스트
+	public String consultList() {
+		return "consult/consultList";
+	}
+}

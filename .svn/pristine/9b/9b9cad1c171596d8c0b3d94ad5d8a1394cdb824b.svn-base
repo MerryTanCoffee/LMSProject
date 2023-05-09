@@ -1,0 +1,57 @@
+package kr.or.ddit.lecture.service.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.lecture.service.ILectureService;
+import kr.or.ddit.lecture.vo.LectureIndexVO;
+import kr.or.ddit.lecture.vo.LectureRoomVO;
+import kr.or.ddit.lecture.vo.LectureVO;
+import kr.or.ddit.mapper.LectureMapper;
+import kr.or.ddit.subject.vo.SubjectVO;
+
+@Service
+public class LectureServiceImpl implements ILectureService {
+
+	@Autowired
+	private LectureMapper lectureMapper;
+
+	@Override
+	public List<SubjectVO> subjectList(String deptCode) {
+		return lectureMapper.subjectList(deptCode);
+	}
+
+	@Override
+	public ServiceResult lecPlanRegister(LectureVO lecturePlan) {
+		ServiceResult result = null;
+		String lecCode = RandomStringUtils.randomAlphanumeric(8);
+		lecturePlan.setLecCode(lecCode);
+		int status = lectureMapper.lecPlanRegister(lecturePlan);
+
+		if (status > 0) {
+			for (LectureIndexVO idx : lecturePlan.getLecIdxList()) {
+				idx.setLecCode(lecCode);
+				lectureMapper.lecIdxRegister(idx);
+			}
+			result = ServiceResult.OK;
+		} else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public List<LectureVO> applicationList(String userId) {
+		return lectureMapper.applicationList(userId);
+	}
+
+	@Override
+	public List<LectureVO> empLecPlanList() {
+		return lectureMapper.empLecPlanList();
+	}
+
+}

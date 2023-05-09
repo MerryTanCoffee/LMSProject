@@ -1,0 +1,15 @@
+package kr.or.ddit.sms.vo;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class CoolSmsVO {
+//	여러명에게 보내려면 List담아야해서 vo에 추가해줘야한다.
+	List<String> toList;
+	
+	private int coolsmsNo;
+	private String coolsmsTo;
+	private String coolsmsText;
+}

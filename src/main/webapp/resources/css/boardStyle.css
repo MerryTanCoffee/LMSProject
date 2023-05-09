@@ -1,0 +1,184 @@
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
+
+.wrapper {
+/*     background: #175bc7; */
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    min-height: 900px;
+/*     min-height: 123vh; */
+    
+}
+
+.main-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    width: 350px;
+/*     width: 19vw; */
+    z-index: 810;
+    background: #175bc7;
+    box-sizing: border-box;
+    padding: 35px 35px 0 30px;
+    text-align: center;
+}
+
+.sublogo {
+    color: #fff;
+    font-family: 'GmarketSansMedium';
+    letter-spacing: 1px;
+}
+
+.uniTextEng {
+    color: #fff;
+    font-size: 0.3rem;
+    padding-bottom: 5px;
+}
+
+.sectit {
+    font-family: 'GmarketSansMedium';
+    font-size: 45px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.user-w {
+    overflow: hidden;
+    margin-left: 20px;
+}
+
+.user-t {
+    padding-left: 10px;
+}
+
+.user-w .user-img {
+    float: left;
+    margin-right: 5px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-w .user-img img {
+    width: 64px;
+    height: auto;
+}
+
+.user-w .user-t {
+    float: left;
+    margin-bottom: 30px;
+    width: calc(100% - 70px);
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.user-w .user-t .user-name {
+    color: #fefefe;
+    display: block;
+    font-size: 19px;
+    font-weight: 600;
+    /* padding-bottom: 5px; */
+}
+
+.user-w .user-t .user-subname {
+    color: #fff;
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0;
+}
+
+.user-logcw {
+    display: flex;
+    margin-top: 10px;
+/*     justify-content: space-between; */
+}
+
+.user-logcw span {
+    margin-right: 5px;
+}
+
+.user-logc a {
+    color: #00fffc;
+    font-size: 12px;
+    padding: 3px 5px;
+    border: 1px solid rgb(255 255 255 / 50%);
+    display: inline-block;
+}
+
+.sidebar-menu {
+    margin-left: 10px;
+    margin-right: 10px;
+    border-top: 1px solid rgb(236 236 236 / 20%);
+    margin-top: 50px;
+    padding-left: 0;
+    margin-bottom : 50px;
+    
+}
+
+.sidebar-menu li a {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: left;
+    border-bottom: 1px solid rgb(236 236 236 / 20%);
+    padding-bottom: 13px;
+    margin-top: 12px;
+    display: block;
+    font-family: 'Noto Sans KR';
+    font-weight: 600;
+    padding-left: 22px;
+}
+
+.sidebar-menu li a:hover{
+	color: #01e4ff;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    background: transparent;
+}
+
+img {
+    width: 50px;
+    height: 50px;
+}
+
+ul, li {
+    list-style:none;
+    list-style-type: none;
+}
+.content {
+    overflow: hidden;
+    width: calc(100% - 350px);
+    box-sizing: border-box;
+    position: absolute;
+    top: 0; 
+    left: 350px;
+    height: 100%;
+    background: #fff;
+/*     min-width: 1360px; */
+}
+
+.conL {
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+    box-sizing: border-box;
+/*     padding: 30px 40px 25px 50px; */
+    padding: 70px 40px 43px 50px;
+    float: left;
+}

@@ -1,0 +1,198 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+
+</style>
+
+<!-- 페이지 타이틀 -->
+<div class="page-titles">
+    <ol class="breadcrumb">
+    <li><h5 class="bc-title">클래스룸 목록</h5></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0)">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        클래스룸 </a>
+    </li>
+    <li class="breadcrumb-item active"><a href="javascript:void(0)">클래스룸 목록</a></li>
+</ol>
+</div>
+<div class="container-fluid">
+<!-- 표현하고자 하는 내용 넣기 -->
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mt-3 mb-3">
+                    <h3><span style="color: #f96d00;">|</span> 클래스룸 목록</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-3 ps-3">
+                    <label for="lecOpenYear" class="form-label" style="font-size: 1.125rem;">학년도</label>
+                    <select class="form-select form-select mb-2 fs-5" id="lecOpenYear">
+                        <option selected>선택</option>
+                        <c:forEach items="${myClassYearList }" var="myYear" varStatus="i">
+	                        <option value=${myYear.lecOpenYear }>${myYear.lecOpenYear }년도</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="col-3 ps-3">
+                    <label for="semester" class="form-label" style="font-size: 1.125rem;">학기</label>
+                    <select class="form-select form-select mb-2 fs-5" id="semester">
+                        <option selected>선택</option>
+                        <option value="1">1학기</option>
+                        <option value="2">2학기</option>
+                    </select>
+                </div>
+                <div class="col ps-3 d-flex align-items-end">
+                    <button class="btn btn-primary btn-xs mt-4 fs-5" id="searchBtn">조회</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-md table-hover fs-4" id="classRoomList">
+                    <c:if test="${sessionScope.userInfo.userType eq 'STU' }">
+                        <thead>
+                            <tr class="text-center" style="background-color: #fafafa;">
+                                <th class="fs-4 fw-bold">#.</th>
+                                <th class="fs-4 fw-bold">과목명</th>
+                                <th class="fs-4 fw-bold">분반</th>
+                                <th class="fs-4 fw-bold">담당교수</th>
+                                <th class="fs-4 fw-bold">이동 버튼</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${classRoomList }" var="classRoom" varStatus="i">
+                            <tr class="text-center" data-lec-code="${classRoom.lecCode}">
+                                <td class="fw-bold">${i.count }</td>
+                                <td>${classRoom.subName }</td>
+                                <td>${classRoom.lecDivide }</td>
+                                <td>${classRoom.proNameKo }</td>
+                                <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="stuBtn">이동</button></td>
+                            </tr>
+                            </c:forEach>
+                        </tbody>
+                    </c:if>
+                    <c:if test="${sessionScope.userInfo.userType eq 'PRO' }">
+                        <thead>
+                            <tr class="text-center" style="background-color: #fafafa;">
+                                <th class="fs-4 fw-bold">#.</th>
+                                <th class="fs-4 fw-bold">과목명</th>
+                                <th class="fs-4 fw-bold">분반</th>
+                                <th class="fs-4 fw-bold">수강 인원</th>
+                                <th class="fs-4 fw-bold">이동 버튼</th>
+                                <th class="fs-4 fw-bold">성적 관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${classRoomList }" var="classRoom" varStatus="i">
+                                <tr class="text-center" data-lec-code="${classRoom.lecCode}">
+                                    <td class="fw-bold">${i.count }</td>
+                                    <td>${classRoom.subName }</td>
+                                    <td>${classRoom.lecDivide }</td>
+                                    <td>${classRoom.subApplicant }</td>
+                                    <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="proBtn">이동</button></td>
+                                    <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="scoreBtn">이동</button></td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </c:if>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).on("click", "#searchBtn", function(){
+        let lecOpenYear = parseInt($("#lecOpenYear").val());
+        let semester = parseInt($("#semester").val());
+
+        if(!lecOpenYear){
+            alert("학년도를 선택해주세요.");
+            return false;
+        }
+        if(!semester){
+            alert("학기를 선택해주세요.");
+            return false;
+        }
+
+        
+        let searchData = {
+            "lecOpenYear" : lecOpenYear,
+            "lecOpenSemester" : semester 
+        }
+        console.log("검색학년도/학기 : ", searchData);
+
+        $.ajax({
+            type: "post",
+            url: "/class/search",
+            data: searchData,
+            success: function(res){
+                console.log("확인", res);
+                $("#classRoomList tbody tr").remove();
+                <c:if test="${sessionScope.userInfo.userType eq 'STU' }">
+                    $.each(res, function(i, item){
+                        let str = `
+                            <tr class="text-center" data-lec-code="\${item.lecCode}">
+                                <td class="fw-bold">\${i+1}</td>
+                                <td>\${item.subName}</td>
+                                <td>\${item.lecDivide}</td>
+                                <td>\${item.proNameKo}</td>
+                                <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="proBtn">이동</button></td>
+                                <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="scoreBtn">이동</button></td>
+                            </tr>
+                        `;
+                        $("#classRoomList tbody").append(str);
+                    });
+                </c:if>
+                <c:if test="${sessionScope.userInfo.userType eq 'PRO' }">
+                    $.each(res, function(i, item){
+                        let str = `
+                            <tr class="text-center" data-lec-code="\${item.lecCode}">
+                                <td class="fw-bold">\${i+1}</td>
+                                <td>\${item.subName}</td>
+                                <td>\${item.lecDivide}</td>
+                                <td>\${item.subApplicant}</td>
+                                <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="proBtn">이동</button></td>
+                                <td><button class="btn btn-info btn-xs fs-5 intoClass" type="button" id="scoreBtn">이동</button></td>
+                            </tr>
+                        `;
+                        $("#classRoomList tbody").append(str);
+                    });
+                </c:if>
+            }
+        });
+    });
+   
+    
+    $(document).on("click", "#stuBtn", function(){
+	    var lecCode = $(this).closest('tr').data('lec-code');
+	    console.log("lecCode>>", lecCode);
+	    location.href = "/class/stuClassRoom/" + lecCode;
+    });
+    
+    $(document).on("click", "#proBtn", function(){
+    	var lecCode = $(this).closest('tr').data('lec-code');
+	    console.log("lecCode>>", lecCode);
+		location.href = "/class/proClassRoom/" + lecCode;
+    });
+    
+    $(document).on("click", "#scoreBtn", function(){
+    	var lecCode = $(this).closest('tr').data('lec-code');
+	    console.log("lecCode>>", lecCode);
+		location.href = "/score/list?lecCode=" + lecCode;
+    });
+
+    $(document).ready(function(){
+        $("#lecOpenYear").val('${currentInfo.year}').change();
+        $("#semester").val('${currentInfo.semester}').change();
+    })
+</script>

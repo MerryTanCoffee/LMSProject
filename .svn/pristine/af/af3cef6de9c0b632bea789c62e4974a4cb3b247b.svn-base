@@ -1,0 +1,22 @@
+package kr.or.ddit.score.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import kr.or.ddit.score.vo.ScoreVO;
+
+public interface IScoreService {
+
+	public void insert(ScoreVO score) throws Exception;
+
+	public List<ScoreVO> list() throws Exception;
+
+	public void delete(int stuId) throws Exception;
+
+	public void update(ScoreVO score) throws Exception;
+
+	public ScoreVO read(int stuId, HttpSession session ) throws Exception;
+
+	public ScoreVO read(String stuId, HttpSession session ) throws Exception;
+}

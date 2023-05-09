@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	
+	<!-- mainPage tiles 적용 -->
+	<definition name="mainTemplate" template="/WEB-INF/tiles/mainTemplate.jsp">
+		<put-attribute name="mainTopBar" value="/WEB-INF/tiles/mainTopBar.jsp" />
+		<put-attribute name="mainHeader" value="/WEB-INF/tiles/mainHeader.jsp" />
+		<put-attribute name="mainFooter" value="/WEB-INF/tiles/mainFooter.jsp" />
+	</definition>
+	
+	<definition name="main/*" extends="mainTemplate">
+		<put-attribute name="mainContent" value="/WEB-INF/views/main/{1}.jsp"/>
+	</definition>
+	<definition name="board/*" extends="mainTemplate">
+		<put-attribute name="mainContent" value="/WEB-INF/views/board/{1}.jsp"/>
+	</definition>
+
+	<!-- tmeplate tiles 적용 -->
+	<definition name="template" template="/WEB-INF/tiles/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		<put-attribute name="nav-header" value="/WEB-INF/tiles/nav-header.jsp" />
+		<put-attribute name="chat-box" value="/WEB-INF/tiles/chat-box.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/tiles/sidebar.jsp" />
+	</definition>
+ 
+	<definition name="test/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/test/{1}.jsp" />
+	</definition>
+	<definition name="user/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/user/{1}.jsp" />
+	</definition>
+
+
+	
+	
+</tiles-definitions>

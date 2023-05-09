@@ -1,0 +1,23 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.lecture.vo.LectureIndexVO;
+import kr.or.ddit.lecture.vo.LectureRoomVO;
+import kr.or.ddit.lecture.vo.LectureVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+
+public interface LectureMapper {
+
+	public List<SubjectVO> subjectList(String deptCode);
+
+	public List<LectureVO> applicationList(String userId);
+
+	public int lecPlanRegister(LectureVO lecturePlan);
+
+	public void lecIdxRegister(LectureIndexVO idx);
+
+	public List<LectureVO> empLecPlanList();
+
+	
+}

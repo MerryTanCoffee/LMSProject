@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.BoardMapper">
+	<sql id="boardSearch">
+		<if test="searchType!=null and searchType == 'title'">
+			and(bo_title like '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType!=null and searchType == 'writer'">
+			and(user_id like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+	<insert id="insertBoard" parameterType="boardVO"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="boNo" order="BEFORE" resultType="int"> 
+			select seq_board.nextval
+			from dual
+		</selectKey>
+		insert into board(
+			cate_code, bo_no, bo_title, bo_content, bo_write_date ,user_Id ,bo_hit 
+		 )values( 
+		 	#{cateCode}, #{boNo}, #{boTitle}, #{boContent}, sysdate, #{userId} , 0 )
+	</insert>
+	<insert id="insertBoardAttach" parameterType="boardAttachVO"> 
+	insert into
+		boardAttach(ba_no, bo_no, ba_oridinal,
+		ba_size, ba_fancysize, ba_mime, ba_savepath, ba_downcount , ba_save 
+		)values(
+		seq_boardAttach.nextval,#{boNo}, #{baOridinal}, #{baSize},
+		#{baFancySize},
+		#{baMime}, #{baSavePath}, 0, #{baSave} )
+	</insert>
+
+	<select id="selectBoardCount" parameterType="pagingVO"
+		resultType="int">
+		select count(bo_no)
+		from board
+		where 1=1
+		<include refid="boardSearch" />
+	</select>
+
+	<select id="selectBoardList" parameterType="pagingVO"
+		resultType="boardVO">
+		select
+		b.*
+		from(select
+		a.*, row_number() over (order by a.bo_no desc)rnum
+		from(
+		select
+		bo_no, bo_title, bo_content, b.user_id,
+		to_char(bo_write_date,'yy-mm-dd hh24:mi:ss') bo_write_date, bo_hit, cate_code
+		from board b left outer join users m on(b.user_id = m.user_id)
+		where 1=1
+		<include refid="boardSearch" />
+		order by bo_no desc
+		)a
+		)b
+	<![CDATA[
+	where b.rnum >=#{startRow} and b.rnum <= #{endRow}
+	]]>
+
+	</select>
+</mapper>

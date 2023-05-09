@@ -1,0 +1,15 @@
+package kr.or.ddit.lecture.vo;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class AttendanceVO {
+	private String liWeek;		// 강의 주차
+	private String lecCode;		// 강의계획코드
+	private String stuId;		// 학번
+	private String atdCheck;	// 출석체크
+}

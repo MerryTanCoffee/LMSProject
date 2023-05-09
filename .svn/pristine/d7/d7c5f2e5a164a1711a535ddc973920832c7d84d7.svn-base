@@ -1,0 +1,110 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 페이지 타이틀 -->
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li><h5 class="bc-title">자료실</h5></li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)">
+			<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			자료 목록 </a>
+		</li>
+		<li class="breadcrumb-item active"><a href="#">자료실</a></li>
+	</ol>
+	<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
+</div>
+<div class="container-fluid">
+
+<c:if test="${sessionScope.userInfo.userType eq 'PRO'}">
+	<c:set var="display" value="inline" />
+<div class="row" id="fileList">
+	
+</div>
+	
+</c:if>
+<c:if test="${sessionScope.userInfo.userType eq 'STU'}">
+	<c:set var="display" value="none" />
+<div class="row" id="fileList">
+	
+</div>
+	
+</c:if>
+<!-- row end -->
+	
+</div>
+<script type="text/javascript">
+//lecCode가지고 이미지를 가져오는 경로
+$(function() {
+		$.ajax({
+				type: "post",
+				url: "/reference/referenceFile",
+				dataType: "json",
+				data: { lecCode: 'sPdGrwaN' },
+				success : function (res) {
+					let groups = {};
+					$.each(res, function (index, item) {
+						let key = item.lrUploadDate + "_" + item.lrTitle; // combine lrUploadDate and lrTitle as key
+						if (!groups[key]) {
+							groups[key] = [];
+						}
+						groups[key].push(item);
+					});
+	
+	
+					$.each(groups, function (key, items) {
+						let [lrUploadDate, title] = key.split("_"); // split key into lrUploadDate and title
+						let str = "";
+						  str += "<div class='col-xl-3'>";
+						  str += "<div class='card dz-card' id='card-title-2'>";
+						  str += "<div class='card-header flex-wrap'>";
+						  str += "<h3 class='card-title'>";
+						  str += "<span style='font-size: 18px; color: #f96d00;'>| </span>";
+						  str += "<strong>" + title + "</strong>"+ "<br/>";
+						  str += "</h3>";
+						  str += "<div class='d-flex justify-content-end mb-0'>"+lrUploadDate+"</div>";
+						  str += "</div>";
+						  str += "<div class='tab-content' id='myTabContent-1'>";
+						  str += "<div class='tab-pane fade active show' id='CardTitle2' role='tabpanel' aria-labelledby='home-tab-1'>";
+						  str += "<div class='card-body pt-0' style='height: 130px; overflow-y: auto;'>";
+						  str += "<br>";
+						  str += "<div class='card-text'>";
+						$.each(items, function (index, item) {
+							let data = item.lrFilePath+item.lrFileName;
+							let fileExt = item.lrFileName.split('.').pop().toLowerCase();
+							let fileName = item.lrFileName.split('_').pop().toLowerCase();
+							let ext;
+							if (fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png') {
+								ext = '<i class="bi bi-images" style="font-size: 24px;"></i>'
+							} else if (fileExt === 'pdf') {
+								ext = '<i class="bi bi-file-pdf" style="font-size: 24px;"></i>' 
+							} else if (fileExt === 'zip') {
+								ext = '<i class="bi bi-file-zip" style="font-size: 24px;"></i>'
+							} else {
+								ext = '<i class="bi bi-files" style="font-size: 24px;"></i>'
+							}
+							  str += "<a href='/reference/displayFile?fileName=" + data + "' target='_blank' onclick='return confirm(\"다운로드 받겠습니까?\");'>" + ext + " " + fileName + "</a><br/>";
+							  
+						  });
+							str += "</div>";
+						    str += "</div>";
+						    str += "<div class='card-footer d-flex justify-content-end align-items-center' style='display: ${display}'>";
+						    str += "<button type='button' class='btn light btn-success mr-2' style='display: ${display}'>수정</button>";
+						    str += "<button type='button' class='btn light btn-danger' style='display: ${display}'>삭제</button>";
+						    str += "</div>";
+						    str += "</div>";
+						    str += "</div>";
+						    str += "</div>";
+						    $("#fileList").append(str);
+					});
+				}
+			})
+			
+		}) 
+		
+	function getExtension(filename) {
+	var ext = filename.split('.').pop();
+	return ext;
+	}
+	</script>

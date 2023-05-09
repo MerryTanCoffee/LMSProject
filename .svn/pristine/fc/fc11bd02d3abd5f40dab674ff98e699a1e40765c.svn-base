@@ -1,0 +1,20 @@
+package kr.or.ddit.user.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.user.vo.UserVO;
+
+public interface IUserService {
+	public ServiceResult userCheck(UserVO userVO, HttpSession session);
+
+	public String getId(Map<String, Object> findMap);
+
+	public ServiceResult sendPw(Map<String, Object> findMap);
+
+	public ServiceResult update(Map<String, Object> param);
+	
+
+}

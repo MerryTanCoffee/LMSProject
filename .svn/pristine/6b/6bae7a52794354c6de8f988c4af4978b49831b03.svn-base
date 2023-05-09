@@ -1,0 +1,143 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li>
+			<h5 class="bc-title">과제</h5>
+		</li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)"> <svg
+					width="17" height="17" viewBox="0 0 17 17" fill="none"
+					xmlns="http://www.w3.org/2000/svg">
+								<path
+						d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z"
+						stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C"
+						stroke-linecap="round" stroke-linejoin="round" />
+							</svg> 과제
+		</a></li>
+		<li class="breadcrumb-item active"><a href="javascript:void(0)">과제</a></li>
+	</ol>
+</div>
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-header">
+			<div class="card-title">																
+				<h4><span style="font-size:18px; color: #f96d00;">|</span> ${homework.hwTitle} / 제출기한 : ${fn:substring(homework.hwDeadline, 0, 10) }</h4>
+				<span>과제내용 : ${homework.hwContent}</span>
+			</div>
+		</div>
+		<!-- ///////////////////////////card-header ////////////////////-->
+		<div class="card-body">
+			<h4><span style="font-size:18px; color: #f96d00;">|</span> 학생목록 </h4>
+			<div class="row">
+				<div class="table-responsive">
+					<table class="table table-bordered text-center">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>이름</th>
+								<th>학번</th>
+								<th>학과</th>
+								<th>제출일자</th>
+								<th>과제확인</th>
+								<th>과제점수</th>
+								<th>제출확인</th>
+							</tr>
+						</thead>
+						
+						<tbody id ="fileTable"  style="border-top: #175bc7;">
+						    <c:set value="${pagingVO.dataList }" var="boardList"/>
+						    <c:choose>
+						      <c:when test="${empty studentList}">
+						        <tr>
+						          <td colspan="8" style="text-align:center;">과제를 제출한 학생 내역이 존재하지 않습니다.</td>                                 
+						        </tr>
+						      </c:when>
+						      <c:otherwise>
+						        <c:forEach items="${studentList }" var="list" varStatus="i"> 
+						          <tr>
+						            <td style="padding-top:7px;padding-bottom:7px;">${i.count }</td>
+						            <td style="padding-top:7px;padding-bottom:7px;">${list.stuNameKo }</td>
+						            <td style="padding-top:7px;padding-bottom:7px;" data-stu-id>${list.stuId }</td>
+						            <td style="padding-top:7px;padding-bottom:7px;">${list.acaMajor }</td>
+						            <td style="padding-top:7px;padding-bottom:7px;" id = "submDate${i.index}"></td>
+						            <td style="padding-top:7px;padding-bottom:7px;" id = "fileTd${i.index}"></td>
+						            <td style="padding-top:7px;padding-bottom:7px;">	
+							      	    <select id = "score-select">
+										  <option value="none">성적부여</option>
+										  <option value="5">A</option>
+										  <option value="4">B</option>
+										  <option value="3">C</option>
+										  <option value="2">D</option>
+										  <option value="0">F</option>
+										</select>
+									</td>
+						            <td style="padding-top:7px;padding-bottom:7px; data-btn"><button class="btn btn-xs btn-primary" style="font-size: 13px;">확인</button></td>
+						          </tr>
+						        </c:forEach>
+						      </c:otherwise>
+						    </c:choose>
+						  </tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer border-0">
+		</div>
+	</div>
+</div><!-- container-fluid 끝 -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$(document).on('click', '.btn-primary', function(){
+		 const stuId = $(this).parents('tr').children('[data-stu-id]').text();
+         const score = $(this).parents('tr').find('#score-select option:selected').val();
+         const btn = $(this);
+         
+         var data = {
+             asgScore : score,
+             stuId : stuId,
+             lecCode : '${lecCode}'
+         }
+         $.ajax({
+             url : "/submit/submitScore/${hwNo}",
+             type : "post",
+             data : JSON.stringify(data),
+             contentType : "application/json;charset=utf-8",
+             dataType : "text",
+             success : function(res) {
+            	 swal("성적 반영이 완료되었습니다.");
+            	 btn.prop('disabled', true);
+             },
+         });
+     });
+	
+	
+	
+		$.ajax({
+				type: "post",
+				url: "/submit/submitFile",
+				dataType: "json",
+				data: { lecCode: '${lecCode}', hwNo : '${homework.hwNo}'},
+				success : function (res) {
+					if (res.length > 0) {
+					    $.each(res, function (index, item) {
+					    	let data = item.submFilePath+item.submFileName;
+					        strFile = `<a href='/submit/displayFile?fileName=\${item.submFilePath}\${item.submFileName}'>다운로드</a>`;
+					        strDate = `\${item.submDate}`;
+					        console.log(strDate);
+					        $(`#fileTd\${index}`).html(strFile);
+					        $(`#submDate\${index}`).html(strDate);
+					    });
+					};
+				}
+			})
+			
+		}) 
+		
+	function getExtension(filename) {
+	var ext = filename.split('.').pop();
+	return ext;
+	}
+	</script>

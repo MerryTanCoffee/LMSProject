@@ -1,0 +1,234 @@
+package kr.or.ddit.user.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.board.service.IBoardService;
+import kr.or.ddit.board.vo.BoardVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.SummaryCourseInfoVO;
+import kr.or.ddit.user.service.IUserService;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class LoginController {
+
+	@Autowired
+	private IUserService userService;
+
+	@Autowired
+	private IBoardService boardService;
+
+	// 로그인 화면
+	@GetMapping("/login")
+	public String loginForm(String err) {
+		return "login";
+	}
+
+	// 로그아웃
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/login";
+	}
+
+	// 로그인 처리
+	@RequestMapping(value = "/loginProcess", method = RequestMethod.POST)
+	public String login(UserVO userVO, HttpSession session, Model model) {
+		log.info("신분 : " + userVO.getUserType());
+		log.info("아이디 : " + userVO.getUserId());
+		log.info("비밀번호 : " + userVO.getPassword());
+
+		ServiceResult result = null;
+		String goPage = "";
+
+		result = userService.userCheck(userVO, session);
+		if (result.equals(ServiceResult.OK)) {
+			if (userVO.getUserType().equals("STU")) {
+				goPage = "redirect:/main";
+			} else if (userVO.getUserType().equals("EMP")) {
+				goPage = "redirect:/adminHome";
+			} else if (userVO.getUserType().equals("PRO")) {
+				goPage = "redirect:/proHome";
+			}
+			session.removeAttribute("msg");
+
+		} else {
+			// 동기 처리 안에서만 사용가능
+			session.setAttribute("msg", "등록된 회원정보가 존재하지 않습니다!");
+			goPage = "redirect:/login";
+		}
+		return goPage;
+	}
+
+	
+	// 로그인 처리
+	@ResponseBody
+	@PostMapping(value = "/loginCheck")
+	public String login(@RequestBody UserVO userVO) {
+		log.info("신분 : " + userVO.getUserType());
+		log.info("아이디 : " + userVO.getUserId());
+		log.info("비밀번호 : " + userVO.getPassword());
+
+		UserVO userVO2 = userService.userCheck2(userVO);
+
+		if (userVO2 != null) {
+			return "OK";
+		}
+		return "NG";
+	}
+
+	
+	// 아이디, 비밀번호 찾기
+	@GetMapping("/userFind")
+	public String userFind() {
+
+		return "userFindForm";
+	}
+
+	// 아이디 찾기
+	@RequestMapping(value = "/findId", method = RequestMethod.POST, produces = "application/text; charset=UTF-8")
+	@ResponseBody
+	public String findId(@RequestBody Map<String, Object> findMap) {
+		log.info("" + findMap.get("userType"));
+		log.info("" + findMap.get("userName"));
+		log.info("" + findMap.get("userReg1"));
+		log.info("" + findMap.get("userReg2"));
+		String res = null;
+		String userId = userService.getId(findMap);
+		log.info("찾은 아이디: " + userId);
+		
+		if(StringUtils.isNotEmpty(userId)) {
+			res = userId;
+		}else {
+			res = "fail";
+		}
+		
+		return res;
+	}
+
+	@RequestMapping(value = "/sendPw", method = RequestMethod.POST, produces = "application/text; charset=UTF-8")
+	@ResponseBody
+	public String sendImsiPw(@RequestBody Map<String, Object> findMap) {
+		log.info("" + findMap.get("userType"));
+		log.info("" + findMap.get("userId"));
+		log.info("" + findMap.get("userName"));
+		log.info("" + findMap.get("userReg1"));
+		log.info("" + findMap.get("userReg2"));
+		log.info("" + findMap.get("userEmail"));
+		String res = null;
+		ServiceResult result = userService.sendPw(findMap);
+		
+		if(result.equals(ServiceResult.OK)) {
+			res = "ok";
+		}else {
+			res = "fail";
+		}
+		return res;
+	}
+
+	// 학생 로그인 성공 시
+	@GetMapping("/main")
+	public String mainpage(HttpServletRequest req, Model model) {
+
+		HttpSession session = req.getSession(false);
+
+		if (session != null && session.getAttribute("userInfo") != null) {
+			UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+			String stuId = userInfo.getUserId();
+			
+			List<BoardVO> boardList = boardService.getBoardList();
+			log.info("boardList : {}", boardList);
+			Map<String, Object> myCreditsInfo = userService.getMyCredits(stuId);
+			List<SummaryCourseInfoVO> summaryCouInfoList = userService.getSummInfo(stuId);
+			log.info("summaryCouInfoList: " + summaryCouInfoList.toString());
+			
+			model.addAttribute("summaryCouInfoList", summaryCouInfoList);
+			model.addAttribute("myCreditsInfo", myCreditsInfo);
+			model.addAttribute("boardList", boardList);
+
+			return "main/stuMainPage";
+		} else {
+			return "redirect:/login";
+		}
+	}
+
+	@GetMapping("/boardpage")
+	public String board() {
+		return "main/boardPage";
+	}
+
+	// 관리자 로그인 성공 시
+	@GetMapping("/adminHome")
+	public String adminHome(HttpServletRequest req, Model model) {
+
+		HttpSession session = req.getSession(false);
+
+		if (session != null && session.getAttribute("userInfo") != null) {
+			List<BoardVO> boardList = boardService.getBoardList();
+			log.info("boardList: " + boardList);
+			model.addAttribute("boardList", boardList);
+
+			return "actorHome/empHome";
+		} else {
+			return "redirect:/login";
+		}
+	}
+
+	// 교수 로그인 성공 시
+	@GetMapping("/proHome")
+	public String proHome(HttpServletRequest req, Model model) throws JsonProcessingException {
+
+		HttpSession session = req.getSession(false);
+
+		if (session != null && session.getAttribute("userInfo") != null) {
+			UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+			String proId = userInfo.getUserId();
+
+			List<Map<String, Object>> proLectureList = userService.getLectureList(proId);
+			log.info("proLectureList: " + proLectureList.toString());
+			ObjectMapper mapper = new ObjectMapper();
+
+			String jsonLectureList = mapper.writeValueAsString(proLectureList);
+			
+			model.addAttribute("proLectureList", proLectureList);
+			model.addAttribute("jsonLectureList", jsonLectureList);
+			return "actorHome/proHome";
+		} else {
+			return "redirect:/login";
+		}
+	}
+
+	// 로그인 시간 연장
+	@ResponseBody
+	@PostMapping("/extensionLoginTime")
+	public String extensionLoginTime(HttpServletRequest req) {
+
+		HttpSession session = req.getSession();
+		session.setMaxInactiveInterval(60 * 30);
+		System.out.println(session.getMaxInactiveInterval());
+
+		return "success";
+	}
+	
+}

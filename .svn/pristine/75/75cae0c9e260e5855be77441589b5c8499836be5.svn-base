@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LectureMapper">
+
+	<resultMap type="lectureVO" id="lectureMap">
+		<id property="lecCode" column="lec_code"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="proId" column="pro_id"/>
+		<result property="proNameKo" column="pro_name_ko"/>
+		<result property="proEmail" column="pro_email"/>
+		<result property="proLabTel" column="pro_lab_tel"/>
+		<result property="subCode" column="sub_code"/>
+		<result property="subName" column="sub_name"/>
+		<result property="subCredit" column="sub_credit"/>
+		<result property="lecOpenYear" column="lec_open_year"/>
+		<result property="lecOpenSemester" column="lec_open_semester"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="lecLanguage" column="lec_language"/>
+		<result property="lecGrade" column="lec_grade"/>
+		<result property="lecQuota" column="lec_quota"/>
+		<result property="lecOnline" column="lec_online"/>
+		<result property="lecOnlineLink" column="lec_online_link"/>
+		<result property="lecBook" column="lec_book"/>
+		<result property="lecAttendRate" column="lec_attend_rate"/>
+		<result property="lecTaskRate" column="lec_task_rate"/>
+		<result property="lecMexamRate" column="lec_mexam_rate"/>
+		<result property="lecFexamRate" column="lec_fexam_rate"/>
+		<result property="lecApplDate" column="lec_appl_date"/>
+		<result property="lecStatus" column="lec_status"/>
+		<result property="lecComment" column="lec_comment"/>
+		<result property="deptName" column="dept_name"/>
+		<result property="hallName" column="hall_name"/>
+		<collection property="lecRoomSchedule" resultMap="lecRoomScheduleMap"/>
+		<collection property="lecIdxList" resultMap="lectureIndexMap"/>
+	</resultMap>
+	
+	<resultMap type="lectureRoomVO" id="lecRoomMap">
+		<result property="hallCode" column="hall_code"/>
+		<result property="hallName" column="hall_name"/>
+		<result property="lrCode" column="lr_code"/>
+		<result property="lrNum" column="lr_num"/>
+		<result property="deptCode" column="dept_code"/>
+		<result property="deptName" column="dept_name"/>
+		<result property="deptTel" column="dept_tel"/>
+		<result property="deptRoom" column="deptRoom"/>
+		<result property="collCode" column="coll_code"/>
+		<result property="collName" column="coll_name"/>
+	</resultMap>
+	
+	<resultMap type="lecRoomScheduleVO" id="lecRoomScheduleMap">
+		<id property="lecCode" column="lecCode"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="lrCode" column="lr_code"/>
+		<result property="lrNum" column="lr_num"/>
+		<result property="lrsStart" column="lrs_start"/>
+		<result property="lrsEnd" column="lrs_end"/>
+		<result property="weekCode" column="week_code"/>
+		<result property="weekName" column="week_name"/>
+		<result property="hallCode" column="hall_code"/>
+		<result property="hallName" column="hall_name"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="subName" column="sub_name"/>
+		<result property="proNameKo" column="pro_name_ko"/>
+	</resultMap>
+	
+	<resultMap type="lectureIndexVO" id="lectureIndexMap">
+		<id property="liWeek" column="li_week"/>
+		<result property="liWeek" column="li_week"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="liContent" column="li_content"/>
+		<result property="liNote" column="li_note"/>
+	</resultMap>
+	
+	<select id="subjectList" resultType="subjectVO">
+		select 
+		    d.DEPT_CODE, d.DEPT_NAME,
+		    h.hall_code, h.hall_name,
+		    SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, 
+		    SUB_PRAC_TIME, SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE
+		from SUBJECT s, DEPARTMENT d, hall h
+		where s.DEPT_CODE = d.DEPT_CODE
+		and d.hall_code = h.hall_code
+		and s.dept_code = #{deptCode}
+	</select>
+	
+	<insert id="lecPlanRegister" parameterType="lectureVO">
+		insert into lecture (
+			lec_code,
+		    pro_id,
+		    sub_code,
+		    lec_open_year,
+		    lec_open_semester,
+		    lec_language,
+		    lec_grade,
+		    lec_quota,
+		    lec_online,
+		    lec_book,
+		    lec_attend_rate,
+		    lec_task_rate,
+		    lec_mexam_rate,
+		    lec_fexam_rate
+		) values (
+			#{lecCode}, #{proId}, #{subCode}, #{lecOpenYear}, #{lecOpenSemester}, #{lecLanguage},
+			#{lecGrade}, #{lecQuota}, #{lecOnline}, #{lecBook}, #{lecAttendRate},
+			#{lecTaskRate}, #{lecMexamRate}, #{lecFexamRate}
+		)
+	</insert>
+	
+	<insert id="lecIdxRegister" parameterType="lectureIndexVO">
+		insert into lecture_index (
+			LI_WEEK, LEC_CODE, LI_CONTENT, LI_NOTE
+		) values (
+			#{liWeek}, #{lecCode}, #{liContent}, #{liNote}
+		)
+	</insert>
+	
+	
+	<select id="applicationList" resultMap="lectureMap">
+		select 
+		    l.LEC_CODE, l.PRO_ID, l.SUB_CODE, LEC_OPEN_YEAR, LEC_OPEN_SEMESTER, LEC_DIVIDE, LEC_LANGUAGE, 
+		    LEC_GRADE, LEC_QUOTA, LEC_ONLINE, LEC_ONLINE_LINK, LEC_BOOK, LEC_ATTEND_RATE, LEC_TASK_RATE, 
+		    LEC_MEXAM_RATE, LEC_FEXAM_RATE, LEC_APPL_DATE, LEC_STATUS, LEC_COMMENT,
+		    LI_WEEK, li.LEC_CODE, LI_CONTENT, LI_NOTE,
+		    s.SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, SUB_PRAC_TIME, 
+		    SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE,
+		    d.DEPT_CODE, COLL_CODE, d.HALL_CODE, DEPT_NAME, DEPT_TEL, DEPT_TUITION, DEPT_ROOM,
+		    h.HALL_CODE, HALL_NAME,
+		    p.pro_id, pro_name_ko, pro_email, pro_lab_tel,
+		    LR_CODE, LRS_START, LRS_END, WEEK_CODE
+		    
+		from lecture l, lecture_index li, subject s, department d, hall h, professor p, lecture_room_schedule lrs
+		where l.lec_code = li.lec_code
+		and l.sub_code = s.sub_code
+		and s.dept_code = d.dept_code
+		and d.hall_code = h.hall_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = lrs.lec_code(+)
+		and l.pro_id =  #{userId}
+		order by l.lec_appl_date desc
+	</select>
+	
+	<select id="empLecPlanList" resultMap="lectureMap">
+		select 
+		    l.LEC_CODE, l.PRO_ID, l.SUB_CODE, LEC_OPEN_YEAR, LEC_OPEN_SEMESTER, LEC_DIVIDE, LEC_LANGUAGE, 
+		    LEC_GRADE, LEC_QUOTA, LEC_ONLINE, LEC_ONLINE_LINK, LEC_BOOK, LEC_ATTEND_RATE, LEC_TASK_RATE, 
+		    LEC_MEXAM_RATE, LEC_FEXAM_RATE, LEC_APPL_DATE, LEC_STATUS, LEC_COMMENT,
+		    LI_WEEK, li.LEC_CODE, LI_CONTENT, LI_NOTE,
+		    s.SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, SUB_PRAC_TIME, 
+		    SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE,
+		    d.DEPT_CODE, COLL_CODE, d.HALL_CODE, DEPT_NAME, DEPT_TEL, DEPT_TUITION, DEPT_ROOM,
+		    h.HALL_CODE, HALL_NAME,
+		    p.pro_id, pro_name_ko, pro_email, pro_lab_tel,
+		    LR_CODE, LRS_START, LRS_END, WEEK_CODE
+		    
+		from lecture l, lecture_index li, subject s, department d, hall h, professor p, lecture_room_schedule lrs
+		where l.lec_code = li.lec_code
+		and l.sub_code = s.sub_code
+		and s.dept_code = d.dept_code
+		and d.hall_code = h.hall_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = lrs.lec_code(+)
+		order by l.lec_appl_date desc
+	</select>
+	
+	<update id="lecPlanRefuse" parameterType="map">
+		update lecture
+		set
+			lec_status = #{lecStatus},
+			lec_comment = #{lecComment}
+		where lec_code = #{lecCode}
+	</update>
+	
+	<select id="roomSchedule" resultType="lecRoomScheduleVO">
+		select
+		    lrs.LEC_CODE, LR_CODE, LRS_START, LRS_END, WEEK_CODE,
+		    lec_divide,
+		    sub_name,
+		    pro_name_ko
+		from lecture_room_schedule lrs, lecture l, subject s, professor p
+		where lrs.lec_code = l.lec_code
+		and l.sub_code = s.sub_code
+		and l.pro_id = p.pro_id
+		and lr_code = #{lrCode}
+	</select>
+	
+	<update id="lecPlanOk" parameterType="map" useGeneratedKeys="true">
+		<selectKey keyProperty="lecDivide" resultType="String" order="BEFORE">
+			select
+			    count(*)+1 as cnt
+			from lecture
+			where sub_code = #{subCode}
+			and lec_status = 'Y'
+		</selectKey>
+		
+		update lecture
+		set
+			lec_divide = #{lecDivide},
+			lec_status = #{lecStatus}
+		where lec_code = #{lecCode}
+	</update>
+	
+	<insert id="lecRoomScheduleInsert" parameterType="map">
+		insert into lecture_room_schedule(
+			lec_code, lr_code, lrs_start, lrs_end, week_code
+		)values(
+			#{lecCode}, #{lrCode}, #{lrsStart}, #{lrsEnd}, #{weekCode}
+		)
+	</insert>
+	
+	<insert id="classOpen" parameterType="map">
+		insert into subject_open(
+			lec_code
+		)values(
+			#{lecCode}
+		)
+	</insert>
+	
+	<insert id="lecEval" parameterType="lectureEvalVO">
+		insert into LECTURE_EVALUATION(
+			stu_id, lec_code, le_status 
+		)values(
+			#{stuId},#{lecCode}, 'N'
+		)
+	</insert>
+	
+	<insert id="evalInsert" parameterType="map">
+		insert into LECTURE_EVALUATION_ITEM(
+			lei_num,stu_id, lec_code, lei_score
+		)values(
+			#{leiNum}, #{stuId}, #{lecCode}, #{leiScore}
+		)
+	</insert>
+	
+	<select id="getCurrentInfo" resultType="currentInfoVO">
+		select 
+			year, semester
+		from admin_setting
+	</select>
+</mapper>

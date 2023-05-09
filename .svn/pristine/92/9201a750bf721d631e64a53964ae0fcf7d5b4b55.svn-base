@@ -1,0 +1,108 @@
+package kr.or.ddit.exam.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.exam.service.ExamService;
+import kr.or.ddit.exam.vo.ExamQuestionsVO;
+import kr.or.ddit.exam.vo.ExamVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/exam")
+public class ExamController {
+
+	@Inject
+	private ExamService examService;
+	
+	@GetMapping("/examInfoForm")
+	public String examInfoForm(HttpSession session, Model model) {
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo"); 
+		String proId = userVO.getProfessorVO().getProId();
+		log.info("proId : " + proId);
+		
+		List<ExamVO> examList = examService.selectExamSubjectList(proId);	// 교수에 해당하는 과목리스트니까 examVO가 아니라 proId로 
+		log.info("examList" + examList);
+		
+		model.addAttribute("examList", examList);
+		
+		return "exam/examsInfo";
+	}
+	
+	// 문제 등록 폼
+	@GetMapping("/examQuestionsForm")
+	public String examQuestionsForm(
+			@RequestParam String examGubun,
+			@RequestParam String lecCode,
+			ExamQuestionsVO examQuestionsVO,
+			Model model) {
+		
+		
+		model.addAttribute("lecCode", lecCode);
+		model.addAttribute("examGubun", examGubun);
+		
+		return "exam/examQuestions";
+	}
+	
+	// 문제 등록
+	@PostMapping("/examInsert")
+	public String examInset(ExamVO examVO) {
+		System.out.println(examVO);
+		
+		examService.insertExam(examVO);
+		
+		return "exam/examDetail";
+	}
+	
+
+	// 문제 상세보기
+	@GetMapping("/examDetail")
+	public String examDetail(
+			@RequestParam String lecCode,
+			@RequestParam String examGubun,
+			ExamVO examVO,
+			Model model) {
+		
+		examVO.setLecCode(lecCode);
+		examVO.setExamGubun(examGubun);
+		
+		log.info("lecCode : " + lecCode);
+		log.info("examGubun : " + examGubun);
+		
+		List<ExamVO> examInfo = examService.selectExamInfo(examVO);
+		log.info("examInfo : " + examInfo);
+		
+		model.addAttribute("examInfo", examInfo);
+		model.addAttribute("lecCode", lecCode);
+		model.addAttribute("examGubun", examGubun);
+		
+		return "exam/examDetail";
+	}
+	
+	// 문제 수정(질문+보기)
+	@ResponseBody
+	@PostMapping("/examUpdate")
+	public void examUpdate(ExamVO examVO) {
+		
+		examService.examUpdate(examVO);
+		
+		
+	}
+	
+	
+	
+}

@@ -1,0 +1,29 @@
+package kr.or.ddit.score.vo;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class ScoreVO {
+	private String acaMajor;	// 전공명
+	private int acaGrade;	//학년
+	private int acaSemester;    //학기
+	private String stuNameKo;   //한국어 이름
+	private String stuId;     //학번
+	private String lecCode;     //강의코드 
+	private int atdScore;      //출석
+	private int mdtScore;       //중간
+	private int fnlScore;       //기말
+	private int asgScore;        //과제
+	private int oveScore;        //총합
+	private String deptName;       // 학과명
+	private int subCredit;          //이수학점
+	private int rank;
+	private double grade;
+	private List<ScoreVO> list;
+	
+	public void totalScore() {
+        this.oveScore = this.atdScore + this.mdtScore + this.asgScore + this.fnlScore;
+    }
+}

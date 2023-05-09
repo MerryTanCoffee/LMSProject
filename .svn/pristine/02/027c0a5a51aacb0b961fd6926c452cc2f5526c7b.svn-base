@@ -1,0 +1,55 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>경훈이의 템플릿</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+<body>
+
+<video id="mine" playsinline autoplay></video>
+<video id="your" playsinline poster="/resources/images/connecting.jpg" autoplay muted></video>
+
+<button id="conn" >연결</button>
+
+
+<script type="text/javascript">
+
+let $_mine = document.querySelector("#mine");
+let $_your = document.querySelector("#your");
+let localStream;
+
+let userId = "teacher";
+
+// var getUserMedia = navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.mzGetUserMedia;
+
+navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
+		localStream = stream;
+		$_mine.srcObject = localStream;
+	}).catch((err) => {
+// 		console.log('getUserMedia 실패' ,err);
+	});
+
+var peer = new Peer(userId);
+peer.on('open', function(id) {
+});
+	
+peer.on('call', function(call) {
+    call.answer(localStream);
+    call.on('stream', function(remoteStream) {
+      $_your.srcObject = remoteStream;
+    });
+  });
+	
+$("#conn").on("click", function() {
+	var call = peer.call('test_tea', localStream);
+	call.on('stream', function(remoteStream) {
+		// 받은 stream을 
+		$_your.srcObject = remoteStream;
+	});
+});
+</script>
+</body>
+</html>

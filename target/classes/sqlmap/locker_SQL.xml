@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LockerMapper">
+	
+	<select id="getLockerListAjax" parameterType="string" resultType="lockerVO">
+		select
+		    loc_num, hall_code, loc_status
+		from locker
+		where hall_code = #{hallCode}
+		order by loc_num
+	</select>
+	
+	<select id="getMyLockerInfo" parameterType="hashmap" resultType="hashmap">
+		select loc_num, hall_code
+		from locker_record
+		where stu_id = #{stuId}
+		and hall_code = #{hallCode}
+	</select>
+	
+	<!-- 사물함 이용현황  -->
+	<select id="selecLockerList" resultType="lockerVO">
+		select
+		    l.hall_code,
+		    l.loc_num,
+		    l.loc_status,
+		    h.hall_name
+		from locker l, hall h
+		where l.hall_code = h.hall_code
+		order by loc_num
+	</select>
+	
+	<!-- 건물명 가져오기  -->
+	<select id="selectHallList" resultType="hallVO">
+		select 
+		    hall_code,
+		    hall_name
+		from hall
+	</select>
+	
+	<!-- 사용여부 'N' -> 'Y'로 변경 -->
+	<update id="updateStatus" parameterType="lockerVO">
+		update locker
+		set loc_status = 'Y'
+		where loc_num = #{locNum}
+		and hall_code = #{hallCode}
+	</update>
+	
+	<!-- 사용여부 'Y' -> 'N'로 변경 -->
+	<update id="updateStatusN" parameterType="lockerVO">
+		update locker
+		set loc_status = 'N'
+		where loc_num = #{locNum}
+		and hall_code = #{hallCode}
+	</update>
+	
+	<!-- 사물함 예약 -->
+	<insert id="insertReserve" parameterType="lockerVO">
+		<selectKey keyProperty="lrNo" resultType="int" order="BEFORE">
+			select seq_locker_record.nextval from dual
+		</selectKey>
+		insert into locker_record (
+			lr_no, 
+			hall_code, 
+			loc_num, 
+			stu_id, 
+			lr_sdate, 
+			lr_edate, 
+			lr_date)
+		values (
+			#{lrNo}, 
+			#{hallCode}, 
+			#{locNum}, 
+			#{stuId}, 
+			#{lrSdate}, 
+			#{lrEdate}, 
+			sysdate)
+	</insert>
+	
+	<select id="lockerReservationList" parameterType="string" resultType="lockerVO">
+		select lr.lr_no, lr.loc_num, h.hall_code, h.hall_name, lr.lr_date, lr.lr_sdate, lr.lr_edate
+		from locker_record lr, hall h
+		where lr.hall_code = h.hall_code
+		and stu_id = #{stuId}
+	</select>
+	
+	
+	<delete id="lockerReservationCancel" parameterType="lockerVO">
+		delete from locker_record where lr_no = #{lrNo}
+	</delete>
+
+	
+
+</mapper>

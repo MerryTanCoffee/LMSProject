@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CourseMapper">
+	<resultMap type="java.util.Map" id="stuInfoMap">
+		<result property="stuId" column="stu_id"/>
+		<result property="stuNameKo" column="stu_name_ko"/>
+		<result property="deptName" column="dept_name"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="courseHistoryMap">
+		<result property="lecOpenYear" column="lec_open_year"/>
+		<result property="lecOpenSemester" column="lec_open_semester"/>
+		<result property="totalCredits" column="total_credits"/>
+		<result property="compleCredits" column="comple_credits"/>
+	</resultMap>	
+	
+	<select id="openList" resultType="courseOpenVO">
+		select
+		    s.sub_code, sub_name, sub_credit,
+		    l.lec_code, lec_divide, lec_grade, lec_quota,
+		    pro_name_ko,
+		    d.dept_code, dept_name,
+		    sub_applicant,
+		    lrs_start, lrs_end, week_code
+		from subject s, lecture l, professor p, department d, subject_open so, lecture_room_schedule lrs, admin_setting ad
+		where s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = so.lec_code
+		and l.lec_code = lrs.lec_code
+		and lec_open_year = ad.year
+		and lec_open_semester = ad.semester
+	</select>
+	
+	<select id="deptInfoList" resultType="departmentVO">
+		SELECT *
+		FROM department
+		WHERE dept_code NOT IN ('UNIV')
+		ORDER BY dept_name ASC
+	</select>
+	
+	<select id="basketList" resultType="courseVO">
+		select
+		    s.sub_code, sub_name, sub_credit,
+		    l.lec_code, lec_divide, lec_grade,
+		    pro_name_ko,
+		    dept_name,
+		    lrs_start, lrs_end, week_code,
+		    add_status
+		from subject s, lecture l, professor p, department d, lecture_room_schedule lrs, pre_course pc, admin_setting ad
+		where s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = pc.lec_code
+		and l.lec_code = lrs.lec_code
+		and pc.stu_id = #{stuId}
+		and lec_open_year = ad.year
+		and lec_open_semester = ad.semester
+	</select>
+	
+	<update id="courseBasketUpdate" parameterType="map">
+		update pre_course
+		set
+			add_status = '1'
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+	</update>
+	
+	<insert id="courseApply" parameterType="map">
+		insert into course_list(
+			lec_code, stu_id
+		)values(
+			#{lecCode}, #{stuId}
+		)
+	</insert>
+	
+	<insert id="basketInsert" parameterType="map">
+		insert into pre_course(
+			lec_code, stu_id
+		)values(
+			#{lecCode}, #{stuId}
+		)
+	</insert>
+	
+	<update id="increApplicant">
+		update subject_open
+		set
+			sub_applicant = sub_applicant + 1 
+		where lec_code = #{lecCode}
+	</update>
+	
+	<update id="decreApplicant">
+		update subject_open
+		set
+			sub_applicant = sub_applicant - 1 
+		where lec_code = #{lecCode}
+	</update>
+	
+	<delete id="basketDelete" parameterType="map">
+		delete from pre_course
+		where lec_code = #{lecCode}
+		and stu_id = #{stuId}
+	</delete>
+	
+	<delete id="courseCancel" parameterType="map">
+		delete from course_list
+		where lec_code = #{lecCode}
+		and stu_id = #{stuId}
+	</delete>
+	
+	<select id="courseSearch" parameterType="map" resultType="courseOpenVO">
+		select
+		    s.sub_code, sub_name, sub_credit,
+		    l.lec_code, lec_divide, lec_grade, lec_quota,
+		    pro_name_ko,
+		    d.dept_code, dept_name,
+		    sub_applicant,
+		    lrs_start, lrs_end, week_code
+		from subject s, lecture l, professor p, department d, subject_open so, lecture_room_schedule lrs, admin_setting
+		where s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = so.lec_code
+		and l.lec_code = lrs.lec_code
+		and lec_open_year = ad.year
+		and lec_open_semester = ad.semester
+		<if test="searchWord != null || searchWord != ''">
+			and sub_name like '%' || #{searchWord} || '%'
+		</if>
+		<if test="deptCode != 'all'">
+			and d.dept_code = #{deptCode}
+		</if>
+	</select>
+	
+	<!-- 학과셀렉트 박스 검색리스트 -->
+	<select id="getCourseOpenList" parameterType="String" resultType="courseOpenVO">
+		select
+		    s.sub_code, sub_name, sub_credit,
+		    l.lec_code, lec_divide, lec_grade, lec_quota,
+		    pro_name_ko,
+		    d.dept_code, dept_name,
+		    sub_applicant,
+		    lrs_start, lrs_end, week_code
+		from subject s, lecture l, professor p, department d, subject_open so, lecture_room_schedule lrs, admin_setting
+		where s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = so.lec_code
+		and l.lec_code = lrs.lec_code
+		and lec_open_year = ad.year
+		and lec_open_semester = ad.semester
+		<if test="deptCode != 'all'">
+			and d.dept_code = #{deptCode}
+		</if>
+	</select>
+	
+	<select id="getStuInfo" parameterType="String" resultMap="stuInfoMap">
+		select
+		    s.stu_id, s.stu_name_ko, d.dept_name
+		from student s, academic a, department d
+		where 1=1
+		and s.stu_id = a.stu_id
+		and a.dept_code = d.dept_code
+		and s.stu_id = #{userId}
+	</select>
+	
+	<!-- 학년도 학기 당 수강이력 조회하기 -->
+	<select id="getCourseHistory" resultMap="courseHistoryMap">
+		SELECT 
+		    lec_open_year, 
+		    lec_open_semester, 
+		    SUM(s.sub_credit) AS total_credits, 
+		    SUM(CASE WHEN cl.cou_take = 'Y' THEN s.sub_credit ELSE 0 END) AS comple_credits 
+		FROM 
+		    lecture l
+		    JOIN subject s ON l.sub_code = s.sub_code 
+		    JOIN course_list cl ON l.lec_code = cl.lec_code,
+		    admin_setting ad
+		where 1=1
+		and cl.stu_id = #{userId}
+		and not (l.lec_open_year = ad.year and l.lec_open_semester = ad.semester)
+		GROUP BY 
+		    lec_open_year, 
+		    lec_open_semester
+	</select>
+</mapper>

@@ -1,0 +1,126 @@
+package kr.or.ddit.scholarship.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.DepartmentVO;
+import kr.or.ddit.scholarship.service.IScholarshipService;
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/scholarship")
+public class ScholarshipController {
+
+	@Autowired
+	private IScholarshipService scholarService;
+	
+	@GetMapping("/benefitList")
+	public String scholarshipList(HttpSession session, Model model, ScholarshipListVO sv) {
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		
+		String userId = userVO.getUserId();
+
+		sv.setStuId(userId);
+		List<ScholarshipListVO> scholarList = scholarService.scholarList(sv);
+		
+		model.addAttribute("scholarList", scholarList);
+		
+		return "scholarship/benefitList";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/benefitList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public List<ScholarshipListVO> scholarshipBenefitList(ScholarshipListVO sv, HttpSession session, Model model) {	// 장학금 수혜 내역
+		
+		log.info("체크>>" + sv);
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		
+		String userId = userVO.getUserId();
+
+		sv.setStuId(userId);
+		List<ScholarshipListVO> scholarList = scholarService.scholarList(sv);
+		
+		return scholarList;
+	}
+	
+	@GetMapping("/application")
+	public String scholarshipApplication(HttpSession session, ScholarshipListVO sv, Model model) {	// 장학금 신청
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		String userId = userVO.getUserId();
+		
+		sv.setStuId(userId);
+		
+		List<ScholarshipListVO> scholarList = scholarService.scholarListApp(sv);
+		
+		model.addAttribute("userVO", userVO);
+		model.addAttribute("scholarList", scholarList);
+		
+		return "scholarship/application";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/application", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public List<ScholarshipInfoVO> scholarshipList(ScholarshipInfoVO si, Model model){
+		
+		log.info("체크 >> " + si);
+		
+		List<ScholarshipInfoVO> scholarInfoList = scholarService.scholarInfoList(si);
+		
+		return scholarInfoList;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/application/insert", method = RequestMethod.POST)
+	public ServiceResult scholarApplication(HttpSession session, ScholarshipListVO sv, ScholarshipInfoVO si) {
+		log.info("체크 (장학금 신청)>> " + sv);
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		
+		String userId = userVO.getUserId();
+
+		sv.setStuId(userId);
+		
+		ServiceResult result = null;
+		
+		result = scholarService.insertScholar(sv);
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/scholarDetail", method = RequestMethod.GET)
+	public String scholarDetail(int slNo, String siCode, Model model, ScholarshipListVO sv, ScholarshipInfoVO si) {
+		
+		ScholarshipListVO scholar = scholarService.scholarDetail(slNo);
+		model.addAttribute("sv", sv);
+		model.addAttribute("si", si);
+		model.addAttribute("scholar", scholar);
+		return "scholarship/scholarDetail";
+	}
+	
+	@GetMapping("/applicationList")
+	public String employeeApplicationList(Model model) {
+		
+		return "/scholarship/applicationList";
+	}
+}

@@ -1,0 +1,383 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+
+<style>
+.textbox {
+	display: block;
+	margin-top: 10px;
+}
+
+th {
+	border: 1px solid black;
+	text-align: center;
+}
+
+td {
+	border: 1px solid;
+	text-align: center;
+}
+#NoSubTable th {
+        text-align: center;
+        position: sticky;
+        top: 0px;
+      }
+#subTable th {
+        text-align: center;
+        position: sticky;
+        top: 0px;
+      }
+#receiverBox {
+	border: 1px solid #969090;
+	border-radius: 10px;
+	width: 100%;
+	height: 100px;
+	/* 스크롤 기능 추가 */
+}
+.receiverXBtn{
+	cursor: pointer;
+}
+.receiver{
+	margin-top: 1%;
+}
+</style>
+
+<!-- 페이지 타이틀 -->
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li><h5 class="bc-title">Dashboard</h5></li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)">
+				<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+					<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				Home </a>
+		</li>
+		<li class="breadcrumb-item active"><a href="javascript:void(0)">문자</a></li>
+	</ol>
+	<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
+</div>
+<div class="container-fluid">
+
+	<div class="card">
+		<div class="row">
+			<div class="col-8">
+				<div class="card-body" style="width: 100%;">
+					<div class="row mb-4">
+						<div style="margin-bottom: 1%;">
+							<span style="font-size: large; color: #f96d00;">|</span>
+							<span style="font-size: large; display: inline;">주소록&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn light btn-light btn-xxs" id="wholePosition">전체</button> 
+							<button type="button" class="btn light btn-light btn-xxs" id="proPosition">교수</button>
+							<button type="button" class="btn light btn-light btn-xxs" id="stuPosition">학생</button>
+							</span> 
+							&nbsp;
+							
+						</div>
+						<div class="table-responsive" style="height: 40vh; overflow: auto;">
+							<table id="NoSubTable" class="table table-sm table-bordered table-hover">
+								<thead>
+									<tr class="table-active">
+										<th>이름</th>
+										<th>직책</th>
+										<th>학과</th>
+										<th>전화번호</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${telList}" var="tel">
+										<tr class="user" data-user-id="${tel.userId}" >
+											<td>${tel.nameKo}</td>
+											<td id="positionType">${tel.type}</td>
+											<td>${tel.major}</td>
+											<td id="handPhone">${tel.phone}</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>		
+			</div>
+			<div class="col-4 ps-0 pe-4">
+				<div class="card-body" style="width: 100%;">
+					<div class="row mb-4">
+						<div style="margin-bottom: 1%;">
+							<span style="font-size: large; color: #f96d00;">|</span>
+							<span style="font-size: large; display: inline;">문자보내기&nbsp;&nbsp;&nbsp;</span> &nbsp;
+						</div>
+						<div class="tab-content" id="myTabContent" style="border: 1px solid #969090; border-radius: 10px;">
+							<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+								aria-labelledby="home-tab">
+								<div class="card-body px-0 pe-0">
+									<ul>
+										<li>
+										<li>수신자 :</li>
+										<div class="p-2" id="receiverBox" style="overflow-y: scroll;"></div>
+								
+										</li>
+										<br>
+										<li>내용 :</li>
+										<li><textarea class="form-txtarea form-control" rows="5" id="comment" name="smsContent"></textarea></li>
+									</ul>
+									<br>
+									<div class="d-flex justify-content-between">
+										<input type="button" id="sendBtn" value="전송하기" class="btn light btn-primary" />
+										<button type="button" class="btn btn-outline-primary" id="addBtn" style="margin-left:10px;">번호추가하기</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="card-body" style="margin-left:10px;margin-right:10px">
+				<div class="row mb-4">
+					<div style="margin-bottom: 1%;">
+						<span style="font-size: large; color: #f96d00;">|</span>
+						<span style="font-size: large; display: inline;">문자 발송 내역&nbsp;&nbsp;&nbsp;</span> &nbsp;
+					</div>
+					<div class="table-responsive" style="height: 40vh; overflow: auto;">
+						<table id="subTable" class="table table-sm table-bordered table-hover">
+							<thead>
+								<tr class="table-active">
+									<th scope="col-2">#</th>
+									<th scope="col">교번/학번</th>
+									<th scope="col">수신자</th>
+									<th scope="col">연락처</th>
+									<th scope="col">발신내용</th>
+									<th scope="col">발신일자</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${smsList}" var="sms" varStatus="i">
+									<tr>
+										<td>${i.count}</td>
+										<td>${sms.smsReciver}</td>
+										<td>${sms.userName}</td>
+										<td>${sms.phone}</td>
+										<td>${sms.smsContent}</td>
+										<td>${sms.smsDate}</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(function(){
+
+	
+	// function sendSMS(pageName) {
+	// 	console.log("문자를 전송합니다.");
+	// 	$("#smsForm").attr("action", pageName);
+	// 	console.log("텍스트 :" + $('text').val());
+	// 	$("#smsForm").submit();
+	// }
+
+	/* <!-- 전화번호 입력할 텍스트박스 계속 생기게하기.. -->  */
+
+	/* var index = 0; // toList 배열 인덱스 초기값 설정
+	function addTextBox(event) {
+		// 이벤트의 기본 동작인 폼 제출 막기
+		event.preventDefault();
+
+		// 새로운 텍스트박스 생성
+		var newTextBox = document.createElement('input');
+		newTextBox.type = 'text';
+		newTextBox.className = 'textbox form-control input-default';
+		newTextBox.name = 'toList[' + index + ']';
+		index++;
+
+		var container = document.getElementById('textbox-container');
+		container.appendChild(newTextBox);
+	} */
+
+	/* <!-- 날짜 내림차순으로 정렬을 하면서 차례대로 번호매기는것인데 테이블자체가 이상하고, cells[]에 있는 숫자는 테이블열이 바뀔때 마다 바뀐다.--> */
+
+	const table = document.getElementById('subTable');
+	const tbody = table.querySelector('tbody');
+	const rows = tbody.querySelectorAll('tr');
+
+	// rows를 발신일자 기준으로 내림차순 정렬
+	const sortedRows = Array.from(rows)
+		.sort((a, b) => {
+			const aDate = new Date(a.cells[3].textContent);
+			const bDate = new Date(b.cells[3].textContent);
+			return bDate - aDate;
+		});
+
+	// 정렬된 rows를 tbody에 추가
+	sortedRows.forEach((row, index) => {
+		row.cells[0].textContent = index + 1; // 번호 셀에 값을 할당
+		tbody.appendChild(row);
+	});
+
+	/* <!-- 학생,전체,교수 버튼눌렀을때 어떻게 할지 하는것... --> */
+
+	const wholePositionBtn = document.getElementById("wholePosition");
+	const proPositionBtn = document.getElementById("proPosition");
+	const stuPositionBtn = document.getElementById("stuPosition");
+
+	wholePositionBtn.addEventListener("click", function() {
+		filterTable("전체");
+	});
+
+	proPositionBtn.addEventListener("click", function() {
+		filterTable("교수");
+	});
+
+	stuPositionBtn.addEventListener("click", function() {
+		filterTable("학생");
+	});
+
+	function filterTable(position) {
+		const positionTypeCells = document.querySelectorAll("#positionType");
+		const tableRows = document.querySelectorAll("#NoSubTable tbody tr");
+
+		tableRows.forEach(row => {
+			const positionCell = row.querySelector("#positionType");
+
+			if (position === "전체") {
+				row.style.display = "";
+			} else if (positionCell.textContent === position) {
+				row.style.display = "";
+			} else {
+				row.style.display = "none";
+			}
+		});
+	}
+
+	let selectUser = null;
+	let cnt = 0;
+	let toList = [];
+	let user = {
+		userId: "",
+		phone: "",
+		smsContent: ""
+	};
+
+	$(document).on("click", ".user", function(){
+		if(selectUser){
+			selectUser.css("background-color", "");
+		}
+		console.log("현재 사용자", $(this));
+		selectUser = $(this);
+		
+		$(this).css("background-color", "lightblue");
+	});
+
+	// 수신자 추가하기
+	$(document).on("click", "#addBtn", function(){
+		if(toList.length > 0){
+			const exists = toList.some((item) => item.userId === selectUser.attr("data-user-id"));
+			console.log("동일 인물 추가 여부 확인: ", exists);
+			if(exists){
+				alert("이미 추가한 사람입니다.");
+				return false;
+			}
+		}
+
+		let userId = selectUser.data("userId");
+		let str = "";
+		if(cnt==0){
+			str = `<a class="badge badge-rounded badge-info receiver">\${selectUser.find("td:eq(0)").text()}<span class="receiverXBtn" data-user-id="\${userId}">X</span></a>`;
+			cnt += 1;
+			user.userId = selectUser.attr("data-user-id");
+			user.phone = selectUser.find("td:eq(3)").text();
+			toList.push(user);
+		} else if(cnt > 0) {
+			str = ` <a class="badge badge-rounded badge-info receiver">\${selectUser.find("td:eq(0)").text()}<span class="receiverXBtn" data-user-id="\${userId}">X</span></a>`;
+			cnt += 1;
+			let newUser = Object.assign({}, user);
+			newUser.userId = selectUser.attr("data-user-id");
+			newUser.phone = selectUser.find("td:eq(3)").text();
+			toList.push(newUser);
+		}
+		
+		console.log("toList 목록", toList);
+		$("#receiverBox").append(str);
+	});
+
+	// 문자 전송하기
+	$(document).on("click", "#sendBtn", function(){
+		
+		if(toList.length == 0){
+			alert("보낼 사람을 추가해주세요.");
+			return false;
+		}
+
+		if(!$("#comment").val()){
+			alert("메세지 내용을 입력해주세요.");
+			$("#comment").focus;
+			return false;
+		}
+
+		for(i=0; i<toList.length; i++){
+			toList[i].smsContent = $("#comment").val();
+		}
+		console.log("toList셋팅 확인", toList);
+
+		$.ajax({
+			type: "post",
+			url: "/send/smsCool",
+			contentType: "application/json",
+			data: JSON.stringify(toList),
+			success: function(res){
+				console.log(res);
+				const receiverBox = $("#receiverBox");
+				const receivers = receiverBox.find("a");
+				console.log("체크크크",receivers);
+				receivers.remove();
+				$("#subTable tbody tr").remove();
+				$("#comment").val("");
+				$.each(res, function(i, item){
+					let str = `<tr>
+							<td>\${i}</td>
+							<td>\${item.smsReciver}
+							<td>\${item.userName}</td>
+							<td>\${item.phone}</td>
+							<td>\${item.smsContent}</td>
+							<td>\${item.smsDate}</td>
+							</tr>`;
+					$("#subTable tbody").append(str);
+				});
+				toList = [];
+				alert("문자 전송이 완료되었습니다.");
+			}
+		});
+	});
+
+	// 추가한 수신자 삭제하기
+	$(document).on("click", ".receiverXBtn", function(){
+		console.log(">>>>", $(this).data("userId"));
+		let userId = $(this).data("userId");
+		for (let i = 0; i < toList.length; i++) {
+			if (toList[i].userId == userId) {
+				toList.splice(i, 1);
+				i--; 
+			}
+		}
+
+		console.log("toList 목록>>", toList);
+		cnt--;
+		$(this).parent().remove();
+	});
+
+
+
+});
+</script>

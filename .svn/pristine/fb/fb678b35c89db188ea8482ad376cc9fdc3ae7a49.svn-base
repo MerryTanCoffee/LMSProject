@@ -1,0 +1,56 @@
+package kr.or.ddit.scholarship.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.scholarship.service.IScholarshipService;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/scholarship")
+public class ScholarshipController {
+
+	@Autowired
+	private IScholarshipService scholarService;
+	
+	@GetMapping("/benefitList")
+	public String scholarshipList() {
+		return "scholarship/benefitList";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/benefitList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public String scholarshipBenefitList(ScholarshipListVO sv, HttpSession session, Model model) {	// 장학금 수혜 내역
+		
+		log.info("체크>>" + sv);
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		
+		String userId = userVO.getUserId();
+		
+		List<ScholarshipListVO> scholarList = scholarService.scholarList(userId);
+		
+		model.addAttribute("scholarList", scholarList);
+		
+		return "scholarship/benefitList";
+	}
+	
+	@GetMapping("/application")
+	public String scholarshipApplication() {	// 장학금 신청
+		return "scholarship/application";
+	}
+	
+}

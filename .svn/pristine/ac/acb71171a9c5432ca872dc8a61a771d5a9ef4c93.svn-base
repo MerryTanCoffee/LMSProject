@@ -1,0 +1,14 @@
+package kr.or.ddit.common.service;
+
+import java.io.File;
+import java.util.List;
+
+import kr.or.ddit.user.vo.StudentVO;
+
+public interface IExcelService {
+	public List<StudentVO> selectList() throws Exception;
+
+	public void excelUpload(File destFile);
+
+}
+

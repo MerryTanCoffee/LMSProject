@@ -1,0 +1,52 @@
+package kr.or.ddit.facilty.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.facilty.service.LockerService;
+import kr.or.ddit.facilty.vo.LockerVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/locker")
+public class LockerReservationController {
+	
+	@Autowired
+	private LockerService lockerService;
+	
+	
+	@GetMapping("/usageStatus")
+	public String lockerList() {
+		return "locker/form";
+	}
+	
+	
+	@GetMapping("/reservationForm")
+	public String reservationForm(@RequestParam(required = false) String stuId, Model model) {
+		// 사물함 예약 신청 폼 열기
+		if(stuId != null) {
+			model.addAttribute("stuId", stuId);
+		}
+		return "locker/form";
+	}
+	
+	@ResponseBody
+	@PostMapping(value= "/lockerReservation", produces = "text/plain;charset=utf-8")
+		public String lockerReservation(@RequestBody LockerVO lockerVO) {
+			// 사물함 예약하기
+			log.info("LockerVO: " + lockerVO);
+			lockerService.insertReserve(lockerVO);
+			
+			return "locker/form";
+		}
+}

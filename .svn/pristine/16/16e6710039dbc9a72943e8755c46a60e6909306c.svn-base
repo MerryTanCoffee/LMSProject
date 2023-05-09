@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScoreMapper">
+<!-- sql에서 score_sql을 이용해야하는데... 차라리 조인하는게 나을지... -->
+
+
+<!-- 마이리스트 디테일 있는 부분에서 해당 연도 sysdate와 일치하는 연도만 보여주는 sql문 생각해야할지도.. -->
+	
+
+	<!-- AND C.dept_code = D.dept_code 6개 테이블에 6개 조건이있어서 아마 문제가 생김 그래서 지워줌 -->
+	<!-- 교수용 학생성적 리스트인데 나중에 관리자용으로 전체를 볼수있께할수도 있을듯 -->
+	<select id="list" parameterType="hashMap" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+		<if test="proId != null and proId != '' ">
+			AND p.pro_id = #{proId}
+		</if>
+		<if test="lecCode != null and lecCode != '' ">
+			and sr.lec_code = #{lecCode}
+		</if>
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	</select>
+
+	<!-- 학생용 학생성적 리스트 detail부분임-->
+	<select id="stuList" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	    WHERE stu_id = #{stuId}
+	</select>
+	
+	<!-- 학기별로 평균 평점을 매기기 위한 쿼리문이었습니다! 근데 이수학점은 sum임 아무튼그럼-->
+	<select id="averageList" resultType="scoreVO">
+		WITH score_summary AS (
+			SELECT
+			    p.pro_id,
+			    l.lec_code, l.LEC_OPEN_YEAR, l.LEC_OPEN_SEMESTER,
+			    s.sub_name, s.sub_credit, s.sub_sort, s.SUB_TYPE,
+			    cl.stu_id,
+			    st.stu_name_ko,
+			    sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			    a.aca_major, a.aca_grade, a.aca_semester,
+			    d.dept_name,
+			    RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+			    COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+			FROM professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+			WHERE l.pro_id = p.pro_id
+			AND l.sub_code = s.sub_code
+			AND s.sub_code = l.sub_code
+			AND s.dept_code = d.dept_code
+			AND a.stu_id = st.stu_id
+			AND st.stu_id = sr.stu_id
+			AND cl.stu_id = sr.stu_id
+			AND cl.lec_code = l.lec_code
+			AND sr.lec_code = cl.lec_code
+			)
+			SELECT
+				LEC_OPEN_YEAR,
+				LEC_OPEN_SEMESTER,
+				sub_sort,
+				SUB_TYPE,
+				SUM(sub_credit) as sum_credit,
+				AVG(
+			    CASE
+					<![CDATA[
+				        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+				    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+				    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+				    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+				    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+				    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+				    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+				    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+					]]>
+					ELSE 0
+				END
+			) AS grade_average
+			FROM score_summary
+			WHERE stu_id = #{stuId}
+		GROUP BY LEC_OPEN_YEAR, LEC_OPEN_SEMESTER, sub_sort, SUB_TYPE
+	</select>
+	
+	
+	<!-- 학생용 리스트 for문으로 찾기 인줄 알았는데 아무데도안쓰나... 왜 썼는지 기억안남
+	세션아이디랑 일치하는지여부 확인용인것같은데.......-->
+	<select id="read" parameterType="String" resultType="scoreVO">
+		<![CDATA[
+	    WITH score_summary AS (
+	      SELECT
+	        A.stu_id, A.lec_code, A.atd_score, A.mdt_score, A.fnl_score, A.asg_score, B.stu_name_ko, C.aca_major, C.aca_grade, C.aca_semester, D.dept_name, E.sub_name, E.sub_credit, A.ove_score,
+	      RANK() OVER (ORDER BY A.ove_score DESC) AS rank,
+	      COUNT(*) OVER () AS total_count
+	      FROM score_record A, student B, academic C, department D, subject E, lecture F
+	      WHERE A.stu_id = C.stu_id
+	      AND C.stu_id = B.stu_id
+	      AND D.dept_code = E.dept_code
+	      AND A.lec_code = F.lec_code
+	      AND E.sub_code = F.sub_code
+	      AND A.stu_id = #{stuId}
+	    )
+	    SELECT
+	      lec_code,
+	      sub_name,
+	      sub_credit,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE 
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	  ]]>
+	</select>
+
+	<!-- 셀렉트박스용 으로쓰려고 했는데 모르겠음 -->
+	<select id="selectList" resultType="scoreVO">
+		select
+            l.lec_code,
+            (select s.sub_name from subject s where s.sub_code = l.sub_code) sub_name,
+            l.lec_open_year,
+            l.lec_open_semester
+        from lecture l, professor p
+        where l.lec_status = 'Y'
+        and p.pro_id = l.pro_id
+        and p.pro_id = #{proId}
+	</select>
+
+
+	<insert id="insert" parameterType="scoreVO">
+		insert into score_record(
+		stu_id, lec_code, atd_score, mdt_score, fnl_score, asg_score,
+		ove_score
+		)values(
+		#{stuId}, #{lecCode}, #{atdScore}, #{mdtScore},
+		#{fnlScore}, #{asgScore},
+		#{oveScore}
+		)
+	</insert>
+
+	<delete id="delete">
+		delete from score_record
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+	</delete>
+	
+<!-- 갑자기캘린더 vo??? scoreVO로 바꿈-->
+	<update id="update" parameterType="scoreVO">
+		update score_record
+		set
+			atd_score = #{atdScore},
+			mdt_score = #{mdtScore},
+			fnl_score = #{fnlScore},
+			asg_score = #{asgScore},
+			ove_score = #{oveScore}
+		where
+			stu_id = #{stuId}
+	</update>
+	
+	<select id="selectboxYearSeme" resultType="scoreVO">
+	select
+	    lec_open_year,
+	    lec_open_semester
+	from lecture
+	GROUP BY LEC_OPEN_YEAR, LEC_OPEN_SEMESTER
+	</select>
+	
+	
+	<!-- 교양이면서 선택인 아이
+	     교양이면서 필수인 아이
+	  전공이면서 필수인아이
+	  전공이면서 선택인아이를 여기서 정해주고 들어가겠다.
+	  그러면 sql문이 4개가 생기는 불상사가 나오겠지만 방법이 딱히 안떠오름. -->
+	<select id="stuListJP" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      sub_sort,
+	      sub_type,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	    WHERE stu_id = #{stuId}
+	      and sub_sort = '전공'
+	      and sub_type = '필수'
+	</select>
+	<select id="stuListJS" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      sub_sort,
+	      sub_type,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	    WHERE stu_id = #{stuId}
+	    and sub_sort = '전공'
+	    and sub_type = '선택'
+	</select>
+	<select id="stuListGP" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      sub_sort,
+	      sub_type,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	    WHERE stu_id = #{stuId}
+	    and sub_sort = '교양'
+	    and sub_type = '필수'
+	</select>
+	<select id="stuListGS" resultType="scoreVO">
+	WITH score_summary AS (
+		select
+			l.lec_code, l.lec_open_year, l.lec_open_semester,
+			s.sub_name, s.sub_credit, s.sub_sort, s.sub_type,
+			cl.stu_id,
+			st.stu_name_ko,
+			sr.atd_score, sr.mdt_score, sr.fnl_score, sr.asg_score, sr.ove_score,
+			a.aca_major, a.aca_grade, a.aca_semester,
+			d.dept_name,
+			RANK() OVER (PARTITION BY l.lec_code ORDER BY sr.ove_score DESC) AS rank,
+      		COUNT(*) OVER (PARTITION BY l.lec_code) AS total_count
+		from professor p, lecture l, subject s, course_list cl, student st, score_record sr, academic a, department d
+		where l.pro_id = p.pro_id
+		and l.sub_code = s.sub_code
+		and s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and a.stu_id = st.stu_id
+		and st.stu_id = sr.stu_id
+		and cl.stu_id = sr.stu_id
+		and cl.lec_code = l.lec_code
+		and sr.lec_code = cl.lec_code
+	    )
+	    SELECT
+	      lec_code,
+	      lec_open_year,
+	      lec_open_semester,
+	      sub_name,
+	      sub_credit,
+	      sub_sort,
+	      sub_type,
+	      stu_id,
+	      stu_name_ko,
+	      atd_score,
+	      mdt_score,
+	      fnl_score,
+	      asg_score,
+	      ove_score,
+	      aca_major,
+	      aca_grade,
+	      aca_semester,
+	      dept_name,
+	      rank,
+	      CASE
+	      <![CDATA[
+	        WHEN rank <= CEIL(0.15*total_count) THEN 4.5
+	    	WHEN rank <= CEIL(0.3*total_count) THEN 4
+	    	WHEN rank <= CEIL(0.5*total_count) THEN 3.5
+	    	WHEN rank <= CEIL(0.7*total_count) THEN 3.0
+	    	WHEN rank <= CEIL(0.75*total_count) THEN 2.5
+	    	WHEN rank <= CEIL(0.8*total_count) THEN 2
+	    	WHEN rank <= CEIL(0.85*total_count) THEN 1.5
+	    	WHEN rank <= CEIL(0.9*total_count) THEN 1
+			]]>
+	    ELSE 0
+	      END AS grade
+	    FROM score_summary
+	    WHERE stu_id = #{stuId}
+	    and sub_sort = '교양'
+	    and sub_type = '선택'
+	</select> 
+</mapper>

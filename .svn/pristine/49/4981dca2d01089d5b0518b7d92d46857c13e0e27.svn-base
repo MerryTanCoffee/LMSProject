@@ -1,0 +1,9 @@
+package kr.or.ddit.reference.service;
+
+import kr.or.ddit.reference.vo.ReferenceVO;
+
+public interface IReferenceService {
+
+	public void insertReference(ReferenceVO referenceVO);
+
+}

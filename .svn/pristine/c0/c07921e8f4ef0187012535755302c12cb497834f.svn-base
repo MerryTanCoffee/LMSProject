@@ -1,0 +1,80 @@
+package kr.or.ddit.score.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ObjectionMapper;
+import kr.or.ddit.mapper.ScoreMapper;
+import kr.or.ddit.score.service.IScoreService;
+import kr.or.ddit.score.vo.ObjectionVO;
+import kr.or.ddit.score.vo.ScoreVO;
+
+@Service
+public class ScoreServiceImpl implements IScoreService {
+	@Inject
+	private ScoreMapper mapper;
+	
+	@Inject
+	private ObjectionMapper obmapper;
+	
+	@Override
+	public void insert(ScoreVO score) throws Exception{
+		score.totalScore();
+		mapper.insert(score);
+	}
+	//교수용
+	@Override
+	public List<ScoreVO> list(Map<String,String> map) throws Exception{
+		return mapper.list(map);
+	}
+	//학생용...
+	@Override
+	public List<ScoreVO> stuList(String stuId) throws Exception{
+		return mapper.stuList(stuId);
+	}
+	//관리자용
+	@Override
+	public List<ScoreVO> list() throws Exception{
+		return mapper.list();
+	}
+
+	@Override
+	public void delete(Map<String,String> map) throws Exception{
+		mapper.delete(map);
+	}
+
+	@Override
+	public void update(ScoreVO score) throws Exception {
+		score.totalScore();
+		mapper.update(score);
+	}
+
+	@Override
+	public List<ScoreVO> read(String stuId, HttpSession session) throws Exception {
+		List<ScoreVO> score =  mapper.read(stuId);
+		return score;
+	}
+
+	//셀렉트박스 선택용임 아무튼
+	@Override
+	public List<ScoreVO> selectList(String proId) throws Exception {
+		return mapper.selectList(proId);
+	}
+	
+	//학생용 전선 전필 교선 교필 별 학점평균임...
+	@Override
+	public List<ScoreVO> averageList(String stuId) throws Exception {
+		return mapper.averageList(stuId);
+	}
+	
+	//학생용 이의신청 모습 아예 상상이 안가네...
+	@Override
+	public List<ObjectionVO> objectionList(String stuId) throws Exception {
+		return obmapper.objectionList(stuId);
+	}
+}

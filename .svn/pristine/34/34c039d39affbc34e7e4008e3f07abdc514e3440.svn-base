@@ -1,0 +1,14 @@
+package kr.or.ddit.study.service;
+
+import java.util.List;
+
+import kr.or.ddit.study.vo.StudyVO;
+
+public interface IStudyService {
+
+	public List<StudyVO> selectMyStudy(String userId);
+
+	public StudyVO selectStudy(String studyCode);
+
+
+}

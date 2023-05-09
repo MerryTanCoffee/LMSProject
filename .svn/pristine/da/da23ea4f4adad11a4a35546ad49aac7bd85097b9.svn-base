@@ -1,0 +1,377 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li>
+			<h5 class="bc-title">상담</h5>
+		</li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)">
+			<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M10.986 14.0673C7.4407 14.0673 4.41309 14.6034 4.41309 16.7501C4.41309 18.8969 7.4215 19.4521 10.986 19.4521C14.5313 19.4521 17.5581 18.9152 17.5581 16.7693C17.5581 14.6234 14.5505 14.0673 10.986 14.0673Z" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M10.986 11.0054C13.3126 11.0054 15.1983 9.11881 15.1983 6.79223C15.1983 4.46564 13.3126 2.57993 10.986 2.57993C8.65944 2.57993 6.77285 4.46564 6.77285 6.79223C6.76499 9.11096 8.63849 10.9975 10.9563 11.0054H10.986Z" stroke="#888888" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg> 상담내역
+		</a></li>
+		<li class="breadcrumb-item active"><a href="#">학생 신청내역</a></li>
+	</ol>
+</div>
+<div class="container-fluid">
+<!-- 교수가 보는 학생 상담신청 내역 리스트 -->
+<div class="row">
+    <div class="card" style="border:none;">
+        <!-- Nav tabs -->
+        <div class="custom-tab-1 pt-3">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#consultAppListW">대기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#consultAppListY">승인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#consultAppListN">반려</a>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="consultAppListW" role="tabpanel">
+                    <div class="row">
+                        <div class="card" style="border:none;">
+                            <div class="pt-4">
+                                <div class="card-header" style="border:none;padding-top:10px;padding-bottom:10px;">
+                                    <h4><span style="font-size:20px; color: #f96d00;">|</span><strong>&nbsp;대기내역</strong></h4>
+                                </div>
+                                <div class="card-body pt-1">
+                                    <table class="table table-hover table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>학번</th>
+                                                <th>성명</th>
+                                                <th>상담일자</th>
+                                                <th>상담시간</th>
+                                                <th>상담사유</th>
+                                                <th>상담유형</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:choose>
+                                        	<c:when test="${empty consultAppListW }">
+                                        		<tr>
+                                        			<td colspan="8" class="text-center">대기내역이 존재하지 않습니다.</td>
+                                        		</tr>
+                                        	</c:when>
+                                        	
+											<c:otherwise>
+												<c:forEach items="${consultAppListW }" var="list" varStatus="stat">
+		                                            <input type="hidden" value="${list.consNum }" id="consNum"/>
+		                                            <tr id="consultRow"
+		                                            	data-stu-id = "${list.stuId }"
+		                                            	data-stu-name-ko="${list.stuNameKo }"
+		                                            	>	
+		                                                <td>${stat.count }</td>
+		                                                <td>${list.stuId }</td>
+		                                                <td>${list.stuNameKo }</td>
+		                                                <td>${fn:substring(list.consDate,0,10) }</td>
+		                                                <td>
+		                                                	<c:set var = "start" value = "${fn:substring(list.consStart,1,3)}:00"/>
+								                            <c:set var = "end" value = "${fn:substring(list.consEnd,1,3)+1}:00"/>
+								                            ${start} - ${end }
+		                                                </td>
+		                                                <td>${list.consReqRsn }</td>
+		                                                <td>
+			                                                <c:if test="${list.consInterview eq 'Y' }">
+				                                                <i class="bi bi-people-fill"></i>대면
+			                                                </c:if>
+			                                                <c:if test="${list.consInterview eq 'N' }">
+				                                                <i class="bi bi-person-badge"></i>비대면
+			                                                </c:if>
+		                                                </td>
+		                                                <td>
+		                                                <form action="/consult/updateStatus" method="post" id="consultApply">
+		                                                	<input type="hidden" name="consNum" value="${list.consNum }" id="consNum"/>
+		                                                	<input type="hidden" name="stuId" value="${list.stuId }">
+		                                                	<input type="hidden" name="consStatus" value="W">
+		                                                	<input type="hidden" name="consObjRsn" value="">
+		                                                </form>
+		                                                	<button type="button" class="btn light btn-sm btn-success apply">승인</button>
+		                                                	<button type="button" class="btn light btn-sm btn-danger consultRejectBtn" data-bs-toggle="modal" data-bs-target="#rejectModal">반려</button>
+		                                                </td>
+		                                            </tr>
+												</c:forEach>
+											</c:otherwise>	
+                                        </c:choose>
+                                        </tbody>
+                                    </table>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 대기내역 끝 -->
+                
+                <!-- 승인 반려 모달 -->
+				<div class="modal fade" id="rejectModal">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title"><span style="font-size:20px; color: #f96d00;">|</span>&nbsp;반려</h4>
+								<button type="button" class="btn-close" data-bs-dismiss="modal">
+								</button>
+							</div>
+							<div class="modal-body">
+								<form action="/consult/updateStatus" method="post" id="consultUpdate">
+									<table class="table table-bordered" id="consultModalTbl">
+										<tr>
+											<td style="width: 30%; background-color: aliceblue;">학번</td>
+											<td class="consultModalTd"></td>
+										</tr>
+										<tr>
+											<td style="width: 30%; background-color: aliceblue;">학생이름</td>
+											<td class="consultModalTd"></td>
+										</tr>
+										<tr>
+											<td style="width: 30%; background-color: aliceblue;">반려사유</td>
+											<td><textarea class="form-txtarea form-control" rows="5" name="consObjRsn"></textarea></td>
+										</tr>
+									</table>
+									<input type="hidden" name="consStatus" value="W">
+									<input type="hidden" name="stuId" value=""/>
+									<input type="hidden" name="consNum" value=""/>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn light btn-danger" id="deny">반려</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">닫기</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 승인 반려 모달 종료 -->
+                
+	                <div class="tab-pane fade" id="consultAppListY">
+	                    <div class="row">
+	                        <div class="card" style="border:none;">
+	                            <div class="pt-4">
+	                                <div class="card-header" style="border:none;padding-top:10px;padding-bottom:10px;">
+	                                    <h4><span style="font-size:20px; color: #f96d00;">|</span><strong>&nbsp;승인내역</strong></h4>
+	                                </div> 
+	                                <div class="card-body  pt-1">
+	                                    <table class="table table-hover table-responsive">
+	                                        <thead>
+	                                            <tr>
+	                                                <th>#</th>
+	                                                <th>학번</th>
+	                                                <th>성명</th>
+	                                                <th>상담일자</th>
+	                                                <th>상담시간</th>
+	                                                <th>상담사유</th>
+	                                                <th>상담유형</th>
+	                                                <th></th>
+	                                            </tr>
+	                                        </thead>
+	                                        <tbody>
+												<c:choose>
+													<c:when test="${empty consultAppListY }">
+														<tr>
+															<td colspan="8" class="text-center">승인내역이 존재하지 않습니다.</td>
+														</tr>
+													</c:when>
+													<c:otherwise>
+														<c:forEach items="${consultAppListY }" var="list" varStatus="stat">
+				                                            <tr>
+				                                                <td>${stat.count }</td>
+				                                                <td>${list.stuId }</td>
+				                                                <td>${list.stuNameKo }</td>
+				                                                <td>${fn:substring(list.consDate,0,10) }</td>
+				                                                <td>
+				                                                	<c:set var = "start" value = "${fn:substring(list.consStart,1,3)}:00"/>
+										                            <c:set var = "end" value = "${fn:substring(list.consEnd,1,3)+1}:00"/>
+										                            ${start} - ${end }
+				                                                </td>
+				                                                <td class="text-left">${list.consReqRsn }</td>
+					                                            <td> 
+					                                                <c:if test="${list.consInterview eq 'Y' }">
+					                                                	<i class="bi bi-people-fill"></i>대면
+				                                                	</c:if>
+					                                                <c:if test="${list.consInterview eq 'N' }">
+						                                               <i class="bi bi-person-badge"></i>비대면
+					                                                </c:if>
+				                                                </td>
+					                                            <td>
+					                                               	<c:if test="${list.consInterview eq 'Y' }">
+					                                               	</c:if>
+				                                                   	<c:if test="${list.consInterview eq 'N' }">
+						                                            	<a href="/rtc_tea.jsp?myNum=${userInfo.userId }&yourNum=${list.stuId }" target="_blank"><button type="button" class="btn btn-sm btn-primary"><i class="bi bi-camera-video"></i></button></a>
+					                                            	</c:if>
+					                                            </td>
+				                                            </tr>
+														</c:forEach>
+													</c:otherwise>
+												</c:choose>
+	                                        </tbody>
+	                                    </table>
+	                                </div>                                
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- 승인내역 끝 -->
+				
+	                <div class="tab-pane fade" id="consultAppListN">
+	                    <div class="row">
+	                        <div class="card" style="border:none;">
+	                            <div class="pt-4">
+	                                <div class="card-header" style="border:none;padding-top:10px;padding-bottom:10px;">
+	                                    <h4><span style="font-size:20px; color: #f96d00;">|</span><strong>&nbsp;반려내역</strong></h4>
+	                                </div>  
+	                                <div class="card-body  pt-1">
+	                                    <table class="table table-hover table-responsive">
+	                                        <thead>
+	                                            <tr>
+	                                                <th>#</th>
+	                                                <th>학번</th>
+	                                                <th>성명</th>
+	                                                <th>상담일자</th>
+	                                                <th>상담시간</th>
+	                                                <th>상담사유</th>
+	                                                <th>반려사유</th>
+	                                            </tr>
+	                                        </thead>
+	                                        <tbody>
+	                                            <c:choose>
+													<c:when test="${empty consultAppListN }">
+														<tr>
+															<td colspan="7" class="text-center">반려내역이 존재하지 않습니다.</td>
+														</tr>
+													</c:when>
+													<c:otherwise>
+														<c:forEach items="${consultAppListN }" var="list" varStatus="stat">
+				                                            <tr>
+				                                                <td>${stat.count }</td>
+				                                                <td>${list.stuId }</td>
+				                                                <td>${list.stuNameKo }</td>
+				                                                <td>${fn:substring(list.consDate,0,10) }</td>
+				                                                <td>
+				                                                	<c:set var = "start" value = "${fn:substring(list.consStart,1,3)}:00"/>
+										                            <c:set var = "end" value = "${fn:substring(list.consEnd,1,3)+1}:00"/>
+										                            ${start} - ${end }
+				                                                </td>
+				                                                <td>${list.consReqRsn }</td>
+				                                                <td>${list.consObjRsn }</td>
+				                                            </tr>
+														</c:forEach>
+													</c:otherwise>
+												</c:choose>
+	                                        </tbody>
+	                                    </table>
+	                                </div>                               
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <!-- 반려내역 끝 -->
+				
+            </div>
+            <!-- tab-content 끝 -->
+        </div>
+        <!-- custom-tab-1 끝 -->
+    </div>
+    <!-- card 끝 -->
+</div>
+<!-- row 끝 -->
+
+</div>
+<!-- fluid 끝 -->
+
+<script>
+$(function(){
+	$(document).on("click", ".consultRejectBtn", function(){
+		let consultRow = $(this).parent().parent();
+		let consultTbl = $("#consultModalTbl");
+		console.log($("#consNum").val());
+		console.log(consultTbl.find(".consultModalTd"));
+		consultTbl.find(".consultModalTd:eq(0)").html(consultRow.data('stuId'));
+		consultTbl.find(".consultModalTd:eq(1)").html(consultRow.data('stuNameKo'));
+		$("#consultUpdate").find("input[name=consNum]").html($("#consNum").val());
+	});
+	
+	$("#deny").on("click", function(){
+		console.log("반려버튼");
+		console.log(">>", $("#consultModalTbl").find('.consultModalTd:eq(0)').text());
+		console.log(">>", $("#consultUpdate").find('input[name=consNum]').text());
+        let stuId = $("#consultModalTbl").find('.consultModalTd:eq(0)').text();
+        let consNum = $("#consultUpdate").find('input[name=consNum]').text();
+		// $("input[name=stuId]").attr('value', stuId);
+		// $("input[name=consNum]").attr('value', consNum);
+		// $("input[name=consStatus]").val("N");
+		// $("#consultUpdate").submit();
+
+		Swal.fire({
+			title: '상담 반려',
+			html : '상담을 반려하시겠습니까?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+			}).then((result) => { 
+				if (result.isConfirmed) {
+					$("input[name=stuId]").attr('value', stuId);
+					$("input[name=consNum]").attr('value', consNum);
+					$("input[name=consStatus]").val("N");
+					$("#consultUpdate").submit();
+					Swal.fire({
+					title :  '반려 완료', 
+					html:  '반려가 완료되었습니다.', 
+					icon : 'success'
+					});
+						
+			} else { 
+				Swal.fire({
+				title :  '반려 중단', 
+				html:  '반려가 취소되었습니다.', 
+				icon : 'error'
+				});
+			}
+			// $("input[name=consStatus]").val("Y");
+			// $("#consultApply").submit();
+		});
+
+
+		
+	});
+	
+	$(".apply").on("click", function(){
+			Swal.fire({
+			title: '상담 승인',
+			html : '상담을 승인하시겠습니까?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: 'Yes'
+			}).then((result) => { 
+				if (result.isConfirmed) {
+					$("input[name=consStatus]").val("Y");
+					$("#consultApply").submit();
+					Swal.fire({
+					title :  '승인 완료', 
+					html:  '승인이 완료되었습니다!', 
+					icon : 'success'
+					});
+						
+			} else { 
+				Swal.fire({
+				title :  '승인 중단', 
+				html:  '승인이 중단되었습니다.', 
+				icon : 'error'
+				} );
+			}
+			// $("input[name=consStatus]").val("Y");
+			// $("#consultApply").submit();
+		});
+	});	
+});
+	
+</script>

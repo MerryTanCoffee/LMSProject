@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CoolSmsMapper">
+
+	<resultMap type="java.util.Map" id="sendListMap">
+		<result property="userName" column="user_name"/>
+		<result property="smsReciver" column="sms_reciver"/>
+		<result property="smsContent" column="sms_content"/>
+		<result property="phone" column="phone"/>
+		<result property="smsDate" column="sms_date"/>
+	</resultMap>
+	
+	<select id="list" resultMap="sendListMap">
+		select
+		    sms_reciver, sms_content, to_char(sms_date, 'YYYY-MM-DD HH24:MI:SS') as sms_date,
+		    st.stu_name_ko as user_name, st.stu_phone as phone
+		from sms s, student st
+		where 1=1
+		and s.sms_reciver = st.stu_id
+		union
+		select
+		    sms_reciver, sms_content, to_char(sms_date, 'YYYY-MM-DD HH24:MI:SS') as sms_date,
+		    p.pro_name_ko, p.pro_phone
+		from sms s, professor p
+		where 1=1
+		and s.sms_reciver = p.pro_id
+		order by sms_date DESC
+	</select>
+	
+	<select id="telList" resultType="CoolSmsVO">
+		SELECT s.stu_id as user_id, stu_name_ko AS name_ko, stu_phone AS phone, a.aca_major AS major, '학생' AS type
+		FROM student s JOIN academic a ON s.stu_id = a.stu_id
+		UNION
+		SELECT pro_id, pro_name_ko, pro_phone, pro_major, '교수' AS type
+		FROM professor
+	</select>
+	
+	<insert id="smsRecordInsert" parameterType="map" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="smsNo" resultType="int">
+			select seq_coolsms.nextval from dual
+		</selectKey>
+			insert into sms(
+				sms_no, sms_content, sms_reciver, sms_date
+			) values (
+				#{smsNo}, #{smsContent}, #{userId}, sysdate
+			)
+	</insert>
+</mapper>

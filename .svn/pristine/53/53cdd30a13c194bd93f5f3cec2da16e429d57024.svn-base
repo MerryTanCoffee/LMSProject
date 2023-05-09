@@ -1,0 +1,66 @@
+package kr.or.ddit.facilty.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.facilty.service.LockerService;
+import kr.or.ddit.facilty.vo.HallVO;
+import kr.or.ddit.facilty.vo.LockerVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/locker")
+public class LockerReservationController {
+	
+	@Autowired
+	private LockerService lockerService;
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/getLockerList", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public List<LockerVO> getLockerListAjax(@RequestBody Map<String, String> dataMap){
+		List<LockerVO> lockerList = lockerService.getLockerListAjax(dataMap.get("hallCode"));
+		return lockerList;
+	}
+	
+	@GetMapping("/usageStatus")
+	public String lockerList(LockerVO lockerVO, Model model) {
+		// 사물함 이용현황
+		log.debug("체킁");
+		List<LockerVO> lockerList = lockerService.selecLockerList();
+		List<HallVO> hallList= lockerService.hallList();
+		
+		log.info("lockerList: " + lockerList);
+		log.info("hallList: " + hallList);
+		
+		model.addAttribute("lockerList", lockerList);
+		model.addAttribute("hallList", hallList);
+		
+		return "locker/list";
+	}
+	
+	
+	@PostMapping(value= "/usageStatus")
+	public String lockerReservation(LockerVO lockerVO, Model model) {
+		// 사물함 예약하기
+
+		lockerService.insertReserve(lockerVO);
+		log.info("lockerVO: " + lockerVO );
+		
+		model.addAttribute("msg", "예약이 완료되었습니다.");
+		
+		return "locker/list";
+	}
+}

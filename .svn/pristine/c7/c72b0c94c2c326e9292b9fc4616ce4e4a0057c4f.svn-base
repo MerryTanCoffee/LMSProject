@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.textbox {
+	display: block;
+	margin-top: 10px;
+}
+
+th {
+	border: 1px solid black;
+	text-align: center;
+}
+
+td {
+	border: 1px solid;
+	text-align: center;
+}
+
+.form-container {
+	float: left;
+}
+
+.table-container {
+	margin-left: 20px; /* 원하는 간격으로 설정 */
+}
+</style>
+</head>
+<body>
+	<div class="form-container" style="display: inline-block;">
+		<div class="card dz-card" id="accordion-one"
+			style="width: 100%; height: 350px; overflow: auto">
+			<div class="card-header flex-wrap">
+				<div>
+					<h4 class="card-title"
+						style="color: #22313f; font-weight: 800; font-size: 17px;">문자보내기</h4>
+				</div>
+			</div>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+					aria-labelledby="home-tab">
+					<div class="card-body pt-0">
+						<div class="table-responsive">
+
+							<form:form method="post" id="smsForm">
+								<ul>
+									<li>
+										<div id="textbox-container">
+											보낼사람 :<br> <input type="text"
+												class="form-control input-default "
+												placeholder="-제외한 숫자로 입력" name="toList[0]" />
+										</div>
+									</li>
+									<br>
+									<li>내용 :</li>
+									<li><textarea class="form-txtarea form-control" rows="3"
+											id="comment" name="smsContent"></textarea></li>
+								</ul>
+								<br>
+								<input type="button" onclick="sendSMS('sms')" value="전송하기"
+									class="btn light btn-primary" />
+								<button type="button" class="btn btn-outline-primary"
+									onclick="addTextBox(event)" style="margin-left:10px;">번호추가하기</button>
+							</form:form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="table-container" style="display: inline-block;">
+
+
+		<div class="card dz-card" id="accordion-one"
+			style="width: 100%; height: 350px; overflow: auto">
+			<div class="card-header flex-wrap">
+				<div>
+					<h4 class="card-title"
+						style="color: #22313f; font-weight: 800; font-size: 17px;">보낸사람
+						목록</h4>
+				</div>
+			</div>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+					aria-labelledby="home-tab">
+					<div class="card-body pt-0">
+						<div class="table-responsive">
+							<table class="table primary-table-bordered">
+								<thead class="thead-info">
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">수신자</th>
+										<th scope="col">발신내용</th>
+										<th scope="col">발신일자</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${smsList}" var="sms" varStatus="loop">
+										<tr>
+											<td>${loop.index + 1}</td>
+											<td>${sms.smsReciver}</td>
+											<td>${sms.smsContent}</td>
+											<td>${sms.smsDate}</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		function sendSMS(pageName) {
+			console.log("문자를 전송합니다.");
+			$("#smsForm").attr("action", pageName);
+			console.log("텍스트 :" + $('text').val());
+			$("#smsForm").submit();
+		}
+	</script>
+	<script type="text/javascript">
+		var index = 1; // toList 배열 인덱스 초기값 설정
+		function addTextBox(event) {
+			// 이벤트의 기본 동작인 폼 제출 막기
+			event.preventDefault();
+
+			// 새로운 텍스트박스 생성
+			var newTextBox = document.createElement('input');
+			newTextBox.type = 'text';
+			newTextBox.className = 'textbox form-control input-default';
+			newTextBox.name = 'toList[' + index + ']';
+			index++;
+
+			var container = document.getElementById('textbox-container');
+			container.appendChild(newTextBox);
+		}
+	</script>
+</body>

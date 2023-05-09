@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.StatisticsMapper">
+	
+	<resultMap type="java.util.Map" id="userOfNumMap">
+		<result property="stuNum" column="stu_num"/>
+		<result property="proNum" column="pro_num"/>
+		<result property="empNum" column="emp_num"/>
+	</resultMap>
+	
+	<select id="getUserOfNum" parameterType="map" resultMap="userOfNumMap">
+		select
+		    s.stu_num, p.pro_num, e.emp_num
+	    from 
+	    	(select
+		        count(*) as stu_num
+		    from users
+		    where 1=1
+		    and user_type = 'STU') s, 
+		    (select
+		        count(*) as pro_num
+		    from users
+		    where 1=1
+		    and user_type = 'PRO') p, 
+		    (select
+		        count(*) as emp_num
+		    from users
+		    where 1=1
+		    and user_type = 'EMP') e
+	</select>
+	
+	<resultMap type="java.util.Map" id="stuStatusOfNumMap">
+		<result property="attending" column="attending"/>
+		<result property="dropping" column="dropping"/>
+	</resultMap>
+	
+	<select id="getStuStatusOfNum" parameterType="map" resultMap="stuStatusOfNumMap">
+		select
+		    a.attending, b.dropping
+		from 
+		    (select
+		        count(*) as attending
+		    from academic
+		    where 1=1
+		    and aca_status = '재학') a,
+		    (select
+		        count(*) as dropping
+		    from academic
+		    where 1=1
+		    and aca_status = '휴학') b
+	</select>
+	
+	<resultMap type="java.util.Map" id="collOfStuNumMap">
+		<result property="eduNum" column="edu_num"/>
+		<result property="humNum" column="hum_num"/>
+		<result property="gyeNum" column="gye_num"/>
+		<result property="sciNum" column="sci_num"/>
+		<result property="engNum" column="eng_num"/>
+	</resultMap>
+	
+	<select id="getCollOfStuNum" resultMap="collOfStuNumMap">
+		select 
+		    edu.edu_num, hum.hum_num, gye.gye_num, sci.sci_num, eng.eng_num 
+		from 
+		    (select 
+		        count(*) as edu_num
+		    from colleage c, department d, academic a  
+		    where 1=1
+		    and c.coll_code = d.coll_code
+		    and d.dept_code = a.dept_code
+		    and c.coll_code = 'EDU') edu,
+		    (select 
+		        count(*) as hum_num
+		    from colleage c, department d, academic a  
+		    where 1=1
+		    and c.coll_code = d.coll_code
+		    and d.dept_code = a.dept_code
+		    and c.coll_code = 'HUM') hum,
+		    (select 
+		        count(*) as gye_num
+		    from colleage c, department d, academic a  
+		    where 1=1
+		    and c.coll_code = d.coll_code
+		    and d.dept_code = a.dept_code
+		    and c.coll_code = 'GYE') gye,
+		    (select 
+		        count(*) as sci_num
+		    from colleage c, department d, academic a  
+		    where 1=1
+		    and c.coll_code = d.coll_code
+		    and d.dept_code = a.dept_code
+		    and c.coll_code = 'SCI') sci,
+		    (select 
+		        count(*) as eng_num
+		    from colleage c, department d, academic a  
+		    where 1=1
+		    and c.coll_code = d.coll_code
+		    and d.dept_code = a.dept_code
+		    and c.coll_code = 'ENG') eng
+	</select>
+	
+</mapper>

@@ -1,0 +1,16 @@
+package kr.or.ddit.classRoom.attendance.service.impl;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.classRoom.attendance.service.IAtdInsertService;
+import kr.or.ddit.lecture.vo.AttendanceVO;
+
+@Service
+public class AtdInsertServiceImpl implements IAtdInsertService {
+
+	@Override
+	public AttendanceVO selectLecture(String letCode) {
+		return null;
+	}
+
+}

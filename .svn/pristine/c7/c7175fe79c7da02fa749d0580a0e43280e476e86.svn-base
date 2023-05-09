@@ -1,0 +1,53 @@
+package kr.or.ddit.msg.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.msg.service.IMsgService;
+import kr.or.ddit.msg.vo.MsgVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/msg")
+public class SendMsgController {
+	
+	@Autowired
+	private IMsgService msgService;
+	
+	@GetMapping("/msgList")
+	public String msgForm() {
+		return "msg/msgList";
+	}
+	
+	@GetMapping("/msgSendForm")
+	public String msgSendForm() {
+		return "msg/msgSend";
+	}
+
+	@ResponseBody
+	@RequestMapping(value="/msgSend", method = RequestMethod.POST, produces = "text/plain;charset=utf-8")
+	public String msgSend(@RequestBody MsgVO msgVO) {
+		//HttpSession session = req.getSession();
+		//UserVO userVO = (Stu) session.getAttribute("userInfo");
+		
+		//msgVO.setMsgSender(userVO.getUserId());	// 보내는 사람은 session에 담긴 내 아이디
+		
+		log.info("쪽지 체킁: "+ msgVO);
+		
+		msgService.insertMsg(msgVO);
+		
+		return "msg/msgList";
+	}
+}

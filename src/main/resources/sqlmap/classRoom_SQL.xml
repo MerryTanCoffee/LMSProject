@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ClassRoomMapper">
+	
+	<resultMap type="java.util.Map" id="classListMap">
+		<result property="lecCode" column="lec_code"/>
+		<result property="subName" column="sub_name"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="proNameKo" column="pro_name_ko"/>
+		<result property="subApplicant" column="sub_applicant"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="myClassYearMap">
+		<result property="lecOpenYear" column="lec_open_year"/>
+	</resultMap>
+	
+	<select id="getClassRoomList" parameterType="userVO" resultMap="classListMap">
+		<if test="userType == 'STU'">
+			select 
+			    cl.lec_code, s.sub_name, l.lec_divide, p.pro_name_ko
+			from course_list cl, lecture l, subject s, professor p, admin_setting ad
+			where 1=1
+			and cl.lec_code = l.lec_code
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and cl.stu_id = #{userId}
+			and l.lec_open_year = ad.year
+			and l.lec_open_semester = ad.semester
+			order by s.sub_name asc
+		</if>
+		<if test="userType == 'PRO'">
+			select 
+			    l.lec_code, s.sub_name, l.lec_divide, so.sub_applicant
+			from lecture l, subject s, professor p, subject_open so, admin_setting ad 
+			where 1=1
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and l.lec_code = so.lec_code
+			and p.pro_id = #{userId}
+			and l.lec_open_year = ad.year
+			and l.lec_open_semester = ad.semester
+			order by s.sub_name asc
+		</if>
+	</select>
+	
+	<select id="getMyClassYearList" parameterType="userVO" resultMap="myClassYearMap">
+		<if test="userType == 'STU'">
+			select
+			    distinct l.lec_open_year
+			from lecture l, course_list cl
+			where 1=1
+			and cl.lec_code = l.lec_code
+			and cl.stu_id = #{userId}
+		</if>
+		<if test="userType == 'PRO'">
+			select 
+			    distinct l.lec_open_year
+			from lecture l, professor p
+			where 1=1
+			and l.pro_id = p.pro_id
+			and l.lec_status = 'Y'
+			and p.pro_id = #{userId}
+		</if>
+	</select>
+	
+	<select id="getSearchList" parameterType="map" resultMap="classListMap">
+		<if test="userType == 'STU'">
+			select 
+			    cl.lec_code, s.sub_name, l.lec_divide, p.pro_name_ko
+			from course_list cl, lecture l, subject s, professor p
+			where 1=1
+			and cl.lec_code = l.lec_code
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and cl.stu_id = #{userId}
+			and l.lec_open_year = #{lecOpenYear}
+			and l.lec_open_semester = #{lecOpenSemester}
+			order by s.sub_name asc
+		</if>
+		<if test="userType == 'PRO'">
+			select 
+			    l.lec_code, s.sub_name, l.lec_divide, so.sub_applicant
+			from lecture l, subject s, professor p, subject_open so
+			where 1=1
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and l.lec_code = so.lec_code
+			and p.pro_id = #{userId}
+			and l.lec_open_year = #{lecOpenYear}
+			and l.lec_open_semester = #{lecOpenSemester}
+			order by s.sub_name asc
+		</if>
+	</select>
+	
+	<select id="selectSubName" parameterType="String" resultType="String">
+		 select 
+			s.sub_name
+		from lecture l, subject s
+		where l.sub_code = s.sub_code
+		and l.lec_code = #{lecCode}
+	
+	</select>
+	
+	<select id="getCurrentInfo" resultType="currentInfoVO">
+		select
+			year, semester
+		from admin_setting
+	</select>
+</mapper>

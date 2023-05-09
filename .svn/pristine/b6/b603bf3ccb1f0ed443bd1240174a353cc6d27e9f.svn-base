@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScholarshipMapper">
+	
+	<!-- 학생 장학수혜내역 조회 -->
+	<select id="scholarList" parameterType="scholarshipListVO" resultType="scholarshipListVO">
+		    select b.sl_no, b.sl_year, b.sl_semester, a.si_name, a.si_gubun, b.sl_schlr
+		    from scholarship_info a, scholarship_list b
+		    where a.si_code = b.si_code
+		    and stu_id = #{stuId}
+		    <if test="slYear > 0">
+			    and sl_year = #{slYear}
+		    </if>
+		    <if test="slSemester > 0">
+	    		and sl_semester = #{slSemester}
+		    </if>
+		    order by b.sl_year desc, b.sl_semester desc
+	</select>
+	
+	<!-- 학생이 내가 신청한 정보 조회  -->
+	<select id="appList" resultType="scholarshipListVO">
+		select b.sl_no, a.si_name, a.si_grade, a.si_gubun, b.sl_aplct_date, b.sl_status
+		from scholarship_info a, scholarship_list b
+		where a.si_code = b.si_code
+		and stu_id = #{stuId}
+		<if test="slStatus != '전체'">
+			and sl_status = #{slStatus}
+		</if>
+		order by b.sl_aplct_date desc 
+	</select>
+	
+	<!-- 학생이 장학정보 조회 -->
+	<select id="scholarInfoList" parameterType="scholarshipInfoVO" resultType="scholarshipInfoVO">
+		select si_code, si_gubun, si_name, si_grade
+		from scholarship_info
+		where 1=1 
+		<if test="siCode != '전체' ">
+			and si_code like #{siCode} || '%'
+		</if>
+		<if test="siGubun == '교내' or siGubun == '교외' ">
+			and si_gubun = #{siGubun}
+		</if>
+	</select>
+	
+	<!-- 장학금 신청 -->
+	<insert id="insertScholar">
+		insert into scholarship_list
+			(sl_no, stu_id, si_code, sl_schlr, sl_year, sl_semester, sl_aplct_date, sl_status)
+		values
+			(seq_scholarship.nextval, #{stuId}, #{siCode}, 3000000, 2023, 2, sysdate, 'W')
+	</insert>
+	
+	<!-- 학생입장 : 장학금 신청현황 리스트  -->
+	<select id="scholarListApp" parameterType="scholarshipListVO" resultType="scholarshipListVO">
+		select b.sl_no, a.si_name, a.si_grade, a.si_gubun, b.sl_aplct_date, b.sl_status
+		from scholarship_info a, scholarship_list b
+		where a.si_code = b.si_code
+		and stu_id = #{stuId}
+		order by b.sl_aplct_date desc 
+	</select>
+
+	<!-- 학생입장 : 장학금 신청현황 상세보기 -->	
+	<select id="scholarDetail" parameterType="scholarshipListVO" resultType="scholarshipListVO">
+		select b.sl_no, a.si_name, a.si_grade, a.si_gubun, b.sl_aplct_date, b.sl_confirm_date, b.sl_status, b.sl_comment
+		from scholarship_info a, scholarship_list b
+		where a.si_code = b.si_code
+		and sl_no = #{slNo}
+	</select>
+	
+	
+	<!-- 관리자 장학금 기존정보 보기 -->
+	<select id="infoList" parameterType="scholarshipInfoVO" resultType="scholarshipInfoVO">
+		select si_code, si_name, si_grade, si_gubun
+		from scholarship_info
+		order by si_code
+	</select>
+	
+	
+	<!-- 관리자 장학금 기존정보 보기에서 select box 선택해서 보기 -->
+	<select id="infoList2" parameterType="scholarshipInfoVO" resultType="scholarshipInfoVO">
+		select si_code, si_name, si_grade, si_gubun
+		from scholarship_info
+		where 1=1
+		<if test="siCode != '전체'">
+			and si_code like #{siCode} || '%'
+		</if>
+		<if test="siGubun == '교내' or siGubun == '교외'">
+			and si_gubun = #{siGubun}
+		</if>
+	</select>
+	
+	<!-- 새로운 장학금 등록 -->
+	<insert id="insertScholarInfo">
+		insert into scholarship_info(
+			si_code, si_name, si_grade, si_gubun
+		)
+		values(
+			#{siCode}, #{siName}, #{siGrade}, #{siGubun}
+		)
+	</insert>
+	
+	<!-- 장학금 정보 삭제 -->
+	<delete id="deleteScholarInfo" parameterType="String">
+		delete from scholarship_info
+		where si_code = #{siCode}
+	</delete>
+	
+	<!-- 관리자 : 승인내역 리스트 조회하기  -->
+	<select id="selectAcceptList" resultType="scholarshipListVO">
+		select b.stu_id, c.stu_name_ko, a.si_code, a.si_name, a.si_gubun, b.sl_schlr, b.sl_aplct_date, b.sl_confirm_date
+		from scholarship_info a, scholarship_list b, student c
+		where a.si_code = b.si_code
+		and b.stu_id = c.stu_id
+		and b.sl_status = 'Y'
+<!-- 		and b.sl_year = 2023 -->
+<!-- 		and b.sl_semester = 2 -->
+		order by b.sl_confirm_date desc
+	</select>
+	
+	<!-- 관리자 : 반려내역 리스트 조회하기  -->
+	<select id="rejectList" resultType="scholarshipListVO">
+		select b.stu_id, c.stu_name_ko, a.si_code, a.si_name, a.si_gubun, b.sl_schlr, b.sl_aplct_date, b.sl_confirm_date, b.sl_comment
+		from scholarship_info a, scholarship_list b, student c
+		where a.si_code = b.si_code
+		and b.stu_id = c.stu_id
+		and b.sl_status = 'N'
+<!-- 		and b.sl_year = 2023 -->
+<!-- 		and b.sl_semester = 2 -->
+		order by b.sl_aplct_date desc
+	</select>
+	
+	<!-- 관리자 : 대기내역 리스트 조회하기  -->
+	<select id="waitList" resultType="scholarshipListVO">
+		select b.stu_id, c.stu_name_ko, a.si_code, a.si_name, a.si_gubun, b.sl_schlr, b.sl_aplct_date
+		from scholarship_info a, scholarship_list b, student c
+		where a.si_code = b.si_code
+		and b.stu_id = c.stu_id
+		and b.sl_status = 'W'
+<!-- 		and b.sl_year = 2023 -->
+<!-- 		and b.sl_semester = 2 -->
+		order by b.sl_aplct_date desc
+	</select>
+	
+	<update id="updateStatus" parameterType="scholarshipListVO">
+		update scholarship_list
+		set sl_status = #{slStatus},
+    	sl_comment = #{slComment},
+    	sl_confirm_date = sysdate
+		where sl_status = 'W' 
+		and  si_code = #{siCode} 
+		and stu_id = #{stuId}
+	</update>
+	
+	<select id="getCurrentInfo" resultType="currentInfoVO">
+	 select
+	 	year, semester
+	 from admin_setting
+	</select>
+	
+</mapper>

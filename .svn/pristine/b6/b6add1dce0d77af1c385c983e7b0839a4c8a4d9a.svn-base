@@ -1,0 +1,7 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.msg.vo.MsgVO;
+
+public interface MsgMapper {
+	public int insertMsg(MsgVO msgVO);
+}

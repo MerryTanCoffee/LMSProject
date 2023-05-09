@@ -1,0 +1,156 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<style>
+.card-header {
+    border-color: #E6E6E6;
+    position: relative;
+    background: transparent;
+    display: flex;
+    padding:0;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -10px;
+}
+
+.col-lg-4 col-col-lg-4 col-form-label{
+	text-align: left;
+}
+#imgArea { 
+  	text-align: center;
+    width: 200px; 
+    height: 200px; 
+    object-fit: contain; 
+} 
+.card-body {
+    padding: 0px; 
+}
+.badge {
+    margin-bottom: 5px;
+    line-height: 2;
+    border-radius: 0.25rem;
+    font-size: 15px;
+    font-weight: 1000;
+    padding: 5px 12px;
+    border: 0.0625rem solid transparent;
+}
+.form-control:disabled, .form-control[readonly] {
+    background: #f5f5f540;
+    opacity: 1;
+    pointer-events: none;
+}
+.light.badge-success {
+    background-color: #daf5e6;
+    color: #495b72;
+}
+input.form-control {
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+
+</style>
+
+<div class="card-deck">
+	<div class="card bg-white">
+		<div class="card-body">
+				<div class="profile-head">
+					<div class="photo-content">
+						<div class="author-profile">
+							<div class="author-info"></div>
+						</div>
+					</div>
+					<div class="custom-tab-1">
+					  <ul class="nav nav-tabs d-flex">
+					 	 <li class="nav-item">
+					      <a class="nav-link" href="#" style="font-size: large;">기본인적사항</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link"  href="#" style="font-size: medium;">복수전공/부전공</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link"  href="#" style="font-size: medium;">전과</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link  active"  href="/user/stuApplyOff" style="font-size: large;">휴학/복학</a>
+					    </li>
+					    <li class="nav-item">
+					      <a class="nav-link"  href="#" style="font-size: medium;">졸업</a>
+					    </li>
+					    <button type="button" id="chgBtn" class="btn btn-success btn-s fs-6 ms-auto" >변경하기</button>
+					  </ul>
+					
+			
+					<c:if test="${sessionScope.userInfo.userType eq 'STU'}">
+						<div class="container">
+							<div class="row">
+								<div class="col">
+									<div class="d-flex justify-content-center" id = "imgDiv">
+										<img id="imgArea" src = "${pageContext.request.contextPath}/resources/images/profile${profile.profilePath}${profile.profileName }"/>
+									</div>
+									<input type="file" class="form-control" id="inputFile"/>
+								</div>
+								<div class="col">
+							
+									<div class="mb-4">
+										<label class="col-lg-4 col-col-lg-4 col-form-label">학번</label>
+											 <input type="text" value="${sessionScope.userInfo.userId }" class="form-control" readonly   /> 
+										 <label class="col-lg-4 col-col-lg-4 col-form-label">성명</label> 
+											 <input type="text" value="${sessionScope.userInfo.studentVO.stuNameKo }" class="form-control" readonly />
+										 <label class="col-lg-4 col-col-lg-4 col-form-label">영문 성명</label> 
+											 <input type="text" value="${sessionScope.userInfo.studentVO.stuNameEn }" class="form-control" readonly />
+									</div>
+								</div>
+								<div class="col">
+									<div class="mb-4">
+										<label class="col-lg-4 col-col-lg-4 col-form-label">학과</label> 
+											<input type="text" 	value="${sessionScope.userInfo.studentVO.academicVO.acaMajor }" class="form-control" readonly /> 
+										<label class="col-lg-4 col-col-lg-4 col-form-label">학년</label> 
+											<input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaGrade }" class="form-control" readonly /> 
+										<label class="col-lg-4 col-col-lg-4 col-form-label">이수학기</label> 
+											<input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaSemester }" class="form-control" readonly />
+									</div>
+								</div>
+							</div>
+						</div>
+					</c:if>
+				</div>	
+			</div>
+		</div>
+	</div>				
+<div class="card-header flex-wrap d-flex justify-content-between border-0"></div>
+	<c:if test="${sessionScope.userInfo.userType eq 'STU'}">
+					<div class="container" id="infoCont">
+						<div class="row">
+							<div class="col">
+								<div class="mb-3">
+									 <label class="col-lg-4 col-col-lg-4 col-form-label">생년월일</label> 
+										 <input type="text" value="${sessionScope.userInfo.studentVO.stuReg1 }" class="form-control" readonly/>
+									<label class="col-lg-4 col-col-lg-4 col-form-label">핸드폰번호</label>
+										 <input type="text" id = "phone" value="${sessionScope.userInfo.studentVO.stuPhone }" class="form-control"> 
+									 <label class="col-lg-4 col-col-lg-4 col-form-label">이메일</label> 
+										 <input type="text" id = "email" value="${sessionScope.userInfo.studentVO.stuEmail }" class="form-control">
+								</div>
+							</div>
+							<div class="col">
+								<div class="mb-3">
+									<label class="col-lg-4 col-form-label">국가구분</label>
+										 <input type="text" id ="nation" value="${sessionScope.userInfo.studentVO.stuNation }" class="form-control" readonly/> 
+										<span class="input-group-append">
+											<button type="button" class="btn btn-primary btn-xs" onclick="DaumPostcode()">우편번호 찾기</button>
+										 <input type="text" id = "postcode" value="${sessionScope.userInfo.studentVO.stuPostcode }" name="stuPostcode" class="form-control">
+										</span>
+									 <label class="col-lg-4 col-form-label">주소</label> 
+										 <input type="text" id = "addr1" value="${sessionScope.userInfo.studentVO.stuAddr1 }" name="stuAddr1" class="form-control">
+									
+								</div>
+							</div>	
+			
+						</div>
+					</div>
+				</c:if>
+</div>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

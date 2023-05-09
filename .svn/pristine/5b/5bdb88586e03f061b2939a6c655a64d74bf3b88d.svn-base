@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.StudyMapper">
+
+	<resultMap type="java.util.Map" id="stuTimeMap">
+		<result property="stuId" column="stu_id"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="subName" column="sub_name"/>
+		<result property="lrsStart" column="lrs_start"/>
+		<result property="lrsEnd" column="lrs_end"/>
+		<result property="weekCode" column="week_code"/>
+	</resultMap>
+
+	<select id="selectMyStudy" parameterType="studyVO"
+		resultType="studyVO">
+		SELECT
+			a.*,
+			COUNT(sm.STU_ID) AS member_count,
+			row_number() over (order by a.study_date desc) rnum
+		FROM (
+			SELECT
+				s.study_code,
+				study_title,
+				study_date,
+				sm.STU_ID,
+				sm.SM_LEADER
+				FROM study s
+				LEFT OUTER JOIN study_member sm ON s.study_code = sm.study_code
+			WHERE sm.STU_ID =#{userId}
+			) a
+		LEFT OUTER JOIN study_member sm ON a.study_code = sm.study_code
+		GROUP BY a.study_code, a.study_title, a.study_date, a.STU_ID, a.SM_LEADER
+	</select>
+
+	<select id="selectOneStudy" parameterType="studyVO" resultType="studyVO">
+	SELECT a.*, ROW_NUMBER() OVER (ORDER BY a.stu_id ) AS rnum
+	FROM (
+	    SELECT s.stu_id, s.stu_name_ko, sm.sm_leader, a.dept_code, d.dept_name
+	    FROM (
+	        SELECT sm.stu_id, sm.sm_leader
+	        FROM study_member sm
+	        WHERE sm.study_code = #{studyCode}
+	    ) sm
+	    INNER JOIN (
+	        SELECT a.stu_id, a.dept_code
+	        FROM academic a
+	    ) a ON sm.stu_id = a.stu_id
+	    INNER JOIN student s ON sm.stu_id = s.stu_id
+	    INNER JOIN department d ON a.dept_code = d.dept_code
+	) a
+	ORDER BY a.stu_id
+	</select>
+	
+	<select id="selectStudyName" parameterType="String" resultType="String">
+		select study_title
+		from study
+		where study_code = #{studyCode}
+	</select>
+	
+	<select id="standByStudy" parameterType="studyVO" resultType="studyVO">
+	select
+	 a.*,
+  		row_number() over (order by study_date desc) rnum
+		FROM (select
+             sm.study_code,
+             study_title,
+			 study_date,
+			sm.study_status
+		from study s
+			left outer join  study_member sm on s.study_code = sm.study_code
+		where sm.stu_id = #{studyId}
+			and sm.STUDY_STATUS = 'N'
+			)a
+	</select>
+	
+	<select id="selectStudyLeader" parameterType="studyVO" resultType="studyVO">
+		select stu_id, sm_leader, study_code
+		from study_member
+		where study_code =#{studyCode}
+		and stu_id =#{stuId}
+	</select>
+
+	<insert id="insertStuMem" parameterType="studyVO">
+		insert into study_member(
+			study_code, stu_id, study_status
+		)values(
+			#{studyCode}, #{stuId}, #{studyStatus}
+		)
+	</insert>
+	
+	<delete id="deleteMsg" parameterType="studyVO">
+		DELETE FROM msg
+		WHERE msg_sender = #{stuId} AND msg_content = #{msgContent}
+	</delete>
+	
+	<select id="getStuTimeTbl" resultMap="stuTimeMap">
+		select
+		    stu_id, cl.lec_code, sub_name,
+		    lrs_start, lrs_end, week_code
+		from course_list cl, lecture_room_schedule lrs, lecture l, subject s
+		where cl.lec_code = lrs.lec_code
+		and cl.lec_code = l.lec_code
+		and l.sub_code = s.sub_code
+		and stu_id = #{stuId}
+	</select>
+</mapper>

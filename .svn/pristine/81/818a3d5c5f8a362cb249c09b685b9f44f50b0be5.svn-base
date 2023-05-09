@@ -1,0 +1,13 @@
+package kr.or.ddit.common.vo;
+
+import lombok.Data;
+
+@Data
+public class DepartmentVO {
+	private String deptCode;
+	private String collCode;
+	private String deptName;
+	private String deptTel;
+	private String deptTuition;
+	private String deptRoom;
+}

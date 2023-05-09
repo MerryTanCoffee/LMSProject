@@ -1,0 +1,19 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.board.vo.BoardAttachVO;
+import kr.or.ddit.board.vo.BoardVO;
+import kr.or.ddit.board.vo.PaginationInfoVO;
+
+public interface BoardMapper {
+	public int insertBoard(BoardVO boardVO);
+
+	public void insertBoardAttach(BoardAttachVO boardAttachVO);
+
+	public int selectBoardCount(PaginationInfoVO<BoardVO> pagingVO);
+
+	public List<BoardVO> selectBoardList(PaginationInfoVO<BoardVO> pagingVO);
+
+
+}

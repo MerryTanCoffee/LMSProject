@@ -1,0 +1,24 @@
+package kr.or.ddit.consult.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.consult.service.IConsultService;
+import kr.or.ddit.mapper.ConsultMapper;
+import kr.or.ddit.user.vo.ProfessorVO;
+
+@Service
+public class ConsultServiceImpl implements IConsultService {
+	
+	@Autowired
+	private ConsultMapper mapper;
+
+	@Override
+	public List<ProfessorVO> getProInfoList(String deptCode) {
+		return mapper.getProInfoList(deptCode);
+	}
+
+	
+}

@@ -1,0 +1,12 @@
+package kr.or.ddit.scholarship.service;
+
+import java.util.List;
+
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+public interface IScholarshipService {
+
+	// 장학금 수혜 내역 조회
+	public List<ScholarshipListVO> scholarList(String userId);
+
+}

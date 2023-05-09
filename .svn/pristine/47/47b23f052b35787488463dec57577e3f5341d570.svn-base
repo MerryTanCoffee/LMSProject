@@ -1,0 +1,245 @@
+package kr.or.ddit.exam.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.exam.service.ExamService;
+import kr.or.ddit.exam.vo.ExamAnswerVO;
+import kr.or.ddit.exam.vo.ExamVO;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/exam")
+public class ExamController {
+
+	@Inject
+	private ExamService examService;
+	
+	// 과목 정보 폼
+	@GetMapping("/subjectInfoForm")
+	public String examInfoForm(HttpSession session, Model model) {
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo"); 
+		String proId = userVO.getProfessorVO().getProId();
+		log.info("proId : " + proId);
+		
+		List<ExamVO> examList = examService.selectExamSubjectList(proId);	// 교수에 해당하는 과목리스트니까 examVO가 아니라 proId로 
+		log.info("examList" + examList);
+		
+		model.addAttribute("examList", examList);
+		
+		return "exam/subjectInfo";
+	}
+	
+	
+	// 문제 등록 폼(문제 출제하기)
+	@GetMapping("/examQuestionsForm")
+	public String examQuestionsForm(@RequestParam String lecCode, @RequestParam String subName, Model model) {
+		
+		model.addAttribute("lecCode", lecCode);
+		model.addAttribute("subName", subName);
+
+		
+		return "exam/examQuestions";
+	}
+	
+	// 문제 등록
+	@PostMapping("/examInsert")
+	public String examInsert(RedirectAttributes redirect, ExamVO examVO) {
+		
+		examService.insertExam(examVO);
+		
+//		redirect.addAttribute("lecCode", examVO.getLecCode());
+		
+		String lecCode = examVO.getLecCode();
+		
+		return "redirect:/class/proClassRoom/" + lecCode;
+	}
+	
+	
+	// 과목에대한 시험정보 리스트(중간, 기말, 과목정보)
+	@GetMapping("/examGubunList")
+	public String examGubunList(@RequestParam("lecCode") String lecCode, HttpSession session, Model model) {
+		
+		log.info("lecCode: " + lecCode);
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo"); 
+		String proId = userVO.getProfessorVO().getProId();
+		
+		Map<String, Object> examSubInfo = new HashMap<String, Object>();
+		
+		examSubInfo.put("lecCode", lecCode);
+		examSubInfo.put("proId", proId);
+		
+		List<ExamVO> examList = examService.examGubunList(examSubInfo);
+		
+		model.addAttribute("examList", examList);
+		
+		return "exam/examGubunList";
+	} 
+	
+	// 과목에대한 시험정보 리스트 안 상세보기(해당 시험에 대한 문제 상세보기)
+	@GetMapping("/examDetail")
+	public String examDetail(
+			@RequestParam String lecCode,
+			@RequestParam String examGubun,
+			ExamVO examVO,
+			Model model) {
+		
+		examVO.setLecCode(lecCode);
+		
+		log.info("lecCode : " + lecCode);
+		log.info("examGubun : " + examGubun);
+		
+		List<ExamVO> examInfo = examService.selectExamInfo(examVO);
+		log.info("examInfo : " + examInfo);
+		
+		model.addAttribute("examInfo", examInfo);
+		model.addAttribute("lecCode", lecCode);
+		model.addAttribute("examGubun", examGubun);
+		
+		return "exam/examDetail";
+	}
+	
+	// 문제 수정(질문+보기)
+	@ResponseBody
+	@PostMapping("/examUpdate")
+	public String examUpdate(@RequestBody ExamVO examVO) {
+		
+		log.debug("examVO 체크{}", examVO);	// {}붙여서 쓰면 +로 안쓰고 ,로 쓸 수 있음
+		
+		examService.examUpdate(examVO);
+	
+		return "success";
+		
+	}
+	
+	// 문제 삭제(질문+보기)
+	@ResponseBody
+	@PostMapping("/examDelete")
+	public String examDelete(@RequestBody ExamVO examVO) {
+		
+		log.debug("examVO 체크{}", examVO);
+		
+		examService.examDelete(examVO);
+		
+		return "success";
+	}
+	
+	// 내가 수강중인 강의중 미응시한 강의 불러오기  
+	@GetMapping("/stuExamList")
+	public String stuExamList(HttpSession session, ExamAnswerVO examAnswerVO, Model model) {
+		
+		UserVO userVO = (UserVO)session.getAttribute("userInfo");
+		String stuId = userVO.getStudentVO().getStuId();
+		
+		
+		List<ExamAnswerVO> stuExamList = examService.stuExamList(stuId);
+		log.info("stuExamList{}", stuExamList);
+		
+		model.addAttribute("stuExamList", stuExamList);
+		model.addAttribute("stuId", stuId);
+		
+		return "exam/stuExamList";
+	}
+	
+	// 학생이 푸는 시험지 폼, 시험지 내용 불러오기 
+	@GetMapping("/stuExamForm")
+	public String stuExamForm(HttpSession session, ExamVO examVO, ExamAnswerVO examAnswerVO, Model model) {
+		
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		String stuId = userVO.getStudentVO().getStuId();
+
+		model.addAttribute("stuId", stuId);
+		log.info("stuId", stuId);
+		
+		
+		List<ExamVO> stuExamFormList = examService.stuExamForm(examVO);
+		log.info("stuExamFormList{}", stuExamFormList);
+		
+		
+		model.addAttribute("stuExamFormList", stuExamFormList);
+		
+		return "exam/stuExamForm";
+	}
+	
+	// 학생이 시험지 품(시험 인서트)
+	@PostMapping("/stuExamAnswerInsert")
+	public String stuExamAnswerInsert(ExamAnswerVO examAnswerVO, Model model) {
+		
+		examService.stuExamAnswerInsert(examAnswerVO);
+		
+		return "redirect:/exam/stuExamList";
+
+	}
+	
+	// 학생 시험 채점 결과
+	@GetMapping("/stuTakeExamList")
+	public String stuTakeExamList(@RequestParam String subName, @RequestParam String examGubun, HttpSession session, ExamAnswerVO examAnswerVO, Model model) {
+		
+		UserVO userVO = (UserVO)session.getAttribute("userInfo");
+		String stuId = userVO.getStudentVO().getStuId();
+		
+		examAnswerVO.setStuId(stuId);
+		
+		List<ExamAnswerVO> stuAnswerList = examService.stuAnswerSelect(examAnswerVO);
+		log.info("stuAnswerList{}", stuAnswerList);
+		
+		
+		model.addAttribute("stuAnswerInfo", stuAnswerList);
+		model.addAttribute("subName", subName);
+		model.addAttribute("examGubun", examGubun);
+		
+		
+		return "exam/stuTakeExamList";
+	}
+	
+	// 학생이 시험본 내역의 상태에 따라 결과 제공
+	@ResponseBody
+	@RequestMapping(value="/checkExamStatus", method = RequestMethod.POST, produces = "text/plain")
+	public ResponseEntity<String> checkExamStatus(@RequestBody ExamAnswerVO answerVO){
+		ServiceResult result = examService.checkExamStatus(answerVO);
+		return new ResponseEntity<String>(result.toString(), HttpStatus.OK);
+	}
+	
+	// 시험시간 초과시 0점 처리
+	@ResponseBody
+	@RequestMapping(value="/insertZeroScore", method = RequestMethod.POST, produces = "text/plain")
+	public ResponseEntity<String> insertZeroScore(@RequestBody ExamAnswerVO answerVO){
+		ServiceResult result = examService.insertZeroScore(answerVO);
+		return new ResponseEntity<String>(result.toString(), HttpStatus.OK);
+	}
+	
+	// 교수가 해당과목에 대해 이미 출제한 정보가 있다면 상태 결과 제공
+	@ResponseBody
+	@RequestMapping(value="/checkExamSubmitStatus", method = RequestMethod.POST, produces = "text/plain")
+	public ResponseEntity<String> checkExamSubmitStatus(@RequestBody ExamVO examVO){
+		ServiceResult result = examService.checkExamSubmitStatus(examVO);
+		return new ResponseEntity<String>(result.toString(), HttpStatus.OK);
+	}
+	
+	
+	
+}

@@ -1,0 +1,19 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.facilty.vo.FacilityReservationVO;
+import kr.or.ddit.facilty.vo.FacilityVO;
+
+public interface FacilityMapper {
+	// 시설정보
+	public List<FacilityVO> getFacility(String facCode);
+	
+	// 시설 예약하기
+	public int reservation(FacilityReservationVO facilityReservationVO);
+	
+	// 한 개의 시설에 대한 예약 정보
+	public List<FacilityReservationVO> getFacilityReservation(String facCode);
+
+}

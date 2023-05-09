@@ -1,0 +1,351 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<style>
+#infoTable thead tr,
+#scholarAppList thead tr {
+        text-align: center;
+        position: sticky;
+        top: 0px;
+      }
+.slName {
+	cursor: pointer;
+	color: black;
+}
+</style>
+
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li>
+			<h5 class="bc-title">장학</h5>
+		</li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)"> <svg
+					width="17" height="17" viewBox="0 0 17 17" fill="none"
+					xmlns="http://www.w3.org/2000/svg">
+								<path
+						d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z"
+						stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C"
+						stroke-linecap="round" stroke-linejoin="round" />
+							</svg> 장학신청
+		</a></li>
+		<li class="breadcrumb-item active"><a href="javascript:void(0)">장학금 신청∙조회</a></li>
+	</ol>
+</div>
+<div class="container-fluid">
+
+<div class="card" style="padding:20px;">
+
+<div class="text-center" style="margin-bottom: 20px; margin-top:20px;">
+	<h2>${currentInfo.year}학년도 ${currentInfo.semester}학기 장학금 신청</h2>
+<%-- ${userInfo.studentVO.academicVO.deptCode} --%>
+</div>
+<!-- 내 학적 -->
+<div class="row">
+	<div class="col-xl-12">
+		<div class="card">
+			<div class="card-body" style="border:none;">
+				<div class="row d-flex align-items-center mb-2">
+					<div class="col-md-1 text-end fs-4">
+						학번: 
+					</div>
+					<div class="col-md-2">
+						<input type="text" name="" value="${userInfo.userId }" disabled="disabled" class="form-control" >
+					</div>
+					<div class="col-md-1 text-end fs-4">
+						이름: 
+					</div>
+					<div class="col-md-2">
+						<input type="text" name="" value="${sessionScope.userInfo.studentVO.stuNameKo }" disabled="disabled" class="form-control">
+					</div>
+					<div class="col-md-2 text-end fs-4">
+						학부(과): 
+					</div>
+					<div class="col-md-3">
+						<input type="text" name="" value="${sessionScope.userInfo.studentVO.academicVO.acaMajor }" disabled="disabled" class="form-control">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--  신청정보 장학정보 -->
+
+<div class="row" style="margin-bottom: 60px;">
+	<div class="col-md-5">
+		<h3><span style="font-size:18px; color: #f96d00;">|</span>  신청정보</h3>
+		<div class="card">
+			<div class="card-header" >
+				<div class="col-md-4 text-end pe-4 fs-4">
+					신청상태 
+				</div>
+				<div class="col-md-4 text-left">
+					<select name="slStatus" id="slStatus" class="default-select form-control">
+							<option selected>전체</option>
+							<option value="Y">승인</option>
+							<option value="W">대기</option>
+							<option value="N">반려</option>
+					</select>
+				</div>
+				<div class="col-md-4 text-left ps-4">	
+					<button type="button" class="btn btn-xxl btn-outline-secondary" onclick="statusSearch()">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+							<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+						</svg>
+						<span class="visually-hidden">Button</span>
+					</button>
+				</div>
+			</div>
+		    <div class="card-body px-0" style="height:40vh;overflow:auto;padding-top:0;">
+		    	<table class="table text-center" id="scholarAppList">
+		    		<thead>
+		    			<tr class="bg-info">
+			    			<th class="fw-bold">#</th>
+			    			<th class="fw-bold">장학명칭</th>
+			    			<th class="fw-bold">등급</th>
+			    			<th class="fw-bold">신청일자</th>
+			    			<th class="fw-bold">신청상태</th>
+		    			</tr>
+		    		</thead>
+		    		<tbody id="td">
+						<c:choose>
+							<c:when test="${empty scholarList }">
+								<tr>
+									<td colspan="4">
+										신청내역이 존재하지 않습니다.
+									</td>
+								</tr>
+							</c:when>
+							<c:otherwise>
+								<c:forEach items="${scholarList }" var="list" varStatus="stat">
+					    			<tr class="detail">
+					    				<input type="hidden" value="${list.slNo }"/>
+					    				<input type="hidden" value="${list.siCode }"/>
+					    				<td class="fw-bold">${stat.count }</td>
+					    				<td><a class="slName" onclick="window.open('/scholarship/scholarDetail?slNo=${list.slNo }', 'win_new2', 'width=700, height=600, top=200, left=200')">${list.siName}</a></td>
+					    				<td class="siGrade">${list.siGrade }</td>
+					    				<td class="slAplctDate"><fmt:formatDate value="${list.slAplctDate }" pattern="yyyy-MM-dd"/></td>
+					    				<c:if test="${list.slStatus eq 'W' }">
+						    				<td class="slStatus"><span class="badge light badge-warning">대기</span></td>
+					    				</c:if>
+					    				<c:if test="${list.slStatus eq 'Y' }">
+						    				<td class="slStatus"><span class="badge light badge-success">승인</span></td>
+					    				</c:if>
+					    				<c:if test="${list.slStatus eq 'N' }">
+						    				<td class="slStatus"><span class="badge light badge-danger">반려</span></td>
+					    				</c:if>
+					    			</tr>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+		    		</tbody>
+		    	</table>
+		    </div>
+		</div>    
+	</div>
+	
+	
+	<div class="col-md-7">
+					<h3><span style="font-size:18px; color: #f96d00;">|</span>  장학정보</h3>
+		<div class="card">
+			<div class="card-header">
+				<div class="col-md-2 text-center fs-4">
+					장학명칭 
+				</div>
+				<div class="col-md-4">
+					<select name="code" id="code" class="default-select form-control">
+						<option value="전체" id="allyear">전체</option>
+						<c:forEach items="${scholarInfoList }" var="list">
+							<option value="${list.siCode }">${list.siName }</option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="col-md-2 text-center fs-4">
+					장학구분</div>
+				<div class="col-md-2">
+					<select name="gubun" id="gubun" class="default-select form-control">
+						<option value="전체" id="">전체</option>
+						<option value="교내" id="1">교내</option>
+						<option value="교외" id="2">교외</option>
+					</select>
+				</div>
+				<div class="col-md-2 text-center">	
+					<button type="button" class="btn btn-xxl btn-outline-secondary" onclick="listSearch()">
+									  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+					  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+					</svg>
+				  <span class="visually-hidden">Button</span>
+				</button>
+				</div>
+			</div>
+			<div class="card-body px-0" style="height:40vh;overflow:auto;padding-top:0;">
+				<table class="table text-center" id="infoTable" style="overflow:auto;">
+					<thead>
+						<tr class="bg-info">
+							<th class="fw-bold">#</th>
+							<th class="fw-bold">장학구분</th>
+							<th class="fw-bold">장학명칭</th>
+							<th class="fw-bold">장학등급</th>
+							<th class="fw-bold">신청</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+						<c:choose>
+							<c:when test="${empty scholarInfoList }">
+								<tr>
+									<td colspan="5">
+										조회하신 내용이 존재하지 않습니다.
+									</td>
+								</tr>
+							</c:when>
+							<c:otherwise>
+								<c:forEach items="${scholarInfoList }" var="list" varStatus="stat">
+									<tr class="scholarInfo">
+										<td class="fw-bold">${stat.count }</td>
+										<input class="siCode" type="hidden" value="${list.siCode }" />
+										<td>${list.siGubun }</td>
+										<td>${list.siName }</td>
+										<td>${list.siGrade }</td>
+										<td><button type="button" class="btn btn-xl btn-primary fs-6" id="scholarBtn">신청</button></td>
+									</tr>
+								</c:forEach>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+</div>
+
+
+
+
+</div>
+
+<script type="text/javascript">
+function listSearch(){
+	
+	let code = $("#code").val();
+	console.log(code);
+	let gubun = $("#gubun").val();
+	console.log(gubun);
+	let data = {
+			"siCode" : code,
+			"siGubun" : gubun
+		}
+
+	$.ajax({
+		url : "/scholarship/application",
+		type : "post",
+		data : data,
+		dataType : "json",
+		success : function(result){
+			console.log(result)
+			console.log($("#infoTable"));
+			$("#infoTable > tbody").empty();
+			if(result.length > 0){
+				$.each(result, function(index, item){
+					index = index + 1;
+					let str = "<tr class='scholarInfo'>";
+					str += "<td class='fw-bold'>" + index + "</td>";
+					str += "<input class='siCode' type='hidden' value='" + item.siCode + "'>";
+					str += `<td class='siGubun'>\${item.siGubun}</td>`;
+					str += `<td class='siName'>\${item.siName}</td>`;
+					str += `<td class='siGrade'>\${item.siGrade}</td>`;
+					str += "<td><button type='button' class='btn btn-xl btn-primary fs-6' id='scholarBtn'>신청</button></td>";
+					str += "</tr>";
+					$("#infoTable > tbody").append(str);
+				});
+			}
+		}
+	});
+}
+
+function statusSearch(){
+	
+	let status = $("#slStatus").val();
+	console.log(status);
+
+	$.ajax({
+		url : "/scholarship/application/appList",
+		type : "post",
+		data : {
+			slStatus : status
+		},
+		success : function(res){
+			console.log(res)
+
+			$("#scholarAppList tbody tr").remove();
+			$.each(res, function(i, item){
+				let slStatus = item.slStatus;
+				let timestamp = item.slAplctDate;
+				let date = new Date(timestamp);
+				let month = (date.getMonth() + 1).toString(); 
+				if (month.length === 1) {
+					month = '0' + month; 
+				}
+				let applDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+				let str = `
+					<tr class="detail">
+						<input type="hidden" value="\${item.slNo }"/>
+						<input type="hidden" value="\${item.siCode }"/>
+						<td class="fw-bold">\${i+1 }</td>
+						<td><a onclick="window.open('/scholarship/scholarDetail?slNo=\${item.slNo }', 'win_new2', 'width=700, height=600, top=200, left=200')">\${item.siName}</a></td>
+						<td class="siGrade">\${item.siGrade }</td>
+						<td class="slAplctDate">\${applDate}</td>`;
+				if(slStatus == 'W'){
+					str += `<td class="slStatus"><span class="badge light badge-warning">대기</span></td>`;
+				}
+				if(slStatus == 'Y'){
+					str += `<td class="slStatus"><span class="badge light badge-success">승인</span></td>`;		
+				}
+				if(slStatus == 'N'){
+					str += `<td class="slStatus"><span class="badge light badge-danger">반려</span></td>`;			
+				}
+				str += "</tr>";
+
+				$("#scholarAppList tbody").append(str);
+			});
+		}
+	});
+	
+}
+
+$(function(){
+	
+	//console.log("ppp",$("#tbody"));
+	//console.log("qqqq",$("#scholarBtn"));
+	
+	$(document).on("click", "#tbody #scholarBtn", function(){
+// 		alert("신청버튼");
+		console.log($(this).parents("tr").find("input").val());
+		let sunheeMsg = this.parentElement.parentElement.children[3].innerHTML;
+		if(confirm(sunheeMsg +" 신청하시겠습니까?")){
+			
+			let siCode = $(this).parents("tr").find("input").val();
+			
+			$.ajax({
+				url : "/scholarship/application/insert",
+				type : "post",
+				data : {
+					siCode : siCode
+				},
+				dataType : "json",
+				success : function(result){
+					if(result == "OK"){
+						location.href = "/scholarship/application";
+					}
+				}
+			});
+		}
+	})
+});
+
+</script>

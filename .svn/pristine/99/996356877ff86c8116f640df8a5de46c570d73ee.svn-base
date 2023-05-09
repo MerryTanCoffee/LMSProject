@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+#imgArea { 
+  	text-align: center;
+    width: 200px; 
+    height: 200px; 
+    object-fit: contain; 
+} 
+</style>	
+		<table border="1">
+			<tr>
+				<td>제목</td>
+				<td>
+					<input type="text"id = "lrTitle"/>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>강의코드</td>
+				<td>
+					<input type="text" value="sPdGrwaN"id = "lecCode"/>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>내용</td>
+				<td>
+					<textarea rows="10" cols="30" id = "lrContent"></textarea>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>파일</td>
+				<td>
+					<input type="file" id = "inputFile" multiple="multiple"/>
+					<div class = "uploadedList">
+					
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<button type="button" id = "registerBtn">등록</button>
+			<button type="button" id = "listBtn" onclick="javascript:location.href='/reference/referenceList'">목록</button>
+		</div>
+	
+</body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	var inputFile = $("#inputFile");
+	var registerBtn = $("#registerBtn");
+	
+	inputFile.on("change", function(event){
+	
+		console.log("change event", event);
+		
+		registerBtn.on("click",function(){
+		
+			var files = event.target.files;
+			var formData = new FormData();
+			for(var i = 0; i < files.length; i++){
+				formData.append("file", files[i]); // 키 (자바클래스의 MultipartFile file 과 매핑됨)
+			}
+			// cf) 동기처리는 form 태그로 보내면 서버에서 처리가 됨
+			
+			// 비동기이면서 파일데이터를 서버로 보내려면 폼 데이터를 만들어서 키와 밸류 형식으로 보내야한다.
+				$.ajax({
+					type : "post",
+					url : "/reference/uploadFile",
+					data : formData,
+					dataType : "json",	// 응답데이터 타입
+					processData : false, // 파일데이터는 쿼리스트링으로 보내는 게 아니니까 해당 부분을 false 로
+					contentType : false, // 기본 설정된 contentType은 false로 설정하고 multipart form data로 데이터를 보냄
+					success : function(data) {
+						var filePath;	
+						var fileName;	
+						var fileType;	
+						for(let  i=0; i< data.length; i++){
+							filePath = data[i].substr(0,12);
+							fileName = data[i].substr(12);
+							fileType = getExtension(data[i]);
+							var str = "";
+							if(checkImageType(data[i])) { // 이미지이면 이미지 태그를 이용한 출력형태
+								str += "<div>";
+								str += "<a href = '/reference/displayFile?fileName="+ data[i] + "'>";
+								str += "<img id='imgArea' src = '/reference/displayFile?fileName=" + data[i] + "'/>";
+								str += "</a>";
+								str += "<span>x</span>";
+								str += "</div>";
+							} else { // 파일이면 파일명에 대한 링크로만 출력
+								str += "<div>";
+								str += "<a href ='/reference/displayFile?fileName="+data[i]+"'>" +getOriginalName(data[i]) + "</a>";
+								str += "<span>x</span>";
+								str += "</div>";
+							}
+							$(".uploadedList").append(str);
+							
+							var obj = {
+									"lrTitle" : $("#lrTitle").val(),
+									"lecCode" :  $("#lecCode").val(),
+									"lrContent" : $("#lrContent").val(),
+									"lrFilePath" : filePath,
+									"lrFileName" : fileName,
+									"lrFileType" : fileType,
+							}
+							$.ajax({
+								type :"post",
+								url : "/reference/registerReference",
+								dataType : "text",
+								data: obj,
+								 success: function (res) {
+									 console.log("res >>> ",res);
+									 swal("등록되었습니다.");
+									   $("#lrTitle").val("");
+									      $("#lecCode").val("");
+									      $("#lrContent").val("");
+									      $("#inputFile").val("");
+									      $(".uploadedList").empty();
+								 },
+								error: function(jqXHR, textStatus, errorThrown) {
+									swal("ERROR : " + textStatus + " : " + errorThrown);
+								}
+							});
+						}
+					}
+				});
+			});	
+		})
+	// x를 누르면 삭제되는 function
+	$(".uploadedList").on("click","span",function(){
+		$(this).parent("div").remove();
+	});
+	
+	function getOriginalName(fileName){
+		if(checkImageType(fileName)){
+			return;
+		}		
+		var idx = fileName.indexOf("_") + 1;
+		return fileName.substr(idx);
+	}
+	
+	function checkImageType(fileName){
+		var pattern = /jpg|gif|png|jpeg/i;
+		return fileName.match(pattern); // 패턴과 일치하면 true (너 이미지 맞구나?)
+	}
+	function getExtension(filename) {
+		var ext = filename.split('.').pop();
+		return ext;
+	}
+});
+</script>

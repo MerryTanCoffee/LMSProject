@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- dataSource : 데이터베이스와 관련된 정보를 설정한다. -->
+	 <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		 <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		 <property name="url" value="jdbc:oracle:thin:@112.220.114.130:1521:xe"/>
+		 <property name="username" value="team3_202210F"/>
+		 <property name="password" value="java"/>
+	 </bean>	
+	 
+	 <!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+		 
+	 <!-- 
+	 	데이터베이스와 연결을 맺고 끊어질 때까지의 라이프 사이클을 관리해주는 SqlSession 객체를 생성
+	 	1) dataSource
+	 	2) Mapper xml의 위치 지정
+	 		- src/main/resources/
+	  -->
+	  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  	<property name="dataSource" ref="dataSource"/>
+	  	<property name="mapperLocations" value="classpath:/sqlmap/**/*_SQL.xml"/>
+	  	<property name="configLocation" value="/WEB-INF/mybatisAlias/mybatisAlias.xml"/>
+	  </bean>
+	  
+	  <!-- 
+	  	데이터베이스에 개별적으로 쿼리를 실행시키는 객체
+	  	이 객체를 통해서 query를 실행한다.
+	   -->
+	   <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+	   	<constructor-arg name="sqlSessionFactory" index="0" ref="sqlSessionFactory"/>
+	   </bean>
+	   
+	   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	   	<property name="basePackage" value="kr.or.ddit.mapper"/>
+	   </bean>
+<!-- 	   <bean id="uploadPath" class="java.lang.String"> -->
+<!-- 	   	<constructor-arg value="D:/A_TeachingMaterial/08_Framework/03.SPRING2/workspace_spring2/LMSProject/src/main/webapp/resources/images/profile"/> -->
+<!-- 	   </bean> -->
+	   
+	   <!-- gmail설정 -->
+		<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+	     <property name="host" value="smtp.gmail.com" />
+	     <property name="port" value="587" />
+		 <property name="username" value="rnrwn314@gmail.com"/> <!-- 자신의 이메일 아이디 -->
+		 <property name="password" value="rutdihhomboefoyj"/> <!-- 자신의 비밀번호 -->
+		 <!-- 보안연결 TLS과 관련된 설정 -->
+	     <property name="javaMailProperties">
+		 	<props>
+		     <prop key="mail.transport.protocol">smtp</prop>
+		     <prop key="mail.smtp.auth">true</prop>
+		     <prop key="mail.smtp.starttls.enable">true</prop>
+		     <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+		     <prop key="mail.debug">true</prop>
+		    </props>
+	     </property>
+		</bean>
+		
+	   <!-- 트랜잭션 아직 안넣음 -->
+</beans>

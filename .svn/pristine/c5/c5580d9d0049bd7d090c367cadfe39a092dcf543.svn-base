@@ -1,0 +1,288 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!-- 페이지 타이틀 -->
+<div class="page-titles">
+    <ol class="breadcrumb">
+    <li><h5 class="bc-title"></h5></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0)">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Home </a>
+    </li>
+    <li class="breadcrumb-item active"><a href="javascript:void(0)">Dashboard</a></li>
+</ol>
+</div>
+<div class="container-fluid">
+
+    <!-- 시간표 모달 -->
+    <div class="modal fade" id="timeTblModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-3" id="exampleModalLabel"><span style="color: #f96d00;">|</span> 시간표</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center" id="timeTbl">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th style="width: 10%;"></th>
+                                    <th style="width: 18%;">월</th>
+                                    <th style="width: 18%;">화</th>
+                                    <th style="width: 18%;">수</th>
+                                    <th style="width: 18%;">목</th>
+                                    <th style="width: 18%;">금</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="9:00 ~ 10:00" data-bs-placement="left">1교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="10:00 ~ 11:00" data-bs-placement="left">2교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="11:00 ~ 12:00" data-bs-placement="left">3교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="12:00 ~ 13:00" data-bs-placement="left">4교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="13:00 ~ 14:00" data-bs-placement="left">5교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="14:00 ~ 15:00" data-bs-placement="left">6교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="15:00 ~ 16:00" data-bs-placement="left">7교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="16:00 ~ 17:00" data-bs-placement="left">8교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td data-bs-toggle="tooltip" data-bs-title="17:00 ~ 18:00" data-bs-placement="left">9교시</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 내 기본정보 -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body" style="border:none;">
+                    <div class="row">
+                        <div class="col-md-1 text-center" style="margin-top: 10px; padding: 0;">
+                            학년도:
+                        </div>
+                        <div class="col-md-1" style="padding:0;">
+                            <input type="text" name="" value="${currentInfo.year}" disabled="disabled" class="form-control">
+                        </div>
+
+                        <div class="col-md-1 text-center" style="margin-top: 10px; padding: 0;">
+                            학기:
+                        </div>
+                        <div class="col-md-1" style="padding:0;">
+                            <input type="text" name="" value="${currentInfo.semester}" disabled="disabled" class="form-control">
+                        </div>
+                        <div class="col-md-1 text-center" style="margin-top: 10px; padding: 0;">
+                            학번:
+                        </div>
+                        <div class="col-md-2" style="padding:0;">
+                            <input type="text" name="" value="${sessionScope.userInfo.userId}" disabled="disabled" class="form-control">
+                        </div>
+                        <div class="col-md-1 text-center" style="margin-top: 10px; padding: 0;">
+                            이름:
+                        </div>
+                        <div class="col-md-1" style="padding:0;">
+                            <input type="text" name="" value="${sessionScope.userInfo.studentVO.stuNameKo}" disabled="disabled" class="form-control">
+                        </div>
+                        <div class="col-md-1 text-center" style="margin-top: 10px; padding: 0;">
+                            학부(과):
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="" value="${sessionScope.userInfo.studentVO.academicVO.deptName}" disabled="disabled" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 내 기본 정보 표시 끝-->
+
+    <div class="card" style="height:50vh;">
+        <div class="col-xl-12">
+            <div class="card-header">
+                <div class="card-title">
+                    <span><span style="font-size:18px; color: #f96d00">|</span>
+                    수강중인 강의</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-row-reverse">
+                    <button type="button" id="timeTblViewBtn" class="btn btn-xs btn-outline-primary" data-bs-toggle="modal" data-bs-target="#timeTblModal">시간표 보기</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-center table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>과목명</th>
+                                <th>분반</th>
+                                <th>이수구분</th>
+                                <th>학점</th>
+                                <th>담당교수</th>
+                                <th>강의시간</th>
+                                <th>강의실</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	<c:forEach items="${myCourseList }" var="myCourse" varStatus="i">
+	                            <tr>
+	                                <td>${i.count }</td>
+	                                <td style="text-align:left;">${myCourse.subName }</td>
+	                                <td>0${myCourse.lecDivide }</td>
+	                                <td>${myCourse.subSort }/${myCourse.subType }</td>
+	                                <td>${myCourse.subCredit }</td>
+	                                <td>${myCourse.proNameKo }</td>
+	                                <td>${myCourse.weekName } ${myCourse.startTime }시 ~ ${myCourse.endTime }시</td>
+	                                <td>${myCourse.hallName }(${myCourse.lrNum })</td>
+	                            </tr>
+                        	</c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- row 끝 -->
+
+</div>
+
+<script>
+    let COLOR_SET = ["#42BAFF","#00DC6D","#F1BE5B","#FFA6E9", "#FFFD66",
+                "#90827a","#FF7F32","#E191FF","#85E4FF","#FFAB6E"];
+    let myTimeTableString = ${myTimeTable};
+    let myTime = [];
+    myTime = myTimeTableString;
+    console.log("나의 시간표 리스트 객체>>", myTime);
+
+    displayLecInfo(myTime);
+
+    function displayLecInfo(timeTblList) {
+            let table = document.getElementById("timeTbl");
+
+            for (i = 0; i < timeTblList.length; i++) {
+                let startRow = (parseInt(timeTblList[i].lrsStart.substr(1)) - 9) + 1;
+                let endRow = (parseInt(timeTblList[i].lrsEnd.substr(1)) - 9) + 1;
+                let dayCol = 0;
+
+                switch (timeTblList[i].weekCode) {
+                    case "MON":
+                        dayCol = 1;
+                        break;
+                    case "TUE":
+                        dayCol = 2;
+                        break;
+                    case "WED":
+                        dayCol = 3;
+                        break;
+                    case "THU":
+                        dayCol = 4;
+                        break;
+                    case "FRI":
+                        dayCol = 5;
+                        break;
+                    default:
+                        return;
+                }
+
+                let subName = timeTblList[i].subName;
+                let lecDivide = timeTblList[i].lecDivide + "분반";
+                let proName = timeTblList[i].proNameKo;
+                let credit = parseInt(timeTblList[i].subCredit);
+                let color = COLOR_SET[i % COLOR_SET.length];
+
+                // 시간표에 강의명, 분반, 교수명, 과목별 배경색 표시
+                if (credit == 1) {  // 1학점 강의일 때
+                    for (let j = startRow; j <= endRow; j++) {
+                        let cell = table.rows[j].cells[dayCol];
+                        $(cell).css("line-height", 1.2);
+                        cell.innerHTML = `<span style="font-size: 13px">\${subName}<br>\${lecDivide} \${proName}</span>`;
+                        cell.style.backgroundColor = color;
+                    }
+                }
+                if (credit >= 2) {  // 2학점 이상 강의일 때
+                    for (let j = startRow; j <= endRow; j++) {
+                        let cell = table.rows[j].cells[dayCol];
+                        $(cell).css("line-height", "");
+                        if (j == startRow) {
+                            cell.innerHTML = `<span style="font-size: 13px">\${subName}`;
+                        }
+                        if (j == (startRow + 1)) {
+                            cell.innerHTML = `<span style="font-size: 13px">\${lecDivide} \${proName}</span>`;
+                        }
+                        cell.style.backgroundColor = color;
+                    }
+                }
+            }
+        }
+
+</script>

@@ -1,0 +1,56 @@
+package kr.or.ddit.classRoom.notice.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.classRoom.notice.service.INoticeService;
+import kr.or.ddit.classRoom.notice.vo.NoticeVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.NoticeMapper;
+
+
+@Service
+public class noticeServiceImpl implements INoticeService{
+
+	@Inject
+	private NoticeMapper mapper;
+	
+	@Override
+	public int selecNoticeCount(NoticeVO noticeVO) {
+		return mapper.selectNoticeCount(noticeVO);
+	}
+
+	@Override
+	public List<NoticeVO> selectNoticeList(String lecCode) {
+		return mapper.selectNoticeList(lecCode);
+	}
+
+	@Override
+	public NoticeVO selectNotice(int lecNoticeNo) {
+		mapper.incrementHit(lecNoticeNo);//조회수 증가
+		return mapper.selectNotice(lecNoticeNo);
+	}
+
+	@Override
+	public String selectSubName(String lecCode) {
+		return mapper.selectSubName(lecCode);
+	}
+
+	@Override
+	public ServiceResult insertNotice(HttpServletRequest req, NoticeVO noticeVO) {
+		ServiceResult result = null;
+		int status = mapper.insertNotice(noticeVO);
+		
+		if(status >0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}

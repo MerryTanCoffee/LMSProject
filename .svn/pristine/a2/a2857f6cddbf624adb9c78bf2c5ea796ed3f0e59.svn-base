@@ -1,0 +1,16 @@
+//package kr.or.ddit.score.vo;
+//
+//import java.util.List;
+//
+//import lombok.Data;
+//
+//@Data
+//public class ScoreVO {
+//	private String stuId;
+//	private String lecCode;
+//	private int atdScore;
+//	private int fnlScore;
+//	private int asgScore;
+//	private int oveScore;
+//	private List<ScoreVO> list;
+//}

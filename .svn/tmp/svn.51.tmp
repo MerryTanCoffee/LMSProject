@@ -1,0 +1,62 @@
+package kr.or.ddit.score.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ScoreMapper;
+import kr.or.ddit.score.service.IScoreService;
+import kr.or.ddit.score.vo.ScoreVO;
+
+@Service
+public class ScoreServiceImpl implements IScoreService {
+	@Inject
+	private ScoreMapper mapper;
+	
+	@Override
+	public void insert(ScoreVO score) throws Exception{
+		score.totalScore();
+		mapper.insert(score);
+	}
+	//교수용
+	@Override
+	public List<ScoreVO> list(String proId) throws Exception{
+		return mapper.list(proId);
+	}
+	//학생용...
+	@Override
+	public List<ScoreVO> stuList(String stuId) throws Exception{
+		return mapper.stuList(stuId);
+	}
+	//관리자용
+	@Override
+	public List<ScoreVO> list() throws Exception{
+		return mapper.list();
+	}
+
+	@Override
+	public void delete(String stuId) throws Exception{
+		mapper.delete(stuId);
+	}
+
+	@Override
+	public void update(ScoreVO score) throws Exception {
+		score.totalScore();
+		mapper.update(score);
+	}
+
+	@Override
+	public List<ScoreVO> read(String stuId, HttpSession session) throws Exception {
+		List<ScoreVO> score =  mapper.read(stuId);
+		return score;
+	}
+
+	//셀렉트박스 선택용임 아무튼
+	@Override
+	public List<ScoreVO> selectList(String proId) throws Exception {
+		return mapper.selectList(proId);
+	}
+}

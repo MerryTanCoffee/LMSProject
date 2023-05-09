@@ -1,0 +1,11 @@
+package kr.or.ddit.sms.service;
+
+import java.util.List;
+
+import kr.or.ddit.sms.vo.CoolSmsVO;
+
+public interface ICoolSmsService {
+	public void insert(CoolSmsVO coolsms) throws Exception;
+
+	public List<CoolSmsVO> list() throws Exception;
+}

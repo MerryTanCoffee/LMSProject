@@ -1,0 +1,29 @@
+package kr.or.ddit.scholarship.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ScholarshipMapper;
+import kr.or.ddit.scholarship.service.IScholarshipService;
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+@Service
+public class ScholarshipServiceImpl implements IScholarshipService {
+
+	@Autowired
+	private ScholarshipMapper mapper;
+	
+	@Override
+	public List<ScholarshipListVO> scholarList(ScholarshipListVO sv) {
+		return mapper.scholarList(sv);
+	}
+
+	@Override
+	public List<ScholarshipInfoVO> scholarInfoList(ScholarshipInfoVO si) {
+		return mapper.scholarInfoList(si);
+	}
+
+}

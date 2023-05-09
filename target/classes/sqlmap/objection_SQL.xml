@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ObjectionMapper">
+	<select id="objectionList" resultType="objectionVO">
+		select
+		o.obj_no, o.lec_code, o.stu_id, o.obj_reason, o.obj_date, o.obj_content,
+		o.obj_status, o.obj_pre_credit, o.obj_re_credit,
+		s.sub_name,
+		p.pro_name_ko
+		from
+		objection o, subject s, lecture l, professor p
+		where o.lec_code = l.lec_code
+		and l.sub_code = s.sub_code
+		and p.pro_id = l.pro_id
+		and o.stu_id = #{stuId}
+	</select>
+
+	<!-- 이의신청 교수용입니다. -->
+	<select id="objProList" resultType="objectionVO">
+		select
+		o.obj_no, o.lec_code, o.stu_id, o.obj_reason, o.obj_date, o.obj_content,
+		o.obj_status, o.obj_pre_credit, o.obj_re_credit,
+		s.sub_name,
+		st.stu_name_ko
+		from
+		objection o, subject s, lecture l, professor p, student st
+		where o.lec_code =
+		l.lec_code
+		and l.sub_code = s.sub_code
+		and p.pro_id = l.pro_id
+		and st.stu_id = o.stu_id
+		and p.pro_id = #{proId}
+	</select>
+
+	<insert id="objectionInsert" parameterType="objectionVO"
+		useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="objNo"
+			resultType="int">
+			select seq_objection.nextval from dual
+		</selectKey>
+		insert into objection(
+		obj_no, lec_code, stu_id, obj_reason, obj_date
+		<if test="objContent!=null and objContent!=''">
+			, obj_content
+		</if>
+		<if test="objStatus!=null and objStatus!=''">
+			, obj_status
+		</if>
+		<if test="objPreCredit!=null and objPreCredit!=''">
+			, obj_pre_credit
+		</if>
+		<if test="objReCredit!=null and objReCredit!=''">
+			, obj_re_credit
+		</if>
+		)values(
+		#{objNo}, #{lecCode}, #{stuId}, #{objReason}, sysdate
+		<if test="objContent!=null and objContent!=''">
+			, #{objContent}
+		</if>
+		<if test="objStatus!=null and objStatus!=''">
+			, #{objStatus}
+		</if>
+		<if test="objPreCredit!=null and objPreCredit!=''">
+			, #{objPreCredit}
+		</if>
+		<if test="objReCredit!=null and objReCredit!=''">
+			, #{objReCredit}
+		</if>
+		)
+	</insert>
+	<!-- objReCredit이게 문젠데...얘는 성적테이블도 바로 업데이트가 되야하는데 진짜... ObjectionVO(objNo=113, 
+		lecCode=2VOMrlIM, stuId=20230002, objReason=null, objDate=null , objContent=점수낮아, 
+		objStatus=Y, objPreCredit=null, objReCredit=46, subName=null , proNameKo=null, 
+		stuNameKo=null) -->
+	<update id="objectionUpdate" parameterType="objectionVO">
+		update
+		(
+		select
+		sr.ove_score,o.obj_re_credit,o.obj_content,o.obj_status
+		from score_record sr inner join objection o on sr.stu_id = o.stu_id
+		and sr.lec_code = o.lec_code
+		WHERE o.stu_id = #{stuId}
+		AND o.lec_code = #{lecCode}
+		AND o.obj_no = #{objNo}) t
+		set  t.obj_content = #{objContent},
+		t.obj_status = #{objStatus},
+		t.obj_re_credit = #{objReCredit}
+
+		<!-- update score_record sr -->
+		<!-- inner join objection o -->
+		<!-- on sr.stu_id = o.stu_id and sr.lec_code = o.lec_code -->
+		<!-- set -->
+		<!-- sr.ove_score = o.obj_re_credit, -->
+		<!-- o.obj_content = #{objContent}, -->
+		<!-- o.obj_status = #{objStatus}, -->
+		<!-- o.obj_re_credit = #{objReCredit} -->
+		<!-- where -->
+		<!-- o.stu_id = #{stuId} and o.lec_code = #{lecCode} and o.obj_no = #{objNo} -->
+	</update>
+
+	<!-- 학생이 삭제를 해야겠지 교수가 아니라... -->
+	<delete id="objectionDelete" parameterType="hashMap">
+		delete from objection
+		where stu_id = #{stuId}
+		and lec_code = #{lecCode}
+	</delete>
+	
+	<!-- 종합점수 업데이트 -->
+	<update id="oveUpdate" parameterType="objectionVO">
+		update score_record
+		set    ove_score = #{objReCredit}
+		where stu_id = #{stuId} and lec_code = #{lecCode}
+	</update>
+
+	<!-- update용으로 만들어둠 stu_id랑 lec_code map으로받나? -->
+	<!-- <select id="read" parameterType="String" resultType="objectionVO"> 
+		select o.obj_no, o.lec_code, o.stu_id, o.obj_reason, o.obj_date, o.obj_content, 
+		o.obj_status, o.obj_pre_credit, o.obj_re_credit, s.sub_name, st.stu_name_ko 
+		from objection o, subject s, lecture l, professor p, student st where o.lec_code 
+		= l.lec_code and l.sub_code = s.sub_code and p.pro_id = l.pro_id and st.stu_id 
+		= o.stu_id and p.pro_id = #{proId} and st.stu_id = #{stuId} and l.sub_code 
+		= #{subCode} </select> -->
+</mapper>

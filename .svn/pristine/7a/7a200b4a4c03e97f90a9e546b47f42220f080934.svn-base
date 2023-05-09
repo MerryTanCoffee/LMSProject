@@ -1,0 +1,82 @@
+package kr.or.ddit.classRoom.main.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.classRoom.main.service.ClassRoomService;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/class")
+public class ClassRoomController {
+	
+	@Autowired
+	private ClassRoomService service;
+	
+	@GetMapping("/list")
+	public String classRoomList(HttpServletRequest req, Model model) {
+		
+		HttpSession session = req.getSession(false);
+		
+		if(session != null && session.getAttribute("userInfo") != null) {
+			UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+			
+			List<Map<String, Object>> classRoomList = service.getClassRoomList(userInfo);
+			log.info("클래스룸 목록: " + classRoomList.toString());
+			List<Map<String, Object>> myClassYearList = service.getMyClassYearList(userInfo);
+			
+			model.addAttribute("myClassYearList", myClassYearList);
+			model.addAttribute("classRoomList", classRoomList);
+			
+			return "classRoom/classRoomList";
+		}else {
+		     return "redirect:/login";
+		}
+	}
+	
+	@PostMapping("/search")
+	@ResponseBody
+	public List<Map<String, Object>> classListSerarch(@RequestParam Map<String, Object> searchMap, HttpSession session){
+		log.info("searchMap: " + searchMap.toString());
+		UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+		String userId = userInfo.getUserId();
+		String userType = userInfo.getUserType();
+		
+		searchMap.put("userId", userId);
+		searchMap.put("userType", userType);
+		
+		
+		List<Map<String, Object>> classList = service.getSearchList(searchMap);
+		return classList;
+	}
+	
+	@GetMapping("/stuClassRoom/{lecCode}")
+	public String stuClassRoom(@PathVariable String lecCode,Model model) {
+		String className  = service.selectSubName(lecCode);
+		model.addAttribute("className", className);
+		model.addAttribute("lecCode", lecCode);
+		return "classRoom/stuClassRoom";
+	}
+	
+	@GetMapping("/proClassRoom")
+	public String proClassRoom() {
+		return "classRoom/proClassRoom";
+	}
+	
+}

@@ -1,0 +1,15 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.score.vo.ObjectionVO;
+
+public interface ObjectionMapper {
+	//학생용 이의신청 모습 아예 상상이 안가네...
+	public List<ObjectionVO> objectionList(String stuId) throws Exception;
+	
+	//...insert 비동기 처리???
+//	public void uploadObjection(String stuId) throws Exception;
+	
+	public int objectionInsert(ObjectionVO objectionVO) throws Exception;
+}

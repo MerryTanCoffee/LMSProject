@@ -1,0 +1,10 @@
+package kr.or.ddit.tuition.service;
+
+import java.util.List;
+
+import kr.or.ddit.tuition.vo.TuitionVO;
+
+public interface ITuitionService {
+	public List<TuitionVO> tuitionList(String userId);
+	public TuitionVO tuiDetail(int tlNo);
+}

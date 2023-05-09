@@ -1,0 +1,23 @@
+package kr.or.ddit.academic.vo;
+
+import lombok.Data;
+
+@Data
+public class AcademicVO {
+	private String stuId;
+	private String deptCode;
+	private String proId;
+	private	String admiDate;	// 입학일자
+	private String gradDate;	// 졸업일자
+	private String acaMajor;	// 전공명
+	private String acaMinor;	// 부전공명
+	private String acaDmajor;	// 복수전공명
+	private String acaStatus;	// 학적상태
+	private int acaGrade;		// 현재 학년
+	private int acaSemester;	// 현재 학기
+	private int acaAvgCredit;	// 학점 평균
+	private int acaMaj1Score;	// 전공필수 이수한 학점
+	private int acaMaj2Score;	// 전공선택 이수한 학점
+	private int acaCul1Score;	// 교양필수 이수한 학점
+	private int acaCul2Score;	// 교양선택 이수한 학점
+}

@@ -1,0 +1,73 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<div class="row">
+	<div class="col-xl-6">
+		<div class="card dz-card" id="card-title-2">
+			<div class="card-header flex-wrap">
+				<h3 class="card-title"><span style="font-size:18px; color: #f96d00;">|</span> 로봇프로그래밍 시험문제</h3>
+			</div>
+			<div class="tab-content" id="myTabContent-1">
+				<div class="tab-pane fade active show" id="CardTitle2"
+					role="tabpanel" aria-labelledby="home-tab-1">
+
+					<div class="card-body pt-0">
+						<p class="card-text">
+							This is a wider card with supporting text and below as a natural
+							lead-in to the additional content. This content is a little <br>
+							bit longer. Some quick example text to build the bulk
+						</p>
+					</div>
+					<div
+						class="card-footer d-sm-flex justify-content-between align-items-center">
+						<div class="card-footer-link mb-4 mb-sm-0">
+							<p class="card-text d-inline">Last updated 3 mins ago</p>
+						</div>
+
+					</div>
+				</div>
+				<div class="tab-pane fade" id="CardTitle2-html" role="tabpanel"
+					aria-labelledby="home-tab-1">
+					<div class="card-body p-0 code-area"></div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="col-xl-6">
+		<div class="card dz-card" id="card-title-2">
+			<div class="card-header flex-wrap">
+				<h5 class="card-title">Card title</h5>
+			</div>
+			<div class="tab-content" id="myTabContent-1">
+				<div class="tab-pane fade active show" id="CardTitle2"
+					role="tabpanel" aria-labelledby="home-tab-1">
+
+					<div class="card-body pt-0">
+						<p class="card-text">
+							This is a wider card with supporting text and below as a natural
+							lead-in to the additional content. This content is a little <br>
+							bit longer. Some quick example text to build the bulk
+						</p>
+					</div>
+					<div
+						class="card-footer d-sm-flex justify-content-between align-items-center">
+						<div class="card-footer-link mb-4 mb-sm-0">
+							<p class="card-text d-inline">Last updated 3 mins ago</p>
+						</div>
+
+						<a href="javascript:void(0);" class="btn btn-primary text-white">Go
+							somewhere</a>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="CardTitle2-html" role="tabpanel"
+					aria-labelledby="home-tab-1">
+					<div class="card-body p-0 code-area"></div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+</div>

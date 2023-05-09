@@ -1,0 +1,118 @@
+package kr.or.ddit.user.service.impl;
+
+import java.util.Map;
+
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mail.service.MailService;
+import kr.or.ddit.mapper.UserMapper;
+import kr.or.ddit.user.service.IUserService;
+import kr.or.ddit.user.vo.EmployeeVO;
+import kr.or.ddit.user.vo.ProfessorVO;
+import kr.or.ddit.user.vo.StudentVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class UserServiceImpl implements IUserService {
+	
+	@Autowired
+	private UserMapper userMapper;
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Override
+	public ServiceResult userCheck(UserVO userVO, HttpSession session) {
+		ServiceResult result = null;
+		// 사용자 등록 여부 체크
+		UserVO user = userMapper.userCheck(userVO);
+		
+		if(user != null) {	// 사용자 정보 존재했을 경우
+			if(userVO.getUserType().equals("STU")) {	// 학생일 때
+				UserVO student = userMapper.getStudent(userVO);
+				if(student != null) {
+					session.setAttribute("userInfo", student);
+					result = ServiceResult.OK;
+				}else {
+					result = ServiceResult.FAILED;
+				}
+			}
+			if(userVO.getUserType().equals("PRO")) {	// 교수일 때
+				UserVO professor = userMapper.getProfessor(userVO);
+				if(professor != null) {
+					session.setAttribute("userInfo", professor);
+					result = ServiceResult.OK;
+				}else {
+					result = ServiceResult.FAILED;
+				}
+			}
+			if(userVO.getUserType().equals("EMP")) {	// 직원일 때
+				UserVO employee = userMapper.getEmployee(userVO);
+				if(employee != null) {
+					session.setAttribute("userInfo", employee);
+					result = ServiceResult.OK;
+				}else {
+					result = ServiceResult.FAILED;
+				}
+			}
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public String getId(Map<String, Object> findMap) {
+		String userId = userMapper.getId(findMap);
+		
+		return userId;
+	}
+
+	@Override
+	public ServiceResult sendPw(Map<String, Object> findMap) {
+		int cnt = userMapper.userCheck2(findMap);
+		ServiceResult result = null;
+		
+		if(cnt > 0) {
+			String reciver = (String) findMap.get("userEmail");
+			String title = "대원대학교 관리팀입니다.";
+			String imsiPw = "IMSI" + RandomStringUtils.randomAlphanumeric(10);
+			String content = "임시 비밀번호는 <h3>[ " + imsiPw + " ] </h3> 입니다. <br>로그인 후 비밀번호를 변경해주세요.";
+			sendMail(reciver, title, content);
+			
+			findMap.put("imsiPw", imsiPw);
+			userMapper.saveImsiPw(findMap);
+			result = ServiceResult.OK;
+		}
+		return result;
+	}
+
+	public void sendMail(String reciver, String title, String content) {
+		MimeMessage mail = mailSender.createMimeMessage();
+		try {
+			MimeMessageHelper mailHelper = 
+					new MimeMessageHelper(mail, "UTF-8");
+			String from = "대원대학교 관리팀";
+			
+			mailHelper.setFrom("Daewon@ddit.co.kr", from);
+			mailHelper.setTo(reciver);
+			mailHelper.setSubject(title);
+			mailHelper.setText(content, true);
+			
+			mailSender.send(mail);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

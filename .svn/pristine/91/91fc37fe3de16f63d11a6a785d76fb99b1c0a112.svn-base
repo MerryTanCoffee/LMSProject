@@ -1,0 +1,16 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+public interface ScholarshipMapper {
+	
+	// 리스트 조회하기
+	public List<ScholarshipListVO> scholarList(ScholarshipListVO sv);
+
+	// 장학정보 조회
+	public List<ScholarshipInfoVO> scholarInfoList(ScholarshipInfoVO si);
+
+}

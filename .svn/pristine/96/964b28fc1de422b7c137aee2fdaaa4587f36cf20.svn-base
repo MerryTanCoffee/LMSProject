@@ -1,0 +1,15 @@
+package kr.or.ddit.classRoom.notice.service;
+
+import java.util.List;
+
+import kr.or.ddit.classRoom.notice.vo.NoticeVO;
+
+public interface INoticeService {
+
+	public List<NoticeVO> selectNoticeList(NoticeVO noticeVO);
+
+	public NoticeVO selectNotice(int lecNoticeNo);
+
+	public int selecNoticeCount(NoticeVO noticeVO);
+
+}

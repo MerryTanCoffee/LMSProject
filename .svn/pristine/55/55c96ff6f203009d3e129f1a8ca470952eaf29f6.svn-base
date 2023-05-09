@@ -1,0 +1,20 @@
+<메서드 명명 규칙>
+
+폼페이지 호출메서드 : ooooForm 
+
+* service ~>
+메서드 명명 : 기능명 + CRUD에 해당하는 걸 써주세요
+삽입 : Insert 
+삭제 : Delete
+수정 : Update
+여러개 조회 : SelectList
+한개 조회 : SelectOne
+
+-------------------------------------------
+* controller
+상세 : detail
+
+--------------------------------------------
+<table>
+xx_NO : 시퀀스
+xx_NUM : 그냥 숫자

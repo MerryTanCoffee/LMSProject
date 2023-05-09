@@ -1,0 +1,36 @@
+package kr.or.ddit.classRoom.notice.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.classRoom.notice.service.INoticeService;
+import kr.or.ddit.classRoom.notice.vo.NoticeVO;
+import kr.or.ddit.mapper.NoticeMapper;
+
+
+@Service
+public class noticeServiceImpl implements INoticeService{
+
+	@Inject
+	private NoticeMapper mapper;
+	
+	@Override
+	public int selecNoticeCount(NoticeVO noticeVO) {
+		return mapper.selectNoticeCount(noticeVO);
+	}
+
+	@Override
+	public List<NoticeVO> selectNoticeList(NoticeVO noticeVO) {
+		return mapper.selectNoticeList(noticeVO);
+	}
+
+	@Override
+	public NoticeVO selectNotice(int lecNoticeNo) {
+		mapper.incrementHit(lecNoticeNo);//조회수 증가
+		return mapper.selectNotice(lecNoticeNo);
+	}
+
+}

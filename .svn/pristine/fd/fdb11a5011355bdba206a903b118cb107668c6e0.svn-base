@@ -1,0 +1,5 @@
+package kr.or.ddit.consult.service;
+
+public interface IConsultService {
+
+}

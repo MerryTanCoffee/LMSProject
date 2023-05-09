@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.UserMapper">
+
+	<sql id ="studentSearch">
+		<if test = "searchType != null and searchType == 'id'">
+			and (stu_id like '%' || #{searchWord} || '%')
+		</if>
+		<if test = "searchType != null and searchType == 'name'">
+			and (stu_name_ko like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+
+	<resultMap type="userVO" id="userMap">
+		<id property="userId" column="user_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="password" column="password"/>
+		<result property="userType" column="user_type"/>
+		<result property="enabled" column="enabled"/>
+		<collection property="studentVO" resultMap="studentMap"/>
+		<collection property="professorVO" resultMap="professorMap"/>
+		<collection property="employeeVO" resultMap="employeeMap"/>
+	</resultMap>
+	
+	<resultMap type="academicVO" id="academicMap">
+		<id property="stuId" column="stu_id"/>
+		<result property="deptCode" column="dept_code"/>
+		<result property="proId" column="pro_id"/>
+		<result property="admiDate" column="admi_date"/>
+		<result property="gradDate" column="grad_date"/>
+		<result property="acaMajor" column="aca_major"/>
+		<result property="acaMinor" column="aca_minor"/>
+		<result property="acaDmajor" column="aca_dmajor"/>
+		<result property="acaStatus" column="aca_status"/>
+		<result property="acaGrade" column="aca_grade"/>
+		<result property="acaSemester" column="aca_semester"/>
+		<result property="acaAvgCredit" column="aca_avg_credit"/>
+		<result property="acaMaj1Score" column="aca_maj1_score"/>
+		<result property="acaMaj2Score" column="aca_maj2_score"/>
+		<result property="acaCul1Score" column="aca_cul1_score"/>
+		<result property="acaCul2Score" column="aca_cul2_score"/>
+		<result property="collName" column="COLL_NAME"/>
+	</resultMap>
+
+	<resultMap type="studentVO" id="studentMap">
+		<id property="stuId" column="stu_id"/>
+		<result property="stuId" column="stu_id"/>
+		<result property="stuNameKo" column="stu_name_ko"/>
+		<result property="stuNameEn" column="stu_name_en"/>
+		<result property="stuReg1" column="stu_reg1"/>
+		<result property="stuReg2" column="stu_reg2"/>
+		<result property="stuEmail" column="stu_email"/>
+		<result property="stuPhone" column="stu_phone"/>
+		<result property="stuNation" column="stu_nation"/>
+		<result property="stuGender" column="stu_gender"/>
+		<result property="stuPostcode" column="stu_postcode"/>
+		<result property="stuAddr1" column="stu_addr1"/>
+		<result property="stuAddr2" column="stu_addr2"/>
+		<result property="stuBank" column="stu_bank"/>
+		<result property="stuAccount" column="stu_account"/>
+		<result property="profileNo" column="profile_no"/>
+		<collection property="academicVO" resultMap="academicMap"/>
+	</resultMap>
+	
+	<resultMap type="employeeVO" id="employeeMap">
+		<id property="empId" column="emp_id"/>
+		<result property="deptCode" column="dept_code"/>
+		<result property="empNameKo" column="emp_name_ko"/>
+		<result property="empNameEn" column="emp_name_en"/>
+		<result property="empReg1" column="emp_reg1"/>
+		<result property="empReg2" column="emp_reg2"/>
+		<result property="empEmail" column="emp_email"/>
+		<result property="empPhone" column="emp_phone"/>
+		<result property="empNation" column="emp_nation"/>
+		<result property="empGender" column="emp_gender"/>
+		<result property="empPostcode" column="emp_postcode"/>
+		<result property="empAddr1" column="emp_addr1"/>
+		<result property="empAddr2" column="emp_addr2"/>
+		<result property="empBank" column="emp_bank"/>
+		<result property="empAccount" column="emp_account"/>
+		<result property="profileNo" column="profile_no"/>
+	</resultMap>
+	
+	<resultMap type="professorVO" id="professorMap">
+		<id property="proId" column="pro_id"/>
+		<result property="proId" column="pro_id"/> 
+		<result property="deptCode" column="dept_code"/> 
+		<result property="proNameKo" column="pro_name_ko"/> 
+		<result property="proNameEn" column="pro_name_en"/> 
+		<result property="proReg1" column="pro_reg1"/> 
+		<result property="proReg2" column="pro_reg2"/> 
+		<result property="proMajor" column="pro_major"/> 
+		<result property="proEmail" column="pro_email"/> 
+		<result property="proPhone" column="pro_phone"/> 
+		<result property="proNation" column="pro_nation"/> 
+		<result property="proGender" column="pro_gender"/> 
+		<result property="proPostcode" column="pro_postcode"/> 
+		<result property="proAddr1" column="pro_addr1"/> 
+		<result property="proAddr2" column="pro_addr2"/> 
+		<result property="proLabNum" column="pro_lat_num"/> 
+		<result property="proLabTel" column="pro_lab_tel"/> 
+		<result property="proBank" column="pro_bank"/> 
+		<result property="proAccount" column="pro_account"/> 
+		<result property="profileNo" column="profile_no"/> 
+	</resultMap>
+	
+	<select id="userCheck" parameterType="userVO" resultType="userVO">
+		select user_id, password, enabled, user_type
+		from users
+		where user_id = #{userId} and password = #{password}
+	</select>
+	
+	<select id="getStudent" parameterType="userVO" resultMap="userMap">
+		SELECT 
+			u.USER_ID, PASSWORD, ENABLED, USER_TYPE, 
+			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION, STU_GENDER, 
+			STU_POSTCODE, STU_ADDR1, STU_ADDR2, PROFILE_NO, STU_BANK, STU_ACCOUNT, 
+			a.STU_ID, DEPT_CODE, PRO_ID, ADMI_DATE, GRAD_DATE, ACA_MAJOR, ACA_MINOR, ACA_DMAJOR, ACA_STATUS, ACA_GRADE, 
+			ACA_SEMESTER, ACA_AVG_CREDIT, ACA_MAJ1_SCORE, ACA_MAJ2_SCORE, ACA_CUL1_SCORE, ACA_CUL2_SCORE 
+		from users u, student s, academic a 
+		where u.user_id = s.stu_id 
+		and s.stu_id = a.stu_id 
+		and user_id = #{userId}
+		and user_type = #{userType}
+	</select>
+	
+	<select id="getProfessor" parameterType="userVO" resultMap="userMap">
+		select
+		    USER_ID, PASSWORD, ENABLED, USER_TYPE,
+		    PRO_ID, DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, 
+		    PRO_NATION, PRO_GENDER, PRO_POSTCODE, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL, PROFILE_NO, PRO_BANK, PRO_ACCOUNT
+		from users u, professor p
+		where u.user_id = p.pro_id
+		and p.pro_id = #{userId}
+		and user_type = #{userType}
+	</select>
+	
+	<select id="getEmployee" parameterType="userVO" resultMap="userMap">
+		select
+		    USER_ID, PASSWORD, ENABLED, USER_TYPE,
+		    EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION, 
+		    EMP_GENDER, EMP_POSTCODE, EMP_ADDR1, EMP_ADDR2, PROFILE_NO, EMP_BANK, EMP_ACCOUNT, DEPT_CODE
+		from users u, employee e
+		where u.user_id = e.emp_id
+		and user_id = #{userId}
+		and user_type = #{userType}
+	</select>
+	
+	<select id="getId" parameterType="map" resultType="string">
+		<if test="userType == 'STU'">
+			select stu_id 
+			from student
+			where stu_name_ko = #{userName}
+			and stu_reg1 = #{userReg1}
+			and stu_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'PRO'">
+			select pro_id 
+			from professor
+			where pro_name_ko = #{userName}
+			and pro_reg1 = #{userReg1}
+			and pro_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'EMP'">
+			select emp_id 
+			from employee
+			where emp_name_ko = #{userName}
+			and emp_reg1 = #{userReg1}
+			and emp_reg2 = #{userReg2}
+		</if>
+	</select>
+	
+	<select id="userCheck2" parameterType="map" resultType="int">
+		<if test="userType == 'STU'">
+			select count(*)
+			from student
+			where stu_id = #{userId}
+			and stu_name_ko = #{userName}
+			and stu_reg1 = #{userReg1}
+			and stu_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'PRO'">
+			select count(*)
+			from professor
+			where pro_id = #{userId}
+			and pro_name_ko = #{userName}
+			and pro_reg1 = #{userReg1}
+			and pro_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'EMP'">
+			select count(*)
+			from employee
+			where emp_id = #{userId}
+			and emp_name_ko = #{userName}
+			and emp_reg1 = #{userReg1}
+			and emp_reg2 = #{userReg2}
+		</if>
+	</select>
+	
+	<update id="saveImsiPw" parameterType="map">
+		update users
+		set password = #{imsiPw}
+		where user_id = #{userId}
+	</update>
+	
+	<update id = "update" parameterType="map">
+		<if test="userType == 'STU'">
+		update STUDENT
+		set
+			STU_PHONE = #{stuPhone},
+			STU_EMAIL = #{stuEmail},
+			STU_POSTCODE = #{stuPostcode},
+			STU_ADDR1 = #{stuAddr1},
+			STU_ADDR2 = #{stuAddr2},
+			STU_BANK = #{stuBank},
+			STU_ACCOUNT = #{stuAccount}
+		where STU_ID = #{userId}	
+		</if>
+		<if test="userType == 'PRO'">
+		update PROFESSOR
+		set
+			PRO_PHONE = #{proPhone},
+			PRO_EMAIL = #{proEmail},
+			PRO_POSTCODE = #{proPostcode},
+			PRO_ADDR1 = #{proAddr1},
+			PRO_ADDR2 = #{proAddr2},
+			PRO_BANK = #{proBank},
+			PRO_ACCOUNT = #{proAccount}
+		where PRO_ID = #{userId}	
+		</if>
+		<if test="userType == 'EMP'">
+		update EMPLOYEE
+		set
+			EMP_PHONE = #{empPhone},
+			EMP_EMAIL = #{empEmail},
+			EMP_POSTCODE = #{empPostcode},
+			EMP_ADDR1 = #{empAddr1},
+			EMP_ADDR2 = #{empAddr2},
+			EMP_BANK = #{empBank},
+			EMP_ACCOUNT = #{empAccount}
+		where emp_ID = #{userId}	
+		</if>
+	</update>
+	
+	
+	<insert id = "insertUser" parameterType="map">
+		insert into USERS (
+			USER_ID, PASSWORD, USER_TYPE
+		) values (
+			#{userId}, #{password}, #{userType}      
+		)
+		
+	</insert>
+	
+	<insert id = "insertUserType" parameterType="map">
+		<if test="userType == 'STU'">
+		insert into STUDENT (
+			STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION,	STU_GENDER, STU_ADDR1, STU_ADDR2, STU_BANK, STU_ACCOUNT, STU_POSTCODE
+			) values (
+			#{userId}, #{stuNameKo}, #{stuNameEn}, #{stuReg1}, #{stuReg2}, #{stuEmail}, #{stuPhone}, #{stuNation}, #{stuGender}, #{stuAddr1}, #{stuAddr2}, #{stuBank}, #{stuAccount}, #{stuPostcode})
+		</if>
+		<if test="userType == 'PRO'">
+		insert into PROFESSOR ( 
+			PRO_ID, DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, PRO_NATION, PRO_GENDER, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL, PRO_BANK, PRO_ACCOUNT, PRO_POSTCODE
+			)values (
+			#{userId}, #{deptCode}, #{proNameKo}, #{proNameEn}, #{proReg1}, #{proReg2}, #{proMajor}, #{proEmail}, #{proPhone}, #{proNation}, #{proGender}, #{proAddr1}, #{proAddr2}, #{proLabNum}, #{proLabTel}, #{proBank}, #{proAccount}, #{proPostcode})
+		</if>
+		<if test="userType == 'EMP'">
+		insert into EMPLOYEE (
+			EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION, EMP_GENDER, EMP_ADDR1, EMP_ADDR2, EMP_BANK, EMP_ACCOUNT, DEPT_CODE, EMP_POSTCODE
+			)values (
+			#{userId}, #{empNameKo}, #{empNameEn}, #{empReg1}, #{empReg2}, #{empEmail}, #{empPhone}, #{empNation}, #{empGender}, #{empAddr1}, #{empAddr2}, #{empBank}, #{empAccount}, #{deptCode}, #{empPostcode})
+		</if>
+	</insert>
+	
+	<insert id = "insertAca" parameterType="map">
+		insert into ACADEMIC (
+			STU_ID, DEPT_CODE, ACA_MAJOR, ACA_STATUS, ACA_GRADE	
+			) values (
+			#{userId}, #{deptCode}, #{acaMajor},'재학', #{acaGrade}
+			)
+			
+	</insert>
+	
+	<select id = "selectAllUsers" resultType="userVO">
+		SELECT USER_ID, PASSWORD, ENABLED, USER_TYPE FROM USERS
+	</select>
+	
+	<select id = "selectAllStudents" resultMap="studentMap">
+		SELECT 
+  			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, 
+ 			ACA_MAJOR, ACA_GRADE,
+ 			c.COLL_NAME
+		FROM 
+  		student s
+		LEFT OUTER JOIN 
+		  academic a
+		ON 
+		  s.STU_ID = a.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  a.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+	</select>
+	
+	<select id = "selectAllProfessors" resultType="professorVO">
+		SELECT PRO_ID, DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, PRO_NATION, 
+			PRO_GENDER, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL, PROFILE_NO, PRO_BANK, PRO_ACCOUNT, PRO_POSTCODE 
+		FROM PROFESSOR
+	</select>
+	
+	<select id = "selectAllEmployees" resultType="employeeVO">
+		SELECT EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION,
+			EMP_GENDER, EMP_ADDR1, EMP_ADDR2, PROFILE_NO, EMP_BANK, EMP_ACCOUNT, DEPT_CODE, EMP_POSTCODE 
+		FROM EMPLOYEE
+	</select>
+
+	<select id = "selectStuAcademics" resultType="studentVO">
+		SELECT a.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION, 
+			STU_GENDER, STU_ADDR1, STU_ADDR2, PROFILE_NO, STU_BANK, STU_ACCOUNT, STU_POSTCODE, ACA_MAJOR , ACA_GRADE
+        FROM STUDENT A, ACADEMIC B
+    	    where a.stu_id = b.stu_id
+	</select>
+	
+	<select id="selectAllDeparts" parameterType="string" resultType="departmentVO">
+		SELECT DEPT_CODE, COLL_CODE, HALL_CODE, DEPT_NAME, DEPT_TEL, DEPT_TUITION, DEPT_ROOM		
+			FROM DEPARTMENT
+		WHERE COLL_CODE = #{collCode}	
+	</select>
+	
+	<select id ="selectStuSearch" parameterType="map" resultMap="studentMap">
+		SELECT 
+  			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, 
+ 			ACA_MAJOR, ACA_GRADE,
+ 			c.COLL_NAME
+		FROM 
+  		student s
+		LEFT OUTER JOIN 
+		  academic a
+		ON 
+		  s.STU_ID = a.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  a.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+		WHERE
+			c.COLL_CODE=#{collCode}
+		and  
+			d.dept_name=#{deptName}
+			
+	</select>
+	
+	
+	<select id="selectStuListCount" parameterType="pagingVO" resultType="int">
+		select count(STU_ID)
+		from STUDENT
+		where 1=1
+		<include refid="studentSearch"/>
+	</select>
+	
+	<select id="selectStuList" parameterType="pagingVO" resultMap="studentMap">
+	select
+		b.*
+		from (		
+		select 
+			a.*, row_number() over (order by stu_id desc) rnum	
+		from (	
+		SELECT 
+  			s.STU_ID as stu_id, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, 			STU_PHONE, 
+ 			m.ACA_MAJOR, m.ACA_GRADE,
+ 			c.COLL_NAME
+		FROM 
+  		student s
+		LEFT OUTER JOIN 
+		  academic m
+		ON 
+		  s.STU_ID = m.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  m.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+		where 1=1
+		
+		<if test = "searchType != null and searchType == 'id'">
+			and (s.stu_id like '%' || #{searchWord} || '%')
+		</if>
+		<if test = "searchType != null and searchType == 'name'">
+			and (stu_name_ko like '%' || #{searchWord} || '%')
+		</if>
+			order by stu_id desc
+			) a
+		) b
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}	
+		]]>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<div class="row">
+			<div class="card">
+
+				<!-- ================================================= -->
+				<!-- 학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생 시작 -->
+				<!-- 학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생 시작 -->
+				<!-- 학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생학생 시작 -->
+				<!-- ================================================= -->
+				<div class="card-body">
+				<button type="button" class="btn btn-outline-primary" onclick = "location.href='/user/list'">학생</button>
+				<button type="button" class="btn btn-outline-primary" onclick = "location.href='/user/proList'">교수</button>
+				<button type="button" class="btn btn-outline-primary" onclick = "location.href='/user/empList'">직원</button>
+					<!-- ================================================= -->
+					<!-- 검색바 시작 -->
+					<!-- ================================================= -->
+					<div id="keyword" style="margin-top: 20px;margin-bottom: 20px;">
+						<div class="row col-lg-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							<div class="col-md-6 mb-1" >
+								<label for="country">단과대학</label> 
+								<select id="collCode" name = "" tabindex="-1" class="form-control" >
+									<option data-display="Select" id = "empty" value="empty">전체</option>
+									<option value="GYE">경상대학</option> 
+									<option value="ENG">공과대학</option>
+									<option value="CUL">교양대학</option>
+									<option value="UNI">대학본부</option>
+									<option value="EDU">사범대학</option>
+									<option value="SCI">생활과학대학</option>
+									<option value="HUM">인문대학</option>
+								</select>
+							</div>
+							<div class="col-md-6 mb-1">
+							<div>
+								<label for="state">학과(부)</label> 
+								<select id="deptName" name = "" tabindex="-1" class="form-control" onclick="stuList()">
+									<option data-display="Select" value="empty">선택해 주세요.</option>
+								</select> 
+								</div>
+							</div>
+						</div>
+					</div>
+					<form class="input-group input-group-sm" method="post" id="searchForm" style="width: 440px;">
+							
+								<input type="hidden" name="page" id="page"> 
+								<select class="form-control" name="searchType">
+									<option value="id"<c:if test="${searchType =='id' }">selected</c:if>>학번</option>
+									<option value="name"<c:if test="${searchType =='name' }">selected</c:if>>성명</option></select> 
+								<input type="text" name="searchWord" value="${searchWord}" class="form-control float-right" placeholder="Search">
+								<div class="input-group-append">
+									<button type="submit" class="btn btn-default">
+										<i class="fas fa-search"></i>검색
+									</button>
+								</div>
+					</form>
+						<table  class="display table" style="margin-top:10px">
+							<thead>
+								<tr >
+									<th style="width: 20px"><strong>학번</strong></th>
+									<th style="width: 20px"><strong>성명</strong></th>
+									<th style="width: 20px"><strong>단과대학</strong></th>
+									<th style="width: 20px"><strong>전공</strong></th>
+									<th style="width: 20px"><strong>학년</strong></th>
+									<th style="width: 20px"><strong>생년월일</strong></th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:set var="studentList" value="${pagingVO.dataList }" />
+								<c:choose>
+									<c:when test="${empty studentList }">
+										<tr>
+											<td colspan="5">조회하신 게시글이 존재하지 않습니다</td>
+										</tr>
+									</c:when>
+
+									<c:otherwise>
+										<c:forEach items="${studentList }" var="stu">
+											<tr>
+												<td>${stu.stuId }</td>
+												<td>${stu.stuNameKo }</td>
+												<td>${stu.academicVO.collName}</td>
+												<td>${stu.academicVO.acaMajor }</td>
+												<td>${stu.academicVO.acaGrade} 
+												<td>${stu.stuReg1 }</td>
+											</tr>
+										</c:forEach>
+									</c:otherwise>
+								</c:choose>
+
+							</tbody>
+						</table>
+					<div class="card-footer clearfix" id="pagingArea">
+						${pagingVO.pagingHTML }</div>
+				</div>
+			</div>
+		</div>	
+
+<script>
+
+$(function(){
+	$("#collCode").on("change",function(){
+		var code = $(this).val();
+			var data = {
+				collCode : code	
+			};
+			$.ajax({
+				url:"/user/departList",
+				type:"post",
+				data:JSON.stringify(data),
+				contentType:"application/json;charset=utf-8",
+				dataType:"json",
+				success:function(res){
+						res.sort(function(a, b){
+							return a.deptName.localeCompare(b.deptName);
+						});
+					for(let i=0; i<res.length; i++){
+						let option = document.createElement("option");
+						option.innerHTML = res[i].deptName;
+						selectJisun.appendChild(option);
+					}
+				}
+			});
+			selectJisun.innerHTML="";
+		});
+});
+
+const selectJisun = document.querySelector("#deptName");
+
+function stuList() {
+	const collCode = $("#collCode").val();
+	const deptName = $("#deptName").val();
+	
+	var data = {
+			collCode : collCode,
+			deptName : deptName,
+		};
+	const tbody = document.querySelector("#tableBody");
+	$.ajax({
+		url :"/user/stuSearch",
+		type:"post",
+		data:JSON.stringify(data),
+		contentType:"application/json;charset=utf-8",
+		dataType:"json",
+		success : function(res) {
+			console.log("res >> ", res)
+			console.log($("table > tbody"));
+			$("table > tbody").empty();
+			if(res.length > 0){
+				$.each(res, function(index, item){
+					index = index + 1;
+					let str = "<tr>";
+					str += `<td>\</td>`;
+					str += `<td>\${item.stuId}</td>`;
+					str += `<td>\${item.stuNameKo}</td>`;
+					str += `<td>\${item.academicVO.collName}</td>`;
+					str += `<td>\${item.academicVO.acaMajor}</td>`;
+					str += `<td>\${item.academicVO.acaGrade}</td>`;
+					str += `<td>\${item.stuReg1}</td>`;
+					str += "</tr>"
+					$("table > tbody").append(str);
+				});
+			}
+		}
+	})
+}
+
+
+
+			$(function () {
+				var searchForm = $("#searchForm");
+				var pagingArea = $("#pagingArea");
+		
+			pagingArea.on("click","a",function(event){
+				event.preventDefault();
+				var pageNo = $(this).data("page");
+				searchForm.find("#page").val(pageNo);
+				searchForm.submit();
+			})
+		});
+		
+</script>
+
+
+
+
+
+
+
+
+package kr.or.ddit.user.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.common.vo.DepartmentVO;
+import kr.or.ddit.user.service.IUserService;
+import kr.or.ddit.user.vo.EmployeeVO;
+import kr.or.ddit.user.vo.ProfessorVO;
+import kr.or.ddit.user.vo.StudentVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/user")
+public class UserListController {
+	
+	@Autowired
+	private IUserService userService;
+	
+	
+	@RequestMapping(value="/list")
+	public String studentList(@RequestParam(name="page",required = false, defaultValue = "1")int currentPage, 
+			@RequestParam(required = false, defaultValue = "title") String searchType, 
+			@RequestParam(required = false)String searchWord,
+			Model model) {
+		PaginationInfoVO<StudentVO> pagingVO = new PaginationInfoVO<StudentVO>();
+		
+		// searchWord가 공백이 아니면 검색을 한 상태일 테니까
+		if(StringUtils.isNotBlank(searchWord)) {
+			pagingVO.setSearchType(searchType);
+			pagingVO.setSearchWord(searchWord);
+			model.addAttribute("searchType",searchType);
+			model.addAttribute("searchWord",searchWord);
+		}
+		pagingVO.setCurrentPage(currentPage);
+		int totalRecord = userService.selectStuListCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		
+		List<StudentVO> studentList = userService.selectStuList(pagingVO);
+		pagingVO.setDataList(studentList);
+		
+		model.addAttribute("pagingVO",pagingVO);
+		
+		return"user/userList2";
+	}
+	
+	
+	
+//	@GetMapping("/list")
+//	public String stuList(Model model) {		
+//
+//		List<StudentVO> student = userService.selectAllStudents();
+//		model.addAttribute("student",student);
+//		model.addAttribute("status","s");
+//		log.info("student >> " + student);
+//
+//		return "user/userList";
+//	}
+//	
+
+	@GetMapping("/proList")
+	public String proList(Model model) {		
+
+		
+		List<ProfessorVO> professor = userService.selectAllProfessors();
+		model.addAttribute("professor",professor);
+		model.addAttribute("status","p");
+		log.info("professor >> " + professor);
+		
+		return "user/userList";
+	}
+	
+	@GetMapping("/empList")
+	public String empList(Model model) {		
+		
+		List<EmployeeVO> employee = userService.selectAllEmployees();
+		model.addAttribute("employee",employee);
+		model.addAttribute("status","e");
+		log.info("employee >> " + employee);
+		
+		return "user/userList";
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/departList", method=RequestMethod.POST, produces="application/json;charset=utf-8")
+	public List<DepartmentVO> getDepartList(@RequestBody Map<String, String> dataMap) {
+		
+		List<DepartmentVO> department = userService.selectAllDeparts(dataMap.get("collCode"));
+		
+		return department;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/stuSearch", method=RequestMethod.POST, produces="application/json;charset=utf-8")
+	public List<StudentVO> getStuSearchList(@RequestBody Map<String,String> dataMap) {
+
+		List<StudentVO> stuSearch = userService.selectStuSearch(dataMap);
+		
+		return stuSearch;
+ 	}
+}

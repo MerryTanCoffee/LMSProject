@@ -1,0 +1,77 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<div class="row">
+	<div class="col-xl-12">
+		<div class="card dz-card" id="bootstrap-table5">
+			<div class="card-header flex-wrap d-flex justify-content-between  border-0">
+				<div>
+					<h4 class="card-title"><span style="font-size: 18px; color: #f96d00;">|</span> 디지털공학및실습 기말고사 채점결과</h4>
+				</div>
+			</div>
+			<div class="card-body pt-0">
+				<div class="table-responsive">
+					<table class="table table-bordered table-responsive-sm">
+						<thead>
+							<tr>
+								<th>맞은개수</th>
+								<th>틀린개수</th>
+								<th>내점수</th>
+								<th>총점</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>3개</td>
+								<td>0개</td>
+								<td><span class="badge badge-primary">80</span></td>
+								<td>100</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xl-12">
+		<div class="card dz-card" id="bootstrap-table5">
+			<div class="card-header flex-wrap d-flex justify-content-between  border-0">
+				<div>
+					<h4 class="card-title"><span style="font-size: 18px; color: #f96d00;">|</span> 채점현황</h4>
+				</div>
+			</div>
+			<div class="card-body pt-0">
+				<div class="table-responsive">
+					<table class="table table-bordered table-responsive-sm">
+						<thead>
+							<tr>
+								<th>문제번호</th>
+								<th>문제</th>
+								<th>제출답안</th>
+								<th>답안</th>
+								<th>배점</th>
+								<th>취득점수</th>
+								<th>채점</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${stuAnswerInfo }" var="stuAnswer" varStatus="status">
+								<tr>
+									<td>${status.count }번</td>
+									<td>${stuAnswer.exContent }</td>
+									<td>${stuAnswer.exaAnswer }</td>
+									<td>${stuAnswer.exSolution }</td>
+									<td>33</td>
+									<td>33</td>
+									<td>X</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

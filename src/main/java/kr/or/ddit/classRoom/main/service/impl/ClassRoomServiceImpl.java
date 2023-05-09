@@ -1,0 +1,54 @@
+package kr.or.ddit.classRoom.main.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.classRoom.main.service.ClassRoomService;
+import kr.or.ddit.common.vo.CurrentInfoVO;
+import kr.or.ddit.mapper.ClassRoomMapper;
+import kr.or.ddit.submit.vo.HomeworkVO;
+import kr.or.ddit.user.vo.UserVO;
+
+@Service
+public class ClassRoomServiceImpl implements ClassRoomService {
+
+	@Autowired
+	private ClassRoomMapper mapper;
+
+	@Override
+	public List<Map<String, Object>> getClassRoomList(UserVO userInfo) {
+
+		String userId = userInfo.getUserId();
+
+		List<Map<String, Object>> classRoomList = mapper.getClassRoomList(userInfo);
+
+		return classRoomList;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMyClassYearList(UserVO userInfo) {
+		
+		List<Map<String, Object>> myClassYearList = mapper.getMyClassYearList(userInfo);
+		
+		return myClassYearList;
+	}
+
+	@Override
+	public List<Map<String, Object>> getSearchList(Map<String, Object> searchMap) {
+		return mapper.getSearchList(searchMap);
+	}
+
+	@Override
+	public String selectSubName(String lecCode) {
+		return mapper.selectSubName(lecCode);
+	}
+
+	@Override
+	public CurrentInfoVO getCurrentInfo() {
+		return mapper.getCurrentInfo();
+	}
+
+}

@@ -1,0 +1,25 @@
+package kr.or.ddit.exam.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.exam.service.ExamService;
+import kr.or.ddit.exam.vo.ExamVO;
+import kr.or.ddit.mapper.ExamMapper;
+
+@Service
+public class ExamServiceImpl implements ExamService {
+
+	@Inject
+	private ExamMapper examMapper;
+	
+	// 시험정보에 과목정보 뿌리기
+	@Override
+	public List<ExamVO> selectExamSubjectList(String proId) {
+		return examMapper.selectExamSubjectList(proId);
+	}
+
+}

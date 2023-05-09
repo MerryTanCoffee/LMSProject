@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LectureMapper">
+
+	<resultMap type="lectureVO" id="lectureMap">
+		<id property="lecCode" column="lec_code"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="proId" column="pro_id"/>
+		<result property="subCode" column="sub_code"/>
+		<result property="subName" column="sub_name"/>
+		<result property="lecOpenYear" column="lec_open_year"/>
+		<result property="lecOpenSemester" column="lec_open_semester"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="lecLanguage" column="lec_language"/>
+		<result property="lecGrade" column="lec_grade"/>
+		<result property="lecQuota" column="lec_quota"/>
+		<result property="lecOnline" column="lec_online"/>
+		<result property="lecOnlineLink" column="lec_online_link"/>
+		<result property="lecBook" column="lec_book"/>
+		<result property="lecAttendRate" column="lec_attend_rate"/>
+		<result property="lecTaskRate" column="lec_task_rate"/>
+		<result property="lecMexamRate" column="lec_mexam_rate"/>
+		<result property="lecFexamRate" column="lec_fexam_rate"/>
+		<result property="lecApplDate" column="lec_appl_date"/>
+		<result property="lecStatus" column="lec_status"/>
+		<result property="lecComment" column="lec_comment"/>
+		<collection property="lecRoomSchedule" resultMap="lecRoomScheduleMap"/>
+		<collection property="LecIdxList" resultMap="lectureIndexMap"/>
+	</resultMap>
+	
+	<resultMap type="lecRoomScheduleVO" id="lecRoomScheduleMap">
+		<id property="lrsNo" column="lrs_no"/>
+		<result property="lrsNo" column="lrs_no"/>
+		<result property="lrCode" column="lr_code"/>
+		<result property="lrsStart" column="lrs_start"/>
+		<result property="lrsEnd" column="lrs_end"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="weekCode" column="week_code"/>
+	</resultMap>
+	
+	<resultMap type="lectureIndexVO" id="lectureIndexMap">
+		<id property="liWeek" column="li_week"/>
+		<result property="liWeek" column="li_week"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="liContent" column="li_content"/>
+		<result property="liNote" column="li_note"/>
+		<collection property="AtdList" resultMap="attendanceMap"/>
+	</resultMap>
+	
+	<resultMap type="attendanceVO" id="attendanceMap">
+		<id property="liWeek" column="li_week"/>
+		<result property="liWeek" column="li_week"/>
+		<result property="lecCode" column="lec_code"/>
+		<result property="stuId" column="stu_id"/>
+		<result property="atdCheck" column="atd_check"/>
+	</resultMap>
+	
+	<select id="subjectList" resultType="subjectVO">
+		select 
+		    d.DEPT_CODE, d.DEPT_NAME,
+		    h.hall_code, h.hall_name,
+		    SUB_CODE, s.DEPT_CODE, SUB_SORT, SUB_NAME, SUB_CREDIT, SUB_LEC_TIME, 
+		    SUB_PRAC_TIME, SUB_OUTLINE_KO, SUB_OUTLINE_EN, SUB_TYPE
+		from SUBJECT s, DEPARTMENT d, hall h
+		where s.DEPT_CODE = d.DEPT_CODE
+		and d.hall_code = h.hall_code
+		and s.dept_code = #{deptCode}
+	</select>
+	
+	
+	
+<!-- 	<select id="applicationList" resultMap="lectureMap"> -->
+		
+<!-- 	</select> -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

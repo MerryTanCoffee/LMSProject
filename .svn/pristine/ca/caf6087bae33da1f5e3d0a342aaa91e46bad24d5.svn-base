@@ -1,0 +1,31 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.exam.vo.ExamListVO;
+import kr.or.ddit.exam.vo.ExamSelectVO;
+import kr.or.ddit.exam.vo.ExamVO;
+
+public interface ExamMapper {
+
+	// 시험정보에 과목정보 뿌리기
+	public List<ExamVO> selectExamSubjectList(String proId);
+
+	// 시험 문제 질문 등록
+	public void insertExamQuestions(ExamListVO examListVO);
+
+	// 시험 문제 보기 등록
+	public void insertExamMultipleChoice(ExamSelectVO examSelectVO);
+
+	// 한 강의에 해당하는 문제 정보(질문+보기) 가져오기
+	public List<ExamVO> selectExamInfo(ExamVO examVO);
+
+	// 시험 문제 질문 수정
+	public void updateExamList(ExamListVO listVO);
+
+	// 시험 문제 보기 수정
+	public void updateExamSelect(ExamSelectVO selectVO);
+
+	
+
+}

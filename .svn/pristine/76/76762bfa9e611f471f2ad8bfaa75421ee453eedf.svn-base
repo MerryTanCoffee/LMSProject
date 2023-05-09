@@ -1,0 +1,53 @@
+package kr.or.ddit.tuition.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.tuition.service.ITuitionService;
+import kr.or.ddit.tuition.vo.TuitionVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/tuition")
+public class TuitionController {
+	
+	@Autowired
+	public ITuitionService tuiService;
+	
+	@GetMapping("/tuitionList")
+	public String tuitionList(HttpSession session, Model model, TuitionVO tuitionVO) {
+		 
+		UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+		String userId = userInfo.getUserId();
+		
+		List<TuitionVO> tuitionList = tuiService.tuitionList(userId);
+		model.addAttribute("tuitionList", tuitionList);
+		log.info("tuitionList >> " + tuitionList);
+		
+		return "tuition/tuitionList";
+	}
+	
+	@GetMapping("/tuiDetail")
+	public String tuiConfirm(HttpSession session, Model model, int tlNo) {
+		
+		UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+		String userId = userInfo.getUserId();
+		
+//		int tlNo = tuitionVO.getTlNo();
+		
+		TuitionVO tuitionVO = tuiService.tuiDetail(tlNo);
+		model.addAttribute("tuitionVO", tuitionVO);
+		
+		return "tuition/tuiDetail";
+	}
+	
+}

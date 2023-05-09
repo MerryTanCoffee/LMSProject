@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ScholarshipMapper">
+	
+	<select id="scholarList" parameterType="scholarshipListVO" resultType="scholarshipListVO">
+		    select b.sl_no, b.sl_year, b.sl_semester, a.si_name, a.si_gubun, b.sl_schlr
+		    from scholarship_info a, scholarship_list b
+		    where a.si_code = b.si_code
+		    and stu_id = #{stuId}
+		    <if test="slYear > 0">
+			    and sl_year = #{slYear}
+		    </if>
+		    <if test="slSemester > 0">
+	    		and sl_semester = #{slSemester}
+		    </if>
+	</select>
+	
+	<select id="scholarInfoList" parameterType="scholarshipInfoVO" resultType="scholarshipInfoVO">
+		select si_gubun, si_name, si_grade
+		from scholarship_info 
+		<if test="siCode != '전체' ">
+			where si_code like #{siCode} || '%'
+		</if>
+		<if test="siGubun == '교내' and siGubun == '교외' ">
+			and si_gubun = #{siGubun}
+		</if>
+	</select>
+	
+</mapper>

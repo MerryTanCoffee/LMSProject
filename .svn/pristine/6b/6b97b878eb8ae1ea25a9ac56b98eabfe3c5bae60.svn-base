@@ -1,0 +1,102 @@
+package kr.or.ddit.chat.controller;
+
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.RemoteEndpoint.Basic;
+import javax.websocket.Session;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Controller;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@ServerEndpoint(value="/studyChat.do/{studyCode}")
+public class ChatWebSocket {
+    
+   
+     private static final ConcurrentHashMap<String, List<Session>> sessions = new ConcurrentHashMap<>();
+   
+     public ChatWebSocket() {
+     }
+   
+     @OnOpen
+     public void onOpen(Session session, @PathParam(value = "studyCode") String studyCode) {
+         log.info("Open session id:" + session.getId());
+         try {
+             final Basic basic = session.getBasicRemote();
+             basic.sendText("대화방에 들어오신것을 환영합니다</br> 접속시간 :");
+         } catch (Exception e) {
+             System.out.println(e.getMessage());
+         }
+         sessions.computeIfAbsent(session.getId(), key -> new ArrayList<>()).add(session);
+         log.info("현재 소켓 참여 리스트 : " + sessions.toString());
+     }
+   
+     private void sendAllSessionToMessage(Session self, String sender, String message, String imgSrc) {
+         try {
+             sessions.forEach((id, sessionList) -> {
+                 for (Session session : sessionList) {
+                     if (!self.getId().equals(session.getId())) {
+                         try {
+                             session.getBasicRemote().sendText(sender + " : " + message + " : " + imgSrc);
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+                     }
+                 }
+             });
+         } catch (Exception e) {
+             System.out.println(e.getMessage());
+         }
+     }
+   
+     @OnMessage
+     public void onMessage(String message, Session session) {
+         log.info("message" + message);
+         String imgSrc = message.split(",")[2];
+         String sender = message.split(",")[1];
+         String msg = message.split(",")[0];
+         log.info("sender" + sender);
+         log.info("msg" + msg);
+         log.info("imgSrc" + imgSrc);
+   
+         log.info("<나> : " + msg + " : " + imgSrc);
+         try {
+             final Basic basic = session.getBasicRemote();
+             basic.sendText("<나> : " + msg + " : " + imgSrc);
+         } catch (Exception e) {
+             log.info(e.getMessage());
+         }
+         sendAllSessionToMessage(session, sender, msg, imgSrc);
+     }
+   
+     @OnError
+     public void onError(Throwable e, Session session) {
+   
+     }
+   
+     @OnClose
+     public void onClose(Session session) {
+         sessions.computeIfPresent(session.getId(), (key, sessionList) -> {
+             sessionList.remove(session);
+             if (sessionList.isEmpty()) {
+                 return null;
+             }
+             return sessionList;
+         });
+         log.info("소켓 닫힘");
+         log.info("현재 소켓 참여 리스트 : " + sessions.toString());
+         log.info("Session " + session.getId() + " has ended");
+     }
+}

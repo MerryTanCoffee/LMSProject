@@ -1,0 +1,24 @@
+package kr.or.ddit.facilty.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.facilty.service.FacilityService;
+import kr.or.ddit.facilty.vo.FacilityVO;
+import kr.or.ddit.mapper.FacilityMapper;
+
+@Service
+public class FacilityServiceImpl implements FacilityService {
+
+	@Inject
+	private FacilityMapper facilityMapper;
+	
+	@Override
+	public List<FacilityVO> getFacility(String facCode) {
+		return facilityMapper.getFacility(facCode);
+	}
+
+}

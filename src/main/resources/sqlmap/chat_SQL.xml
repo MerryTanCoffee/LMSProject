@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ChatMapper">
+<resultMap type="chatVO" id="chatMap">
+		<id property="chatNo" column="CHAT_NO"/>
+		<result property="studyCode" column="STUDY_CODE"/>
+		<result property="stuId" column="STU_ID"/>
+		<result property="chatCont" column="CHAT_CONT"/>
+		<result property="chatDate" column="CHAT_DATE"/>
+		<result property="stuNameKo" column="STU_NAME_KO"/>
+</resultMap>
+
+
+
+	<insert id = "insertChat" parameterType="map">
+		insert into CHATTING
+		(CHAT_NO, STUDY_CODE, STU_ID, CHAT_CONT, CHAT_DATE)
+		values 
+		(SEQ_CHATTING.nextval, #{studyCode}, #{stuId}, #{chatCont}, SYSDATE)
+	</insert>
+	
+	
+	<select id = "chatDetail" parameterType="map" resultMap="chatMap">
+		select
+	        c.CHAT_NO, c.STU_ID, c.CHAT_CONT, c.CHAT_DATE, c.STUDY_CODE, s.STU_NAME_KO
+	    from CHATTING c
+	    join STUDENT s on c.STU_ID = s.STU_ID
+	    where c.STUDY_CODE = #{studyCode}
+	    order by c.CHAT_DATE asc
+	</select>
+	
+	<select id="selectMyStudy" parameterType="studyVO" resultType="studyVO">
+		SELECT
+		    a.*,
+		    COUNT(sm.STU_ID) AS member_count,
+		    row_number() over (order by a.study_date desc) rnum
+		FROM (
+		    SELECT
+		        s.study_code,
+		        study_title,
+		        study_date,
+		        sm.STU_ID,
+		        sm.SM_LEADER
+		    FROM study s
+		    LEFT OUTER JOIN study_member sm ON s.study_code = sm.study_code
+		    WHERE sm.STU_ID =#{userId} AND sm.STUDY_STATUS = 'Y'
+		) a
+		LEFT OUTER JOIN study_member sm ON a.study_code = sm.study_code
+		GROUP BY a.study_code, a.study_title, a.study_date, a.STU_ID, a.SM_LEADER
+	</select>
+
+
+	<select id = "chatMember" parameterType="map" resultType="studentVO">
+		SELECT s.STU_NAME_KO, s.STU_NAME_EN
+			FROM student s
+			JOIN study_member sm ON s.STU_ID = sm.STU_ID
+		WHERE sm.STUDY_CODE = #{studyCode} AND sm.STUDY_STATUS = 'Y'
+	</select>
+</mapper>

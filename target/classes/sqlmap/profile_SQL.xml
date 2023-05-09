@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ProfileMapper">
+
+
+	<insert id ="insertProfile" parameterType="profileVO" useGeneratedKeys="true">
+		<selectKey keyProperty="profileNo" order="BEFORE" resultType="int">
+			select seq_profile.nextval
+			from dual
+		</selectKey>
+		insert into profile (
+			PROFILE_NO, PROFILE_FN, PROFILE_NAME, PROFILE_PATH
+		) values (
+			#{profileNo}, #{profileFn}, #{profileName}, #{profilePath}
+		)
+	</insert>
+
+	<update id ="updateProfile" parameterType="profileVO">
+		update  profile 
+			set 
+			PROFILE_FN = #{profileFn}, 
+			PROFILE_NAME = #{profileName}, 
+			PROFILE_PATH = #{profilePath}
+		where PROFILE_NO = #{profileNo}
+	</update>
+	
+	<update id="updateUserProfileNo" parameterType="map">
+		<if test="userType == 'STU'">
+			update student
+			set
+				profile_no = #{profileNo}
+			where stu_id = #{userId} 
+		</if>
+		<if test="userType == 'PRO'">
+			update professor
+			set
+				profile_no = #{profileNo}
+			where pro_id = #{userId} 
+		</if>
+		<if test="userType == 'EMP'">
+			update employee
+			set
+				profile_no = #{profileNo}
+			where emp_id = #{userId} 
+		</if>
+	</update>
+
+	<select id = "getProfile" parameterType="int" resultType="profileVO">
+		select PROFILE_NO,
+				PROFILE_FN,
+				PROFILE_NAME,	
+				PROFILE_PATH
+		from PROFILE
+		where PROFILE_NO = #{profileNo}		
+	</select>
+</mapper>

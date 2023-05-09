@@ -1,0 +1,7 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.sms.vo.CoolSmsVO;
+
+public interface CoolSmsMapper {
+	public void insert(CoolSmsVO coolsms) throws Exception;		
+}

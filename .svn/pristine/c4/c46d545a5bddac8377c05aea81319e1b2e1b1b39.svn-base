@@ -1,0 +1,12 @@
+package kr.or.ddit.consult.service;
+
+import java.util.List;
+
+import kr.or.ddit.user.vo.ProfessorVO;
+
+public interface IConsultService {
+
+	public List<ProfessorVO> getProInfoList(String deptCode);
+
+
+}

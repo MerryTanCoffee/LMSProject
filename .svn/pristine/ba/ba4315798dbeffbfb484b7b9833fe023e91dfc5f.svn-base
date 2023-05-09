@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.user.vo.ProfessorVO;
+
+public interface ConsultMapper {
+
+	public List<ProfessorVO> getProInfoList(String deptCode);
+
+
+}

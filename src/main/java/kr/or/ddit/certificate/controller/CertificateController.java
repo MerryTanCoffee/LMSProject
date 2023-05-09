@@ -1,0 +1,160 @@
+package kr.or.ddit.certificate.controller;
+
+import java.util.List;
+import java.util.Locale;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.certificate.service.ICertificateService;
+import kr.or.ddit.certificate.vo.CertificateVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.score.service.IScoreService;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/certificate")
+public class CertificateController {
+
+	@Inject
+	private ICertificateService certificateService;
+	@Inject
+	private IScoreService scoreService;
+
+	private static final Logger logger = LoggerFactory.getLogger(CertificateController.class);
+
+	// 성적증명서 종이
+	@RequestMapping(value = "/scoreList", method = RequestMethod.GET)
+	public String certificateScore(Locale locale, Model model,
+			@RequestParam(value = "stuId", required = false) String stuId, HttpServletRequest req) throws Exception {
+		
+		log.info("scoreList()");
+		HttpSession session = req.getSession(false);
+
+		if (session != null && session.getAttribute("userInfo") != null) {
+			UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+			String userId = userInfo.getUserId();
+			log.info("userId : " + userId);
+			System.out.println("/certificate/scoreList : get 요청");
+			List<ScoreVO> scoreList = scoreService.read(userId, session);// model.addAttribute("scoreList", scoreList);랑
+
+			model.addAttribute("sList", scoreService.stuList(userInfo.getUserId()));
+			model.addAttribute("sListJP", scoreService.stuListJP(userInfo.getUserId()));
+			model.addAttribute("sListJS", scoreService.stuListJS(userInfo.getUserId()));
+			model.addAttribute("sListGP", scoreService.stuListGP(userInfo.getUserId()));
+			model.addAttribute("sListGS", scoreService.stuListGS(userInfo.getUserId()));
+			model.addAttribute("averageList", scoreService.averageList(userInfo.getUserId()));
+			model.addAttribute("scoreList", scoreList);
+
+			return "certificate/certificateScore";
+
+		} else {
+			return "redirect:/login";
+		}
+	}
+
+	// 졸업증명서 종이
+	@RequestMapping(value = "/graduateList", method = RequestMethod.GET)
+	public String certificateGraduate(Locale locale, Model model) throws Exception {
+		return "certificate/certificateGraduate";
+	}
+
+	// 재학증명서 종이
+	@RequestMapping(value = "/enrollList", method = RequestMethod.GET)
+	public String certificateEnroll(Locale locale, Model model) throws Exception {
+		return "certificate/certificateEnroll";
+	}
+
+	// 세션로그인한 증명서 화면
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public String certificate(HttpServletRequest req, ScoreVO score, Model model) throws Exception {
+
+		HttpSession session = req.getSession(false);
+
+		if (session != null && session.getAttribute("userInfo") != null) {
+			UserVO userVO = (UserVO) session.getAttribute("userInfo");
+			String userId = userVO.getUserId();
+
+			score.setStuId(userId);
+
+			List<ScoreVO> scoreList = certificateService.scoreCerList(score);
+
+			CertificateVO cer = new CertificateVO();
+			cer.setStuId(userId);
+			List<CertificateVO> cerList = certificateService.cerList(cer);
+
+			model.addAttribute("userVO", userVO);
+			model.addAttribute("scoreList", scoreList);
+			model.addAttribute("cerList", cerList);
+
+			return "certificate/certificate";
+
+		} else {
+			return "redirect:/login";
+		}
+	}
+
+	// ? 선희껀데 용도모름..
+	@ResponseBody
+	@RequestMapping(value = "/app", method = RequestMethod.POST)
+	public List<CertificateVO> certificateList(CertificateVO cer, Model model) throws Exception {
+		log.info("cer 체킹 : " + cer);
+
+		List<CertificateVO> cerList = certificateService.cerList(cer);
+
+		return cerList;
+	};
+	// String이 아니라 serviceResult..?
+//	@ResponseBody
+//	@RequestMapping(value = "/insert", method = RequestMethod.POST)
+//	public ServiceResult insert(HttpServletRequest request, ScoreVO score, CertificateVO cer) throws Exception{
+//		HttpSession session = request.getSession();
+//		
+//		log.info("체킹 (장학금 신청?) : " + score);
+//		
+//		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+//		String userId = userVO.getUserId();
+//		
+//		score.setStuId(userId);
+//		
+//		ServiceResult result = null;
+//		
+//		result = certificateService.insert(cer);
+//		
+//		return result;
+
+	@RequestMapping(value = "/insert", method = RequestMethod.POST)
+	public String insert(HttpServletRequest request, ScoreVO score, CertificateVO cer) throws Exception {
+		HttpSession session = request.getSession();
+
+		log.info("체킹 (장학금 신청?) : " + score);
+
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		String userId = userVO.getUserId();
+
+		score.setStuId(userId);
+		cer.setStuId(userId);
+
+//		ServiceResult result = null;
+
+		log.info("cer : " + cer);
+
+		int result = certificateService.insert(cer);
+		log.info("result : " + result);
+
+		return "redirect:/certificate/list";
+	}
+}

@@ -1,0 +1,22 @@
+package kr.or.ddit.consult.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.consult.vo.ConsultVO;
+import kr.or.ddit.user.vo.ProfessorVO;
+
+public interface IConsultService {
+
+	public List<ProfessorVO> getProInfoList(String deptCode);
+
+	public List<ConsultVO> registerList(ConsultVO cv);
+
+	public void cancelConsult(int consNum);
+
+	public List<Map<String, Object>> getProTimeTbl(String proId);
+
+	public List<Map<String, Object>> getProConsTimeTbl(String proId);
+
+
+}

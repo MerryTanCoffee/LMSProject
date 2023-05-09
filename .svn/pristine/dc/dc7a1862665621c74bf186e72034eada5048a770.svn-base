@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.facilty.vo.FacilityReservationVO;
+import kr.or.ddit.facilty.vo.FacilityVO;
+
+public interface FacilityMapper {
+	public List<FacilityVO> getFacility(String facCode);
+	public int reservation(FacilityReservationVO facilityReservationVO);
+
+}

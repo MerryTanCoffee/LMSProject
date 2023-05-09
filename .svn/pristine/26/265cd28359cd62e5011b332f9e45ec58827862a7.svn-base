@@ -1,0 +1,59 @@
+package kr.or.ddit.board.vo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class BoardVO {
+	private String cateCode;
+	private String cateName;
+	private int boNo;
+	private String boTitle;
+	private String boContent;
+	private int boHit;
+	private String boWriteDate;
+	private String boWriter;
+	private String boModifyDate;
+	private String userId;
+	private String empId;
+	private String stuId;
+	private String stuNameKo;
+	private String empNameKo;
+	
+	private int rnum;
+//	============================================
+	private String studyCode;
+	private String studyTitle;
+	private String studyDate;
+	
+//	============================================
+	private String ssStatus;
+//	============================================
+	private int profileNo;
+	
+	private Integer[] delBoNo;
+	private MultipartFile[] boAttach; //파일데이터가 여기에 담김
+	private List<BoardAttachVO> boardAttachList;
+	
+	public void setBoAttach(MultipartFile[] boAttach) {//커스텀으로 setter만들었다. 
+		this.boAttach = boAttach;
+		if(boAttach != null) {
+			List<BoardAttachVO> boardAttachList = new ArrayList<BoardAttachVO>();
+			for(MultipartFile item : boAttach) {
+				if(StringUtils.isBlank(item.getOriginalFilename())) {
+					continue;
+				}
+				BoardAttachVO boardAttachVO = new BoardAttachVO(item);
+				boardAttachList.add(boardAttachVO);
+				
+			}
+			this.boardAttachList = boardAttachList;
+		}
+	}
+	
+}

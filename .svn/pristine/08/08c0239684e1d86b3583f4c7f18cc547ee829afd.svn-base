@@ -1,0 +1,57 @@
+package kr.or.ddit.common.service.impl;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ExcelMapper;
+import kr.or.ddit.common.controller.ExcelRead;
+import kr.or.ddit.common.controller.ExcelReadOption;
+import kr.or.ddit.common.service.IExcelService;
+import kr.or.ddit.common.vo.ModelVO;
+
+@Service
+public class ExcelServiceImpl implements IExcelService {
+
+	@Inject
+	private ExcelMapper mapper;
+
+	@Override
+	public List<ModelVO> selectList() throws Exception {
+		return mapper.selectAll();
+	}
+
+	@Override
+	public void excelUpload(File destFile) {
+		 ExcelReadOption excelReadOption = new ExcelReadOption();
+        
+        //파일경로 추가
+        excelReadOption.setFilePath(destFile.getAbsolutePath());
+        
+        //추출할 컬럼명 추가
+        // 컬럼이 더 존재할 떄 여기에 값을 추가해주고
+        // 쿼리에 item.F 등으로 추가해주세요!
+        excelReadOption.setOutputColumns("A", "B", "C", "D");
+        
+        //시작행
+        excelReadOption.setStartRow(1);
+        
+        List<Map<String, String>> excelContent  = ExcelRead.read(excelReadOption);
+        
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("excelContent", excelContent);
+        
+        try {
+        	mapper.insertExcel(paramMap);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+		
+	}
+
+}

@@ -1,0 +1,54 @@
+package kr.or.ddit.schedule.service.Impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.ScheduleMapper;
+import kr.or.ddit.schedule.service.IScheduleService;
+import kr.or.ddit.schedule.vo.ScheduleVO;
+
+@Service
+public class ScheduleServiceImpl implements IScheduleService{
+	
+	@Inject
+	private ScheduleMapper mapper;
+	
+	@Override
+	public List<ScheduleVO> list() throws Exception {
+		return mapper.list();
+	}
+
+	@Override
+	public void insert(ScheduleVO schedule) throws Exception {
+		mapper.insert(schedule);
+	}
+
+	@Override
+	public void delete(ScheduleVO schedule) throws Exception {
+		mapper.delete(schedule);
+	}
+
+	@Override
+	public void update(ScheduleVO schedule) throws Exception {
+		mapper.update(schedule);
+	}
+
+	// 미니달력으로 학사일정 표현
+	@Override
+	public List<ScheduleVO> miniSchedule(String datetime) {
+		return mapper.miniSchedule(datetime);
+	}
+
+	// 미니달력 - 해당 월의 학사일정 
+	@Override
+	public List<ScheduleVO> miniScheduleMonth(String usSdate) {
+		return mapper.miniScheduleMonth(usSdate);
+	}
+	
+	
+
+}

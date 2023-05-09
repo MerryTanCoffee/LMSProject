@@ -1,0 +1,80 @@
+package kr.or.ddit.common.vo;
+import lombok.Data;
+
+@Data
+public class ModelVO {
+	
+	// A
+	@ExcelColumn(headerName = "아이디")
+	private String userId;
+	// B
+	@ExcelColumn(headerName = "비밀번호")
+	private String password;
+	// C
+	@ExcelColumn(headerName = "활성")
+	private String enabled;
+	// D
+	@ExcelColumn(headerName = "타입")
+	private String userType;
+	// E
+	@ExcelColumn(headerName = "한글성명")
+	private String nameKo;
+	// F
+	@ExcelColumn(headerName = "영문성명")
+	private String nameEn;
+	// G
+	@ExcelColumn(headerName = "주민번호앞")
+	private int reg1;
+	// H
+	@ExcelColumn(headerName = "주민번호뒷")
+	private int reg2;
+	// I
+	@ExcelColumn(headerName = "이메일")
+	private String email;
+	// J
+	@ExcelColumn(headerName = "전화")
+	private String phone;
+	// K
+	@ExcelColumn(headerName = "국가")
+	private String nation;
+	// L
+	@ExcelColumn(headerName = "성별")
+	private String gender;
+	// M
+	@ExcelColumn(headerName = "우편번호")
+	private String postcode;
+	// N
+	@ExcelColumn(headerName = "주소1")
+	private String addr1;
+	// O
+	@ExcelColumn(headerName = "주소2")
+	private String addr2;
+	// P
+	@ExcelColumn(headerName = "은행")
+	private String bank;
+	// Q
+	@ExcelColumn(headerName = "계좌")
+	private String account;
+	// R
+	@ExcelColumn(headerName = "프로필번호")
+	private int profileNo;
+	// S
+	@ExcelColumn(headerName = "과코드")
+	private String deptCode;
+	// T
+	@ExcelColumn(headerName = "전공")
+	private String major;
+	// U
+	@ExcelColumn(headerName = "상태")
+	private String status;
+	// V
+	@ExcelColumn(headerName = "학년")
+	private String grade;
+	// W
+	@ExcelColumn(headerName = "연구실연락처")
+	private String labTel;
+	// X
+	@ExcelColumn(headerName = "연구실호수")
+	private String labNum;
+	//다운로드 시 vo에 추가해주고 @ExcelColumn어노테이션 추가해주세요
+}

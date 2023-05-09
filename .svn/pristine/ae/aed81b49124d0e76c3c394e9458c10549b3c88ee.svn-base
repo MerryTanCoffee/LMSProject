@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ExcelMapper">
+	
+<select resultType="studentVO" id="selectAll">select * from STUDENT </select>
+
+
+<insert id="insertUser" parameterType="userVO">
+
+<foreach close="SELECT * FROM DUAL" open="INSERT ALL" separator=" " index="cellIndex" item="item" collection="excelContent">INTO users (USER_ID,PASSWORD,ENABLED,USER_TYPE) VALUES(#{item.A}, #{item.B}, #{item.C}, #{item.D}) </foreach>
+
+</insert>
+
+<insert id="insertStu" parameterType="map">
+<foreach close="SELECT * FROM DUAL" open="INSERT ALL" separator=" " index="cellIndex" item="item" collection="excelContent">
+	INTO STUDENT (STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION, STU_GENDER, STU_ADDR1, STU_ADDR2, STU_BANK, STU_ACCOUNT, STU_POSTCODE) 
+	VALUES(#{item.A}, #{item.E}, #{item.F}, #{item.G}, #{item.H}, #{item.I}, #{item.J}, #{item.K}, #{item.L}, #{item.N}, #{item.O}, #{item.P}, #{item.Q}, #{item.M}) </foreach>
+</insert>
+
+<insert id="insertAca" parameterType="map">
+<foreach close="SELECT * FROM DUAL" open="INSERT ALL" separator=" " index="cellIndex" item="item" collection="excelContent">
+	INTO ACADEMIC (STU_ID, DEPT_CODE, ACA_MAJOR, ACA_STATUS, ACA_GRADE, ACA_SEMESTER, ADMI_DATE) 
+	VALUES(#{item.A}, #{item.R}, #{item.S}, #{item.T}, #{item.U}, #{item.V}, '23/03/02') </foreach>
+
+</insert>
+
+<insert id="insertPro" parameterType="map">
+<foreach close="SELECT * FROM DUAL" open="INSERT ALL" separator=" " index="cellIndex" item="item" collection="excelContent">
+	INTO PROFESSOR (PRO_ID, DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, PRO_NATION, PRO_GENDER, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL) 
+	VALUES(#{item.A}, #{item.R}, #{item.E}, #{item.F}, #{item.G}, #{item.H}, #{item.S}, #{item.I}, #{item.J}, #{item.K}, #{item.L}, #{item.N}, #{item.O}, #{item.T}, #{item.U}) </foreach>
+</insert>
+
+<insert id="insertEmp" parameterType="employeeVO">
+<foreach close="SELECT * FROM DUAL" open="INSERT ALL" separator=" " index="cellIndex" item="item" collection="excelContent">
+	INTO EMPLOYEE (EMP_ID, DEPT_CODE, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION, EMP_GENDER, EMP_ADDR1, EMP_ADDR2, EMP_BANK, EMP_ACCOUNT, EMP_POSTCODE) 
+	VALUES(#{item.A}, #{item.R}, #{item.E}, #{item.F}, #{item.G}, #{item.H}, #{item.I}, #{item.J}, #{item.K}, #{item.L}, #{item.N}, #{item.O}, #{item.P}, #{item.Q}, #{item.M}) </foreach>
+
+</insert>
+
+</mapper>

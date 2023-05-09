@@ -1,0 +1,16 @@
+package kr.or.ddit.submit.vo;
+
+import java.util.Map;
+
+import lombok.Data;
+
+@Data
+public class SubmitVO {
+
+	private int assNo;
+	private String stuId;
+	private String submFileName;
+	private String submFilePath;
+	private String submDate;
+	private int submScore;
+}

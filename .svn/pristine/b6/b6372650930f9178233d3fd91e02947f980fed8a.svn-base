@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	
+	<!-- mainPage tiles 적용 -->
+<!-- 	<definition name="mainTemplate" template="/WEB-INF/tiles/mainTemplate.jsp"> -->
+<!-- 		<put-attribute name="mainTopBar" value="/WEB-INF/tiles/mainTopBar.jsp" /> -->
+<!-- 		<put-attribute name="mainHeader" value="/WEB-INF/tiles/mainHeader.jsp" /> -->
+<!-- 		<put-attribute name="mainFooter" value="/WEB-INF/tiles/mainFooter.jsp" /> -->
+<!-- 	</definition> -->
+	
+<!-- 	<definition name="main/*" extends="mainTemplate"> -->
+<!-- 		<put-attribute name="mainContent" value="/WEB-INF/views/main/{1}.jsp"/> -->
+<!-- 	</definition> -->
+
+<!-- 	<definition name="board/*" extends="mainTemplate"> -->
+<!-- 		<put-attribute name="mainContent" value="/WEB-INF/views/board/{1}.jsp"/> -->
+<!-- 	</definition> -->
+
+	<!-- 학생포털에서 이어지는 게시판 타일즈 적용 -->
+	<definition name="boardTiles" template="/WEB-INF/tiles/boardTiles.jsp">
+	</definition>
+	
+	<definition name="board/*" extends="boardTiles">
+		<put-attribute name="boardContent" value="/WEB-INF/views/board/{1}.jsp" />
+	</definition>
+
+	<!-- tmeplate tiles 적용 -->
+	<definition name="template" template="/WEB-INF/tiles/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		<put-attribute name="nav-header" value="/WEB-INF/tiles/nav-header.jsp" />
+		<put-attribute name="chat-box" value="/WEB-INF/tiles/chat-box.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/tiles/sidebar.jsp" />
+	</definition>
+ 
+	<definition name="test/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/test/{1}.jsp" />
+	</definition>
+	<definition name="user/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/user/{1}.jsp" />
+	</definition>
+	<definition name="academic/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/academic/{1}.jsp" />
+	</definition>
+	<definition name="reference/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/reference/{1}.jsp" />
+	</definition>
+
+	<definition name="msg/msgList" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/msg/msgList.jsp" />
+	</definition>
+	<definition name="subject/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/subject/{1}.jsp" />
+	</definition>
+	<definition name="locker/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/locker/{1}.jsp" />
+	</definition>
+	<definition name="facilty/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/facilty/{1}.jsp" />
+	</definition>
+	<definition name="calendar/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/calendar/{1}.jsp" />
+	</definition>
+	<definition name="schedule/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/schedule/{1}.jsp" />
+	</definition>
+	<definition name="submit/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/submit/{1}.jsp" />
+	</definition>
+	<definition name="lecture/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/lecture/{1}.jsp" />
+	</definition>
+	<definition name="tuition/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/tuition/{1}.jsp" />
+	</definition>
+	<definition name="study/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/study/{1}.jsp" />
+	</definition>
+	
+	<definition name="scholarship/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/scholarship/{1}.jsp" />
+	</definition>
+	
+	<definition name="sms/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/sms/{1}.jsp" />
+	</definition>
+	
+	<definition name="score/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/score/{1}.jsp" />
+	</definition>
+	
+	<definition name="atd/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/atd/{1}.jsp" />
+	</definition>
+
+	<definition name="certificate/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/certificate/{1}.jsp" />
+	</definition>
+	<definition name="course/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/course/{1}.jsp" />
+	</definition>
+	
+	<definition name="consult/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/consult/{1}.jsp" />
+	</definition>
+	
+	<definition name="exam/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/exam/{1}.jsp" />
+	</definition>
+	<definition name="classRoom/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/classRoom/{1}.jsp" />
+	</definition>
+	
+	<definition name="actorHome/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/actorHome/{1}.jsp" />
+	</definition>
+	
+	<definition name="board_admin/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/board_admin/{1}.jsp" />
+	</definition>
+	
+	<definition name="lecNotice/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/lecNotice/{1}.jsp" />
+	</definition>
+	
+	<definition name="statistics/*" extends="template">
+		<put-attribute name="content" value="/WEB-INF/views/statistics/{1}.jsp"></put-attribute>
+	</definition>
+	
+	<!-- 메뉴 미표시 적용 -->
+   	<definition name="empty" template="/WEB-INF/tiles/empty.jsp">
+    </definition>
+	
+	<definition name="tuition/tuiDetail" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/tuition/tuiDetail.jsp" />
+	</definition>
+	
+	<definition name="scholarship/scholarDetail" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/scholarship/scholarDetail.jsp" />
+	</definition>
+
+	<definition name="user/userDetail" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/user/userDetail.jsp" />
+	</definition>
+
+	<definition name="scholarship/scholarInfoDetail" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/scholarship/scholarInfoDetail.jsp" />
+	</definition>
+
+
+	<definition name="certificate/certificateScore" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/certificate/certificateScore.jsp" />
+	</definition>
+
+
+	<definition name="certificate/certificateGraduate" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/certificate/certificateGraduate.jsp" />
+	</definition>
+
+	<definition name="exam/stuExamForm" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/exam/stuExamForm.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="msg/*" extends="empty">
+		<put-attribute name="emptyContent" value="/WEB-INF/views/msg/{1}.jsp"></put-attribute>
+	</definition>
+	
+	
+</tiles-definitions>

@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.user.vo.UserVO;
+
+public interface ClassRoomMapper {
+
+	List<Map<String, Object>> getClassRoomList(UserVO userInfo);
+
+}

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.AcademicMapper">
+
+	<resultMap type="studentVO" id="studentMap">
+		<id property="stuId" column="stu_id"/>
+		<result property="stuId" column="stu_id"/>
+		<result property="stuNameKo" column="stu_name_ko"/>
+		<result property="stuReg1" column="stu_reg1"/>
+		<result property="stuReg2" column="stu_reg2"/>
+		<result property="stuEmail" column="stu_email"/>
+		<result property="stuPhone" column="stu_phone"/>
+		<result property="stuAddr1" column="stu_addr1"/>
+		<result property="profileNo" column="profile_no"/>
+	</resultMap>
+
+
+	<resultMap type="acChVO" id="acChMap">
+		<id property="acNo" column="AC_NO"/>
+		<result property="acNo" column="AC_NO"/>
+		<result property="acCateCode" column="AC_CATE_CODE"/>
+		<result property="acStartYear" column="AC_START_YEAR"/>
+		<result property="acStartSmstr" column="AC_START_SMSTR"/>
+		<result property="acEndYear" column="AC_END_YEAR"/>
+		<result property="acEndSmstr" column="AC_END_SMSTR"/>
+		<result property="acReportDate" column="AC_REPORT_DATE"/>
+		<result property="acStatus" column="AC_STATUS"/>
+		<result property="acReason" column="AC_REASON"/>
+		<result property="acComment" column="AC_COMMENT"/>
+		<result property="stuId" column="STU_ID"/>
+		<collection property="studentVO" resultMap="studentMap"/>
+	</resultMap>
+	
+	<!-- 학생이 본인의 휴학 신청 조회 -->
+	<select id = "getAcChInfo" parameterType="string" resultType="acChVO">
+		select 
+			AC_NO,
+			AC_CATE_CODE,
+			AC_START_YEAR,
+			AC_START_SMSTR,
+			AC_END_YEAR,
+			AC_END_SMSTR,
+			AC_REPORT_DATE,
+			AC_STATUS,
+			AC_REASON,
+			AC_COMMENT
+		from ACADEMIC_CHANGE	
+		where STU_ID = #{stuId}
+	
+	</select>
+	
+	<!-- 학생이 본인의 휴학신청  -->
+	<insert id="insertApplyOff" parameterType="map">
+		insert into ACADEMIC_CHANGE
+		(AC_NO, STU_ID, AC_CATE_CODE, AC_START_YEAR, AC_START_SMSTR, 
+		AC_END_YEAR, AC_END_SMSTR, AC_REASON)
+		values 
+		(SEQ_ACADEMIC_CHANGE.nextval, #{stuId}, #{acCateCode}, #{acStartYear}, #{acStartSmstr}, 
+		#{acEndYear}, #{acEndSmstr}, #{acReason})
+	
+	</insert>
+	
+	<!-- 관리자가 휴학 신청 리스트 조회 -->
+	<select id="selectAppStuList" resultMap="acChMap">
+		SELECT 
+			ac.AC_NO
+			,s.STU_ID
+			,ac.AC_CATE_CODE
+			,ac.AC_START_YEAR
+			,ac.AC_START_SMSTR
+			,ac.AC_END_YEAR
+			,ac.AC_END_SMSTR
+			,ac.AC_REPORT_DATE
+			,ac.AC_STATUS
+			,ac.AC_REASON
+			,ac.AC_COMMENT
+			,s.STU_NAME_KO
+			,s.STU_REG1
+			,s.STU_REG2
+			,s.STU_EMAIL
+			,s.STU_PHONE
+			,s.STU_ADDR1
+		FROM student s
+		INNER JOIN academic_change ac
+		ON s.STU_ID = ac.STU_ID
+	</select>
+
+	<!-- 관리자 : 승인 리스트 조회 -->
+	<select id="selectAcceptList" parameterType="acChVO" resultMap="acChMap">
+		SELECT 
+			ac.AC_NO
+			,s.STU_ID
+			,ac.AC_CATE_CODE
+			,ac.AC_START_YEAR
+			,ac.AC_START_SMSTR
+			,ac.AC_END_YEAR
+			,ac.AC_END_SMSTR
+			,ac.AC_REPORT_DATE
+			,ac.AC_STATUS
+			,ac.AC_REASON
+			,ac.AC_COMMENT
+			,s.STU_NAME_KO
+			,s.STU_REG1
+			,s.STU_REG2
+			,s.STU_EMAIL
+			,s.STU_PHONE
+			,s.STU_ADDR1
+		FROM student s
+		INNER JOIN academic_change ac
+		ON s.STU_ID = ac.STU_ID
+		where ac.AC_STATUS  = 'Y'
+	</select>
+	
+	<!-- 관리자 : 대기 리스트 조회 -->
+	<select id="waitOffList" parameterType="acChVO" resultMap="acChMap">
+		SELECT 
+			ac.AC_NO
+			,s.STU_ID
+			,ac.AC_CATE_CODE
+			,ac.AC_START_YEAR
+			,ac.AC_START_SMSTR
+			,ac.AC_END_YEAR
+			,ac.AC_END_SMSTR
+			,ac.AC_REPORT_DATE
+			,ac.AC_STATUS
+			,ac.AC_REASON
+			,ac.AC_COMMENT
+			,s.STU_NAME_KO
+			,s.STU_REG1
+			,s.STU_REG2
+			,s.STU_EMAIL
+			,s.STU_PHONE
+			,s.STU_ADDR1
+		FROM student s
+		INNER JOIN academic_change ac
+		ON s.STU_ID = ac.STU_ID
+		where ac.AC_STATUS  = 'W'
+	</select>
+	
+	<!-- 관리자 : 반려 리스트 조회 -->
+	<select id="rejectOffList" parameterType="acChVO" resultMap="acChMap">
+		SELECT 
+			ac.AC_NO
+			,s.STU_ID
+			,ac.AC_CATE_CODE
+			,ac.AC_START_YEAR
+			,ac.AC_START_SMSTR
+			,ac.AC_END_YEAR
+			,ac.AC_END_SMSTR
+			,ac.AC_REPORT_DATE
+			,ac.AC_STATUS
+			,ac.AC_REASON
+			,ac.AC_COMMENT
+			,s.STU_NAME_KO
+			,s.STU_REG1
+			,s.STU_REG2
+			,s.STU_EMAIL
+			,s.STU_PHONE
+			,s.STU_ADDR1
+		FROM student s
+		INNER JOIN academic_change ac
+		ON s.STU_ID = ac.STU_ID
+		where ac.AC_STATUS  = 'N'
+	</select>
+	
+	<update id ="updateOffStatus" parameterType="acChVO">
+		update ACADEMIC_CHANGE
+			set
+				AC_STATUS = #{acStatus},
+			    AC_COMMENT = #{acComment}
+		WHERE STU_ID = ${stuId}
+		and AC_NO = ${acNo}   
+	</update>
+	
+	<update id ="updateAcaStatus" parameterType="map">
+		update ACADEMIC 
+			set ACA_STATUS='휴학'
+		where STU_ID = ${stuId}
+	</update>
+	
+</mapper>

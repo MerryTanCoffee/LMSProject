@@ -1,0 +1,66 @@
+package kr.or.ddit.facilty.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException.Gone;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.facilty.service.FacilityService;
+import kr.or.ddit.facilty.vo.FacilityReservationVO;
+import kr.or.ddit.facilty.vo.FacilityVO;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/facilty")
+public class FaciltyController {
+
+	@Inject
+	private FacilityService facilityService;
+	
+	@GetMapping("/usageStatus")
+	public String facilityList() {
+		return "facilty/list";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/getFacility", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	public List<FacilityVO> getFacility(@RequestBody Map<String, String> dataMap){
+		List<FacilityVO> facilityList = facilityService.getFacility(dataMap.get("facCode"));
+		return facilityList;
+	}
+	
+	@RequestMapping(value="/reservationForm", method = RequestMethod.GET)
+	public String reservationForm() {
+		return "facilty/form";
+	}
+	
+	@RequestMapping(value="/reservation", method = RequestMethod.POST)
+	public String reservation(
+			HttpServletRequest req,
+			FacilityReservationVO facilityReservationVO) {
+		String goPage = "";
+		HttpSession session = req.getSession();
+		String stuId = ((UserVO) session.getAttribute("userInfo")).getUserId();
+		facilityReservationVO.setStuId(stuId);
+		ServiceResult result = facilityService.reservation(facilityReservationVO);
+		if(result.equals(ServiceResult.OK)) {
+			goPage = "redirect:/facilty/usageStatus";
+		}else {
+			goPage = "facilty/list";
+		}
+		return goPage;
+	}
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MsgMapper">
+	
+	<insert id="insertMsg" parameterType="msgVO">
+		<selectKey keyProperty="msgNo" resultType="int" order="BEFORE">
+			select seq_msg.nextval from dual
+		</selectKey>
+		insert into msg(
+			msg_no, msg_sender, msg_receiver, msg_content, msg_date
+		)values(
+			#{msgNo}, #{msgSender}, #{msgReceiver}, #{msgContent}, sysdate
+		)
+	</insert>
+	
+</mapper>

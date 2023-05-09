@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ClassRoomMapper">
+	
+	<resultMap type="java.util.Map" id="classListMap">
+		<result property="lecCode" column="lec_code"/>
+		<result property="subName" column="sub_name"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="proNameKo" column="pro_name_ko"/>
+		<result property="subApplicant" column="sub_applicant"/>
+	</resultMap>
+	
+	<select id="getClassRoomList" parameterType="userVO" resultMap="classListMap">
+		<if test="userType == 'STU'">
+			select 
+			    cl.lec_code, s.sub_name, l.lec_divide, p.pro_name_ko
+			from course_list cl, lecture l, subject s, professor p, admin_setting as
+			where 1=1
+			and cl.lec_code = l.lec_code
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and cl.stu_id = #{userId}
+			and l.lec_open_year = a.year
+			and l.lec_open_semester = as.semester
+		</if>
+		<if test="userType == 'PRO'">
+			select 
+			    l.lec_code, s.sub_name, l.lec_divide, so.sub_applicant
+			from lecture l, subject s, professor p, subject_open so, admin_setting as 
+			where 1=1
+			and l.sub_code = s.sub_code
+			and l.pro_id = p.pro_id
+			and l.lec_code = so.lec_code
+			and p.pro_id = #{userId}
+			and l.lec_open_year = a.year
+			and l.lec_open_semester = as.semester
+		</if>
+	</select>
+	
+	
+</mapper>

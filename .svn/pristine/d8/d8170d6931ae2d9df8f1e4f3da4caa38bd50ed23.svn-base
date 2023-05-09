@@ -1,0 +1,207 @@
+package kr.or.ddit.exam.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.exam.service.ExamService;
+import kr.or.ddit.exam.vo.ExamAnswerVO;
+import kr.or.ddit.exam.vo.ExamListVO;
+import kr.or.ddit.exam.vo.ExamSelectVO;
+import kr.or.ddit.exam.vo.ExamVO;
+import kr.or.ddit.mapper.ExamMapper;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.user.vo.UserVO;
+
+@Service
+public class ExamServiceImpl implements ExamService {
+
+	@Inject
+	private ExamMapper examMapper;
+	
+	// 시험정보에 과목정보 뿌리기
+	@Override
+	public List<ExamVO> selectExamSubjectList(String proId) {
+		return examMapper.selectExamSubjectList(proId);
+	}
+
+
+	@Override
+	public void insertExam(ExamVO examVO) {
+		
+		examVO.setExamGubun(examVO.getExamGubun());
+		examVO.setLecCode(examVO.getLecCode());
+		examVO.setExamDate(examVO.getExamDate());
+		examMapper.insertExam(examVO);
+		// 문제들
+		for (int i = 0; i < examVO.getExamList().size(); i++) {	// 문제 갯수만큼 반복 
+			// 1번 문제가 먼저 출력 (순차적으로)
+			ExamListVO examList = examVO.getExamList().get(i);
+			
+			ExamListVO listVO = new ExamListVO();
+			listVO.setExNum(i+1);
+			listVO.setExamGubun(examVO.getExamGubun());
+			listVO.setLecCode(examVO.getLecCode());
+			listVO.setExContent(examVO.getExamList().get(i).getExContent());
+			listVO.setExSolution(examVO.getExamList().get(i).getExSolution());
+			examMapper.insertExamQuestions(listVO);
+			
+			for (int j = 0; j < examList.getExamSelectList().size(); j++) {	// 문제당 보기만큼 반복
+				// 1번 문제에 대한 보기들 (순차적으로)
+				ExamSelectVO selectVO = new ExamSelectVO();
+				selectVO.setExamGubun(examVO.getExamGubun());
+				selectVO.setExNum(i+1);	// 1번 문제 
+				selectVO.setExsNum(j+1);	// 1번 보기, 2번 보기,,
+				selectVO.setLecCode(examVO.getLecCode());
+				selectVO.setExsContent(examVO.getExamList().get(i).getExamSelectList().get(j).getExsContent());
+				examMapper.insertExamMultipleChoice(selectVO);
+			}
+		}
+		
+
+	}
+
+	// 한 강의에 해당하는 문제 정보(질문+보기) 가져오기
+	@Override
+	public List<ExamVO> selectExamInfo(ExamVO examVO) {
+		
+		return examMapper.selectExamInfo(examVO);
+	}
+
+
+	// 문제수정
+	@Override
+	public void examUpdate(ExamVO examVO) {
+		// 1번 문제에 대한 제목, 답
+		// 1번 문제에 대한 보기 1,2,3,4 값 모두를 가져와야한다.
+		// 내가 수정할 과목에 문제(1개)
+		for(int i=0; i < examVO.getExamList().size(); i++) {
+			ExamListVO examListVO = examVO.getExamList().get(i); 
+			// 문제 내용(1번 문제 제목)을 수정, 답도 수정
+			examMapper.updateExamList(examListVO);
+			for (int j = 0; j < examListVO.getExamSelectList().size(); j++) {
+				ExamSelectVO selectVO = examListVO.getExamSelectList().get(j);
+				examMapper.updateExamSelect(selectVO);
+			}
+		}
+	}
+
+
+	// 시험 문제 삭제
+	@Override
+	public void examDelete(ExamVO examVO) {
+		
+		for(int i=0; i < examVO.getExamList().size(); i++) {	// 문제꺼내
+			ExamListVO examListVO = examVO.getExamList().get(i); 
+			for(int j=0; j < examVO.getExamList().get(i).getExamSelectList().size(); j++) {	// 보기 꺼내
+				ExamSelectVO selectVO = examVO.getExamList().get(i).getExamSelectList().get(j);
+				examMapper.deleteExamSelect(selectVO);
+			}
+			examMapper.deleteExamList(examListVO);
+		}
+		examMapper.deleteExam(examVO);
+	}
+
+
+	// 시험 구분 리스트, 한 과목에 대한 시험구분(중간, 기말, 쪽지시험 등등)
+	@Override
+	public List<ExamVO> examGubunList(Map<String, Object> examSubInfo) {
+		return examMapper.examGubunList(examSubInfo);
+	}
+
+
+	// 내가 수강중인 강의중 미응시한 강의 불러오기 
+	@Override
+	public List<ExamAnswerVO> stuExamList(String stuId) {
+		return examMapper.stuExamList(stuId);
+	}
+
+
+	// 학생이 푸는 시험지 폼, 시험지 내용 불러오기
+	@Override
+	public List<ExamVO> stuExamForm(ExamVO examVO) {
+		
+		return examMapper.stuExamForm(examVO);
+	}
+
+
+	// 학생 답안 인서트(학생이 시험지를 푸는거임)
+	@Override
+	public void stuExamAnswerInsert(ExamAnswerVO examAnswerVO) {
+		String[] examAnswer = examAnswerVO.getExaAnswer().split(",");
+		for (int i = 0; i < examAnswerVO.getExNum(); i++) {
+			ExamAnswerVO examAnswerNew = new ExamAnswerVO();
+			examAnswerNew.setStuId(examAnswerVO.getStuId());
+			examAnswerNew.setLecCode(examAnswerVO.getLecCode());
+			examAnswerNew.setExamGubun(examAnswerVO.getExamGubun());
+			examAnswerNew.setExNum((i+1));
+			examAnswerNew.setExaAnswer(examAnswer[i]);
+			examMapper.stuExamAnswerInsert(examAnswerNew);
+		}
+		// 학생이 시험지를 풀고나면 exa_check가 y로
+		examMapper.stuExamAnswerUpdate(examAnswerVO);
+		// 학생이 푼 시험 점수를 업데이트(중간, 기말)
+		examMapper.stuExamScoreUpdate(examAnswerVO);
+		
+	}
+
+	// 학생 답안 불러오기 
+	@Override
+	public List<ExamAnswerVO> stuAnswerSelect(ExamAnswerVO examAnswerVO) {
+		return examMapper.stuAnswerSelect(examAnswerVO);
+	}
+
+	// 본인이 시험본 내역의 상태에 따라 결과 제공(ServiceResult)
+	@Override
+	public ServiceResult checkExamStatus(ExamAnswerVO examAnswerVO) {
+		ServiceResult result = null;
+		List<ExamAnswerVO> answerList = examMapper.checkExamStatus(examAnswerVO);
+		if(answerList != null && answerList.size() > 0) {
+			result = ServiceResult.EXIST;
+		}else {
+			result = ServiceResult.NOTEXIST;
+		}
+		return result;
+	}
+
+
+	@Override
+	public ServiceResult insertZeroScore(ExamAnswerVO answerVO) {
+		ServiceResult result = null;
+		int cnt = examMapper.insertZeroScore(answerVO);
+		if(cnt > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	// 교수가 해당과목에 대해 이미 출제한 정보가 있다면 상태 결과 제공
+	@Override
+	public ServiceResult checkExamSubmitStatus(ExamVO examVO) {
+		ServiceResult result = null;
+		List<ExamVO> examSubmitList = examMapper.checkExamSubmitStatus(examVO);
+		if(examSubmitList != null && examSubmitList.size() > 0) {
+			result = ServiceResult.EXIST;
+		}else {
+			result = ServiceResult.NOTEXIST;
+		}
+		return result;
+	}
+
+	// 클래스룸 안 시험 정보(리스트)
+	@Override
+	public List<ExamVO> selectExamInfoInClassRoom(String lecCode) {
+		return examMapper.selectExamInfoInClassRoom(lecCode);
+	}
+
+
+	
+
+
+}

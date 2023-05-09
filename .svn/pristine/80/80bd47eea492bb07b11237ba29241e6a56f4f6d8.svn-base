@@ -1,0 +1,346 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<!-- 강의계획서 Modal -->
+<div class="modal fade" id="applModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">강의계획서</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="#" method="post" id="lecPlanFrm">
+          <div class="row mb-4">
+            <div class="col">
+              <div class="default-tab">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#home">강의기본</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#method">수업방법</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#contact">학습내용</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#comment">처리의견</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="home" role="tabpanel">
+                <div class="pt-4">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="input-group">
+                        <span class="input-group-text">교과목코드/명</span>
+                        <input type="text" name="subCode" id="subCode" class="form-control" readonly required>
+                        <input type="text" name="subName" id="subName" class="form-control" readonly required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">분반</span>
+                        <input type="number" name="lecDivide" class="form-control" required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">학점</span>
+                        <input type="text" name="subCredit" id="subCredit" class="form-control" readonly required> 
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">대상학과</span>
+                        <input type="text" name="deptName" id="deptName" class="form-control" readonly required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">대상학년</span>
+                        <input type="number" name="lecGrade" class="form-control" required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">수강정원</span>
+                        <input type="number" name="lecQuota" class="form-control" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">개설연도</span>
+                        <input type="number" name="lecOpenYear" class="form-control" required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">개설학기</span>
+												<input type="text" name="lecOpenSemester" class="form-control" required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">강의언어</span>
+                        <input type="text" name="lecLanguage" class="form-control" required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">온라인수업여부</span>
+												<input type="text" name="lecOnline" class="form-control" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">강의건물</span>
+                        <input type="text" name="hallName" id="hallName" class="form-control" readonly required>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">강의실</span>
+                        <input type="text" name="lrNum" id="lrNum" class="form-control" >
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">강의시간</span>
+                        <!-- <select class="form-select form-select-lg border">
+                          <option selected>요일</option>
+                          <option value="MON">월</option>
+                          <option value="TUE">화</option>
+                          <option value="WED">수</option>
+                          <option value="THU">목</option>
+                          <option value="FRI">금</option>
+                        </select>
+                        <select class="form-select border">
+                          <option selected>시작시간</option>
+                          <option value="09">9:00</option>
+                          <option value="10">10:00</option>
+                          <option value="11">11:00</option>
+                          <option value="13">13:00</option>
+                          <option value="14">14:00</option>
+                          <option value="15">15:00</option>
+                          <option value="16">16:00</option>
+                          <option value="17">17:00</option>
+                        </select>
+                        <select class="form-select border">
+                          <option selected>종료시간</option>
+                          <option value="10">10:00</option>
+                          <option value="11">11:00</option>
+                          <option value="12">12:00</option>
+                          <option value="14">14:00</option>
+                          <option value="15">15:00</option>
+                          <option value="16">16:00</option>
+                          <option value="17">17:00</option>
+                          <option value="18">18:00</option>
+                        </select> -->
+                        <input type="text" name="" class="form-control" placeholder="요일" >
+                        <input type="text" name="" class="form-control" placeholder="시작시간" >
+                        <input type="text" name="" class="form-control" placeholder="종료시간" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">담당교수</span>
+                        <input type="text" name="proNameKo" class="form-control" value="" >
+                        <input type="hidden" name="proId" class="form-control" value="">
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">Email</span>
+                        <input type="text" name="" class="form-control" value="" >
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">연락처</span>
+                        <input type="text" name="" class="form-control" value="" >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="method">
+                <div class="pt-4">
+                  <div class="row">
+                    <div class="col-2 fs-4 d-flex justify-content-center align-self-center">
+                      <span>성적반영비율(%)</span>
+                    </div>
+                    <div class="col-10">
+                      <div class="table-responsive">
+                        <table class="table table-sm table-bordered" id="tbl3">
+                          <thead>
+                            <tr class="table-active">
+                              <th>출석</th>
+                              <th>과제</th>
+                              <th>중간고사</th>
+                              <th>기말고사</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <input type="number" name="lecAttendRate" class="form-control" required>
+                              </td>
+                              <td>
+                                <input type="number" name="lecTaskRate" class="form-control" required>
+                              </td>
+                              <td>
+                                <input type="number" name="lecMexamRate" class="form-control" required>
+                              </td>
+                              <td>
+                                <input type="number" name="lecFexamRate" class="form-control" required>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-2 fs-4 d-flex justify-content-center align-self-center">
+                      <span>주교재</span>
+                    </div>
+                    <div class="col-10">
+                      <input type="text" name="lecBook" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="contact">
+                <div class="pt-4">
+                  <div class="row">
+                    <div class="col fs-4 mb-2">
+                      <span>| 수업정보</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="table-responsive">
+                      <table class="table table-sm table-bordered" id="tbl4">
+                        <thead>
+                          <tr class="table-active">
+                            <th style="width: 15%;">주차</th>
+                            <th style="width: 70%;">수업내용</th>
+                            <th style="width: 15%;">비고</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach step="1" begin="0" end="15" var="i">
+                          <tr>
+                            <td>
+                              <input type="hidden" name="lecIdxList[${i}].liWeek" class="form-control liWeek" value="${i+1 }주차">
+                              ${i+1 }주차
+                            </td>
+                            <td>
+                              <div class="form-floating">
+                                <textarea class="form-control" id="liContent" name="lecIdxList[${i}].liContent" style="border: none; outline:none;"></textarea>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-floating">
+                                <textarea class="form-control" id="liNote" name="lecIdxList[${i}].liNote" style="border: none; outline:none;"></textarea>
+                              </div>
+                            </td>
+                          </tr>
+                        </c:forEach>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="comment">
+                <div class="pt-4">
+                  <textarea class="form-control" rows="5" id="lecComment" name="lecComment"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success">승인</button>
+        <button type="button" class="btn btn-danger">반려</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive">
+	<table id="example4" class="display table table-bordered" style="min-width: 845px; background-color: white; text-align: center;">
+		<thead>
+			<tr>
+				<th>No.</th>
+				<th>연도</th>
+				<th>학기</th>
+				<th>과목명</th>
+				<th>담당교수</th>
+				<th>신청일자</th>
+				<th>승인상태</th>
+				<th>강의계획서</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${lecPlanList }" var="lecPlan" varStatus="stat">
+       			<input type="hidden" name="lecCode" value="${lecPlan.lecCode}">
+				<tr>
+					<td>${stat.count }</td>
+					<td>${lecPlan.lecOpenYear }</td>
+					<td>${lecPlan.lecOpenSemester }학기</td>
+					<td>${lecPlan.subName }</td>
+					<td>${lecPlan.proNameKo }</td>
+					<td>
+						<fmt:formatDate value="${lecPlan.lecApplDate }" pattern="yyyy-MM-dd" />
+					</td>
+					<td>
+						<c:choose>
+							<c:when test="${lecPlan.lecStatus eq 'W'}">
+								<span class="badge light badge-warning" data-bs-toggle="modal" data-bs-target="#applModal">대기</span>
+							</c:when>
+							<c:when test="${lecPlan.lecStatus eq 'Y'}">
+								<span class="badge light badge-success" data-bs-toggle="modal" data-bs-target="#applModal">승인</span>
+							</c:when>
+							<c:when test="${lecPlan.lecStatus eq 'N'}">
+								<span class="badge light badge-danger" data-bs-toggle="modal" data-bs-target="#applModal">반려</span>
+							</c:when>
+						</c:choose>
+					</td>
+					<td>
+						<button type="button" class="btn btn-sm btn-rounded btn-outline-primary lecPlanBtn" data-bs-toggle="modal" data-bs-target="#applModal">
+							<i class="bi bi-card-text"></i>
+							<span>보기</span>
+						</button>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
+
+<script>
+  $(function(){
+    $(document).on("click", ".lecPlanBtn", function(){
+    	
+      console.log("하이");
+    });
+
+
+  });
+</script>

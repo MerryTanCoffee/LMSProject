@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ExamMapper">
+
+	<select id="selectExamSubjectList" parameterType="string" resultType="examVO">
+		select 
+			l.lec_code, 
+			l.sub_code, 
+			l.lec_open_year, 
+			l.lec_open_semester, 
+			l.lec_divide, 
+			l.lec_language, 
+			l.lec_grade,
+			e.exam_gubun, 
+			e.exam_date, 
+			s.sub_sort, 
+			s.sub_name,
+			so.sub_applicant
+		from 
+			lecture l, subject_open so, exam e, subject s
+		where l.lec_code = e.lec_code
+		and so.lec_code = l.lec_code
+		and l.sub_code = s.sub_code
+		and l.pro_id = #{proId} 
+	</select>
+
+</mapper>

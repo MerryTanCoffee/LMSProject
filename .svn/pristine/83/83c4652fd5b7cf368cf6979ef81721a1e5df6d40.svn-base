@@ -1,0 +1,37 @@
+package kr.or.ddit.classRoom.main.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.classRoom.main.service.ClassRoomService;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/class")
+public class ClassRoomController {
+	
+	@Autowired
+	private ClassRoomService service;
+	
+	@GetMapping("/list")
+	public String classRoomList(HttpSession session, Model model) {
+		
+		UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+		
+		List<Map<String, Object>> classRoomList = service.getClassRoomList(userInfo);
+		log.info("클래스룸 목록: " + classRoomList.toString());
+		model.addAttribute("classRoomList", classRoomList);
+		
+		return "classRoom/classRoomList";
+	}
+}

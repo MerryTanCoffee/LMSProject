@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MsgMapper">
+	
+	<insert id="insertMsg" parameterType="msgVO">
+		<selectKey keyProperty="msgNo" resultType="int" order="BEFORE">
+			select seq_msg.nextval from dual
+		</selectKey>
+		insert into msg(
+			msg_no, msg_sender, msg_receiver, msg_content, msg_date
+		)values(
+			#{msgNo}, #{msgSender}, #{msgReceiver}, #{msgContent}, sysdate
+		)
+		
+	</insert>
+	
+	<!-- 받은쪽지함 리스트 -->
+	<select id="listMsg" parameterType="String" resultType="msgVO">
+		select
+				a.*, row_number() over (order by a.msg_no desc) rnum
+			from(
+				select
+					msg_no, msg_sender, msg_content, to_char(msg_date, 'yyyy/mm/dd') msg_date
+				from msg
+				where 1=1
+				and msg_receiver = #{userId}
+				order by msg_no desc
+			)a
+	</select>
+	
+	<!-- 보낸쪽지함 리스트 -->
+	<select id="listSendMsg" parameterType="String" resultType="msgVO">
+		select
+				a.*, row_number() over (order by a.msg_no desc) rnum
+			from(
+				select
+					msg_no, msg_receiver, msg_content, to_char(msg_date, 'yyyy/mm/dd') msg_date
+				from msg
+				where 1=1
+				and msg_sender = #{userId}
+				order by msg_no desc
+			)a
+	</select>
+	
+	<!-- 쪽지 상세보기 -->
+	<select id="msgDetail" parameterType="int" resultType="msgVO">
+		select msg_no, msg_receiver, msg_sender, msg_content, msg_date
+		from msg
+		where msg_no = #{msgNo}
+	</select>
+	<!-- 스터디 신청 메시지 리스트 -->
+	<select id="studyReceiveMsgList" parameterType="msgVO" resultType="msgVO">
+	SELECT academic.ACA_MAJOR, student.stu_name_ko, msg.msg_sender, msg.msg_content, msg.msg_date
+	FROM academic
+	INNER JOIN student ON academic.stu_id = student.stu_id
+	INNER JOIN msg ON academic.stu_id = msg.msg_sender
+	WHERE msg_receiver = #{msgReceiver}
+	AND msg_content LIKE '%스터디 참여%'
+	AND msg_content LIKE '%'|| #{studyTitle} ||'%'
+	ORDER BY msg.msg_date DESC
+	</select>
+	
+	<select id="studySendMsgList" parameterType="String" resultType="msgVO">
+		select msg_sender, msg_content ,msg_date
+		from msg
+		where msg_sender = #{userId}
+		and msg_content like '%>>>스터디 참여신청 메시지%'
+	</select>
+	
+	<!-- 삭제할 쪽지 번호 목록으로 삭제하는 쿼리 -->
+	<delete id="deleteMsg" parameterType="int">
+		delete from msg	
+		where msg_no = #{msgNo}
+	</delete>
+	
+</mapper>

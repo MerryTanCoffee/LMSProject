@@ -1,0 +1,11 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.tuition.vo.TuitionVO;
+
+public interface TuitionMapper {
+	public List<TuitionVO> tuitionList(String userId);
+
+	public TuitionVO tuiDetail(int tlNo);
+}

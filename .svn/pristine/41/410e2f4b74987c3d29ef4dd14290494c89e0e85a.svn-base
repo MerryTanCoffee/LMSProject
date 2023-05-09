@@ -1,0 +1,170 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<style>
+	#cicon{
+		width:64px;
+		height:64px;
+	}
+	.cdes{
+		font-size: 18px;
+	}
+	
+	.ctemp{
+		font-size: 35px;
+	}
+	
+	.cwind, .chum {
+		font-size: 16px;
+	}
+</style>
+
+<section id="info" class="info">
+	<div class="container">
+		<div class="row">
+		
+			<!-- 날씨 정보 -->
+			<div class="col-xl-4">
+				<div class="card">
+					<div class="card-header flex-wrap pb-0" style="border-color: #fff;">
+						<h5 class="card-title" style="color:#22313f; font-weight: 800; font-size: 18px;"> 오늘의 날씨</h5>
+					</div>									
+					<div class="card-body">
+					
+						<table class="table table-borderless">
+						  <thead>
+						    <tr>
+						      <th scope="col" colspan="4"></th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr>
+						      <td colspan="4" class="text-center">
+						      	<div class="cicon"><img src="/resources/weathericons/images/01d.png"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="4" class="text-center">
+						      	<div class="cdes"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="4" class="text-center">
+						      	<div class="ctemp"></div>
+						      </td>
+						    </tr>
+						    <tr>
+						      <td colspan="2" class="text-center">
+						      	<div class="cwind"><i class="fa-solid fa-wind" style="color:#bbbdbf;"></i></div>
+						      </td>
+						      <td colspan="2" class="text-center">
+						      	<div class="chum"><i class="fa-solid fa-droplet" style="color:#96cbff;"></i></div>
+						      </td>
+						    </tr>
+						  </tbody>
+						</table>
+					
+						<h5>대전 중구 오류동 </h5>
+					    <div class="cdate"></div>
+
+					    
+					    
+				
+					    
+<!-- 					    <div class="clowtemp">최저온도: </div> -->
+<!-- 					    <div class="chightemp">최고온도: </div> -->
+
+				    	
+				    </div>
+				    
+				 </div>
+			</div>
+			
+		</div>	<!-- row end -->
+	</div>	<!-- container end -->
+</section>		
+
+<script>
+    /*
+    $.getJSON('파일경로', function(data){
+        // data로 할일...
+    });
+    */
+   // http://api.openweathermap.org/data/2.5/weather?id=1835224&appid=ca0bb9a0d664dd00b81b108021c12b45&units=metric
+
+    $.getJSON('', function(data){
+        // data로 할일...
+        // alert(data.list[0].main.temp_min);
+        var $minTemp = data.main.temp_min;
+        var $maxTemp = data.main.temp_max;
+        var $cTemp = data.main.temp;
+        var $now = new Date($.now());
+        var $cDate = $now.getFullYear() + '/' + ($now.getMonth()+1) + '/' + $now.getDate() + " " + $now.getHours() + ':' + $now.getMinutes();
+        var $wIcon = data.weather[0].icon;
+        
+
+        // Date.now(); == $.now
+        // new Date(Date.now());
+        // alert(new Date($.now()));
+        // .getFullYear() 년도
+        // .getMonth() 월 0=1월
+        // .getDate()
+        // .getHours() 시간, .getMinutes() 분
+        
+        // A.appendTo(B) B요소의 내용의 뒤에 A를 추가
+        // A.append(B) A요소의 내용의 뒤에 B를 추가
+        // A.prependTo(B) B요소의 내용의 앞에 A를 추가
+        // A.prepend(B) A요소의 내용의 앞에 B를 추가
+
+        $(".clowtemp").append($minTemp);
+        $(".chightemp").append($maxTemp);
+        $(".ctemp").append($cTemp);
+        $("h2").prepend($cDate);
+        // $(".cicon").append('<img src="https://openweathermap.org/img/wn/' + $wIcon + '.png" />');
+
+        // <img src="https://openweathermap.org/img/wn/10d@2x.png">
+
+        let image = document.querySelector("img");
+
+        if($wIcon == "01d"){
+            image.src = "/resources/weathericons/images/01d.png";
+        } else if ($wIcon == "01n"){
+            image.src = "/resources/weathericons/images/01n.png";
+        } else if ($wIcon == "02d"){
+            image.src = "/resources/weathericons/images/02d.png";
+        } else if ($wIcon == "02n"){
+            image.src = "/resources/weathericons/images/02n.png";
+        } else if ($wIcon == "03d"){
+            image.src = "/resources/weathericons/images/03d.png";
+        } else if ($wIcon == "03n"){
+            image.src = "/resources/weathericons/images/03n.png";
+        } else if ($wIcon == "04d"){
+            image.src = "/resources/weathericons/images/04d.png";
+        } else if ($wIcon == "04n"){
+            image.src = "/resources/weathericons/images/04n.png";
+        } else if ($wIcon == "09d"){
+            image.src = "/resources/weathericons/images/09d.png";
+        } else if ($wIcon == "09n"){
+            image.src = "/resources/weathericons/images/09n.png";
+        } else if ($wIcon == "10d"){
+            image.src = "/resources/weathericons/images/10d.png";
+        } else if ($wIcon == "10n"){
+            image.src = "/resources/weathericons/images/10n.png";
+        } else if ($wIcon == "11d"){
+            image.src = "/resources/weathericons/images/11d.png";
+        } else if ($wIcon == "11n"){
+            image.src = "/resources/weathericons/images/11n.png";
+        } else if ($wIcon == "13d"){
+            image.src = "/resources/weathericons/images/13d.png";
+        } else if ($wIcon == "13n"){
+            image.src = "/resources/weathericons/images/13n.png";
+        } else if ($wIcon == "50d"){
+            image.src = "/resources/weathericons/images/50d.png";
+        } else if ($wIcon == "50n"){
+            image.src = "/resources/weathericons/images/50n.png";
+        }
+
+
+    });
+
+
+</script>

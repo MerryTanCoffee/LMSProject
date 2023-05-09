@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.UserMapper">
+
+	<sql id ="studentSearch">
+		<if test = "searchType != null and searchType == 'id'">
+			and (stu_id like '%' || #{searchWord} || '%')
+		</if>
+		<if test = "searchType != null and searchType == 'name'">
+			and (stu_name_ko like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+	
+	<resultMap type="java.util.Map" id="lectureListMap">
+		<result property="subName" column="sub_name"/>
+		<result property="subCredit" column="sub_credit"/>
+		<result property="hallName" column="hall_name"/>
+		<result property="lrNum" column="lr_num"/>
+		<result property="lecDivide" column="lec_divide"/>
+		<result property="startTime" column="lrs_start"/>
+		<result property="endTime" column="lrs_end"/>
+		<result property="weekCode" column="week_code"/>
+		<result property="weekName" column="week_name"/>
+	</resultMap>
+	
+	<resultMap type="userVO" id="userMap">
+		<id property="userId" column="user_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="password" column="password"/>
+		<result property="userType" column="user_type"/>
+		<result property="enabled" column="enabled"/>
+		<result property="profileNo" column="profile_no"/>
+		<collection property="studentVO" resultMap="studentMap"/>
+		<collection property="professorVO" resultMap="professorMap"/>
+		<collection property="employeeVO" resultMap="employeeMap"/>
+	</resultMap>
+	
+	<resultMap type="academicVO" id="academicMap">
+		<id property="stuId" column="stu_id"/>
+		<result property="deptCode" column="dept_code"/>
+		<result property="proId" column="pro_id"/>
+		<result property="admiDate" column="admi_date"/>
+		<result property="gradDate" column="grad_date"/>
+		<result property="acaMajor" column="aca_major"/>
+		<result property="acaMinor" column="aca_minor"/>
+		<result property="acaDmajor" column="aca_dmajor"/>
+		<result property="acaStatus" column="aca_status"/>
+		<result property="acaGrade" column="aca_grade"/>
+		<result property="acaSemester" column="aca_semester"/>
+		<result property="acaAvgCredit" column="aca_avg_credit"/>
+		<result property="acaMaj1Score" column="aca_maj1_score"/>
+		<result property="acaMaj2Score" column="aca_maj2_score"/>
+		<result property="acaCul1Score" column="aca_cul1_score"/>
+		<result property="acaCul2Score" column="aca_cul2_score"/>
+		<result property="collName" column="COLL_NAME"/>
+		<result property="collCode" column="COLL_CODE"/>	
+	</resultMap>
+
+	<resultMap type="studentVO" id="studentMap">
+		<id property="stuId" column="stu_id"/>
+		<result property="stuId" column="stu_id"/>
+		<result property="stuNameKo" column="stu_name_ko"/>
+		<result property="stuNameEn" column="stu_name_en"/>
+		<result property="stuReg1" column="stu_reg1"/>
+		<result property="stuReg2" column="stu_reg2"/>
+		<result property="stuEmail" column="stu_email"/>
+		<result property="stuPhone" column="stu_phone"/>
+		<result property="stuNation" column="stu_nation"/>
+		<result property="stuGender" column="stu_gender"/>
+		<result property="stuPostcode" column="stu_postcode"/>
+		<result property="stuAddr1" column="stu_addr1"/>
+		<result property="stuAddr2" column="stu_addr2"/>
+		<result property="stuBank" column="stu_bank"/>
+		<result property="stuAccount" column="stu_account"/>
+		<result property="profileNo" column="profile_no"/>
+		<collection property="academicVO" resultMap="academicMap"/>
+	</resultMap>
+	
+	<resultMap type="employeeVO" id="employeeMap">
+		<id property="empId" column="emp_id"/>
+		<result property="deptCode" column="dept_code"/>
+		<result property="empNameKo" column="emp_name_ko"/>
+		<result property="empNameEn" column="emp_name_en"/>
+		<result property="empReg1" column="emp_reg1"/>
+		<result property="empReg2" column="emp_reg2"/>
+		<result property="empEmail" column="emp_email"/>
+		<result property="empPhone" column="emp_phone"/>
+		<result property="empNation" column="emp_nation"/>
+		<result property="empGender" column="emp_gender"/>
+		<result property="empPostcode" column="emp_postcode"/>
+		<result property="empAddr1" column="emp_addr1"/>
+		<result property="empAddr2" column="emp_addr2"/>
+		<result property="empBank" column="emp_bank"/>
+		<result property="empAccount" column="emp_account"/>
+		<result property="profileNo" column="profile_no"/>
+		<result property="collName" column="COLL_NAME"/>
+		<result property="collCode" column="COLL_CODE"/>
+		<result property="deptTel" column="DEPT_TEL"/>
+		<result property="deptName" column="DEPT_NAME"/>
+	</resultMap>
+	
+	<resultMap type="professorVO" id="professorMap">
+		<id property="proId" column="pro_id"/>
+		<result property="proId" column="pro_id"/> 
+		<result property="deptCode" column="dept_code"/> 
+		<result property="proNameKo" column="pro_name_ko"/> 
+		<result property="proNameEn" column="pro_name_en"/> 
+		<result property="proReg1" column="pro_reg1"/> 
+		<result property="proReg2" column="pro_reg2"/> 
+		<result property="proMajor" column="pro_major"/> 
+		<result property="proEmail" column="pro_email"/> 
+		<result property="proPhone" column="pro_phone"/> 
+		<result property="proNation" column="pro_nation"/> 
+		<result property="proGender" column="pro_gender"/> 
+		<result property="proPostcode" column="pro_postcode"/> 
+		<result property="proAddr1" column="pro_addr1"/> 
+		<result property="proAddr2" column="pro_addr2"/> 
+		<result property="proLabNum" column="pro_lab_num"/> 
+		<result property="proLabTel" column="pro_lab_tel"/> 
+		<result property="proBank" column="pro_bank"/> 
+		<result property="proAccount" column="pro_account"/> 
+		<result property="profileNo" column="profile_no"/> 
+		<result property="collName" column="COLL_NAME"/>
+		<result property="collCode" column="COLL_CODE"/>
+	</resultMap>
+	
+	<select id="userCheck" parameterType="userVO" resultType="userVO">
+		select user_id, password, enabled, user_type
+		from users
+		where user_id = #{userId} and password = #{password}
+	</select>
+	
+	<select id="getStudent" parameterType="userVO" resultMap="userMap">
+		SELECT 
+			u.USER_ID, PASSWORD, ENABLED, USER_TYPE,
+			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION, STU_GENDER,
+			s.STU_POSTCODE, STU_ADDR1, STU_ADDR2, PROFILE_NO, STU_BANK, STU_ACCOUNT,
+			a.STU_ID, a.DEPT_CODE, PRO_ID, ADMI_DATE, GRAD_DATE, ACA_MAJOR, ACA_MINOR, ACA_DMAJOR, ACA_STATUS, ACA_GRADE,
+			a.ACA_SEMESTER, ACA_AVG_CREDIT, ACA_MAJ1_SCORE, ACA_MAJ2_SCORE, ACA_CUL1_SCORE, ACA_CUL2_SCORE,
+			d.DEPT_CODE, d.COLL_CODE, d.HALL_CODE, d.DEPT_NAME, d.DEPT_TEL, d.DEPT_TUITION, d.DEPT_ROOM,
+			c.COLL_CODE, c.COLL_NAME
+		FROM 
+		users u
+		LEFT OUTER JOIN 
+  	      student s
+  	    ON 
+		  u.USER_ID = s.STU_ID
+		LEFT OUTER JOIN 
+		  academic a
+		ON 
+		  s.STU_ID = a.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  a.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+		WHERE user_id = #{userId} AND user_type = #{userType}
+	</select>
+	
+	<select id="getProfessor" parameterType="userVO" resultMap="userMap">
+		SELECT  
+			u.USER_ID, PASSWORD, ENABLED, USER_TYPE,
+			p.PRO_ID, p.DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, PRO_NATION, 
+			p.PRO_GENDER, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL, PROFILE_NO, PRO_BANK, PRO_ACCOUNT, PRO_POSTCODE,
+			d.DEPT_CODE, d.COLL_CODE, d.HALL_CODE, d.DEPT_NAME, d.DEPT_TEL, d.DEPT_TUITION, d.DEPT_ROOM,
+		    c.COLL_CODE, c.COLL_NAME
+		FROM 
+		users u
+		LEFT OUTER JOIN 
+  	      professor p
+  	    ON 
+		  u.USER_ID = p.PRO_ID
+		LEFT OUTER JOIN 
+			DEPARTMENT d
+		ON
+			p.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+			COLLEAGE c
+		ON 
+			d.COLL_CODE = c.COLL_CODE
+		where user_id = #{userId} and user_type = #{userType}
+	</select>
+	
+	<select id="getEmployee" parameterType="userVO" resultMap="userMap">
+		SELECT  
+			u.USER_ID, PASSWORD, ENABLED, USER_TYPE,
+		    e.EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION, 
+		    EMP_GENDER, EMP_POSTCODE, EMP_ADDR1, EMP_ADDR2, PROFILE_NO, EMP_BANK, EMP_ACCOUNT, e.DEPT_CODE,			
+			d.DEPT_CODE, d.COLL_CODE, d.HALL_CODE, d.DEPT_NAME, d.DEPT_TEL, d.DEPT_TUITION, d.DEPT_ROOM,
+		    c.COLL_CODE, c.COLL_NAME
+		FROM 
+		users u
+		LEFT OUTER JOIN 
+  	      EMPLOYEE e
+  	    ON 
+		  u.USER_ID = e.EMP_ID
+		LEFT OUTER JOIN 
+			DEPARTMENT d
+		ON
+			e.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+			COLLEAGE c
+		ON 
+			d.COLL_CODE = c.COLL_CODE
+		where user_id = #{userId} and user_type = #{userType}
+	</select>
+	
+	<select id="getId" parameterType="map" resultType="string">
+		<if test="userType == 'STU'">
+			select stu_id 
+			from student
+			where stu_name_ko = #{userName}
+			and stu_reg1 = #{userReg1}
+			and stu_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'PRO'">
+			select pro_id 
+			from professor
+			where pro_name_ko = #{userName}
+			and pro_reg1 = #{userReg1}
+			and pro_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'EMP'">
+			select emp_id 
+			from employee
+			where emp_name_ko = #{userName}
+			and emp_reg1 = #{userReg1}
+			and emp_reg2 = #{userReg2}
+		</if>
+	</select>
+	
+	<select id="userCheck2" parameterType="map" resultType="int">
+		<if test="userType == 'STU'">
+			select count(*)
+			from student
+			where stu_id = #{userId}
+			and stu_name_ko = #{userName}
+			and stu_reg1 = #{userReg1}
+			and stu_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'PRO'">
+			select count(*)
+			from professor
+			where pro_id = #{userId}
+			and pro_name_ko = #{userName}
+			and pro_reg1 = #{userReg1}
+			and pro_reg2 = #{userReg2}
+		</if>
+		<if test="userType == 'EMP'">
+			select count(*)
+			from employee
+			where emp_id = #{userId}
+			and emp_name_ko = #{userName}
+			and emp_reg1 = #{userReg1}
+			and emp_reg2 = #{userReg2}
+		</if>
+	</select>
+	
+	<update id="saveImsiPw" parameterType="map">
+		update users
+		set password = #{imsiPw}
+		where user_id = #{userId}
+	</update>
+	
+	<update id = "updateUser" parameterType="map">
+		<if test="userType == 'STU'">
+		update STUDENT
+		set
+			STU_PHONE = #{stuPhone},
+			STU_EMAIL = #{stuEmail},
+			STU_POSTCODE = #{stuPostcode},
+			STU_ADDR1 = #{stuAddr1},
+			STU_ADDR2 = #{stuAddr2},
+			STU_BANK = #{stuBank},
+			STU_ACCOUNT = #{stuAccount}
+		where STU_ID = #{userId}	
+		</if>
+		<if test="userType == 'PRO'">
+		update PROFESSOR
+		set
+			PRO_PHONE = #{proPhone},
+			PRO_EMAIL = #{proEmail},
+			PRO_POSTCODE = #{proPostcode},
+			PRO_ADDR1 = #{proAddr1},
+			PRO_ADDR2 = #{proAddr2},
+			PRO_BANK = #{proBank},
+			PRO_ACCOUNT = #{proAccount}
+		where PRO_ID = #{userId}	
+		</if>
+		<if test="userType == 'EMP'">
+		update EMPLOYEE
+		set
+			EMP_PHONE = #{empPhone},
+			EMP_EMAIL = #{empEmail},
+			EMP_POSTCODE = #{empPostcode},
+			EMP_ADDR1 = #{empAddr1},
+			EMP_ADDR2 = #{empAddr2},
+			EMP_BANK = #{empBank},
+			EMP_ACCOUNT = #{empAccount}
+		where emp_ID = #{userId}	
+		</if>
+	</update>
+	
+	
+	<insert id = "insertUser" parameterType="map">
+		insert into USERS (
+			USER_ID, PASSWORD, USER_TYPE
+		) values (
+			#{userId}, #{password}, #{userType}      
+		)
+		
+	</insert>
+	
+	<insert id = "insertUserType" parameterType="map">
+		<if test="userType == 'STU'">
+		insert into STUDENT (
+			STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION,	STU_GENDER, STU_ADDR1, STU_ADDR2, STU_BANK, STU_ACCOUNT, STU_POSTCODE
+			) values (
+			#{userId}, #{stuNameKo}, #{stuNameEn}, #{stuReg1}, #{stuReg2}, #{stuEmail}, #{stuPhone}, #{stuNation}, #{stuGender}, #{stuAddr1}, #{stuAddr2}, #{stuBank}, #{stuAccount}, #{stuPostcode})
+		</if>
+		<if test="userType == 'PRO'">
+		insert into PROFESSOR ( 
+			PRO_ID, DEPT_CODE, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_EMAIL, PRO_PHONE, PRO_NATION, PRO_GENDER, PRO_ADDR1, PRO_ADDR2, PRO_LAB_NUM, PRO_LAB_TEL, PRO_BANK, PRO_ACCOUNT, PRO_POSTCODE
+			)values (
+			#{userId}, #{deptCode}, #{proNameKo}, #{proNameEn}, #{proReg1}, #{proReg2}, #{proMajor}, #{proEmail}, #{proPhone}, #{proNation}, #{proGender}, #{proAddr1}, #{proAddr2}, #{proLabNum}, #{proLabTel}, #{proBank}, #{proAccount}, #{proPostcode})
+		</if>
+		<if test="userType == 'EMP'">
+		insert into EMPLOYEE (
+			EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, EMP_PHONE, EMP_NATION, EMP_GENDER, EMP_ADDR1, EMP_ADDR2, EMP_BANK, EMP_ACCOUNT, DEPT_CODE, EMP_POSTCODE
+			)values (
+			#{userId}, #{empNameKo}, #{empNameEn}, #{empReg1}, #{empReg2}, #{empEmail}, #{empPhone}, #{empNation}, #{empGender}, #{empAddr1}, #{empAddr2}, #{empBank}, #{empAccount}, #{deptCode}, #{empPostcode})
+		</if>
+	</insert>
+	
+	<insert id = "insertAca" parameterType="map">
+		insert into ACADEMIC (
+			STU_ID, DEPT_CODE, ACA_MAJOR, ACA_STATUS, ACA_GRADE	
+			) values (
+			#{userId}, #{deptCode}, #{acaMajor},'재학', #{acaGrade}
+			)
+			
+	</insert>
+	
+	<select id = "selectAllUsers" resultType="userVO">
+		SELECT USER_ID, PASSWORD, ENABLED, USER_TYPE FROM USERS
+	</select>
+	
+	<select id = "selectStuAcademics" resultType="studentVO">
+		SELECT a.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, STU_NATION, 
+			STU_GENDER, STU_ADDR1, STU_ADDR2, PROFILE_NO, STU_BANK, STU_ACCOUNT, STU_POSTCODE, ACA_MAJOR , ACA_GRADE
+        FROM STUDENT A, ACADEMIC B
+    	    where a.stu_id = b.stu_id
+	</select>
+	
+	<select id="selectAllDeparts" parameterType="string" resultType="departmentVO">
+		SELECT DEPT_CODE, COLL_CODE, HALL_CODE, DEPT_NAME, DEPT_TEL, DEPT_TUITION, DEPT_ROOM		
+			FROM DEPARTMENT
+		WHERE COLL_CODE = #{collCode}	
+	</select>
+	
+	<select id="selectStuSearch" parameterType="map" resultMap="studentMap">
+		select
+			b.*
+			from (		
+			select 
+				a.*, row_number() over (order by stu_id desc) rnum	
+			from (	
+			SELECT 
+	  			s.STU_ID as stu_id, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, 
+	 			m.ACA_MAJOR, m.ACA_GRADE,
+	 			c.COLL_NAME
+			FROM 
+	  		student s
+			LEFT OUTER JOIN 
+			  academic m
+			ON 
+			  s.STU_ID = m.STU_ID
+			LEFT OUTER JOIN 
+			  department d
+			ON 
+			  m.DEPT_CODE = d.DEPT_CODE
+			LEFT OUTER JOIN 
+			  colleage c
+			ON 
+			  d.COLL_CODE = c.COLL_CODE
+			where 1=1
+			<if test = "searchType != null and searchType == 'id'">
+				and (s.stu_id like '%' || #{searchWord} || '%')
+			</if>
+			<if test = "searchType != null and searchType == 'name'">
+				and (stu_name_ko like '%' || #{searchWord} || '%')
+			</if>
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+				order by c.coll_name asc, d.dept_name asc ,stu_name_ko asc, stu_id asc
+				) a
+			) b
+			<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}	
+			]]>
+	</select>
+	
+	
+	<select id="selectStuListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(s.STU_ID)
+			FROM STUDENT s
+			LEFT OUTER JOIN academic m ON s.STU_ID = m.STU_ID
+			LEFT OUTER JOIN department d ON m.DEPT_CODE = d.DEPT_CODE
+			LEFT OUTER JOIN colleage c ON d.COLL_CODE = c.COLL_CODE
+			WHERE 1=1
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+			<if test="searchType != null and searchType == 'id'" >
+			    AND s.stu_id LIKE '%' || #{searchWord} || '%'
+			</if>
+			<if test="searchType != null and searchType == 'name'">
+			    AND s.stu_name_ko LIKE '%' || #{searchWord} || '%'
+			</if>
+	</select>
+	
+	
+	<select id = "selectAllStudents" resultMap="studentMap">
+		SELECT 
+  			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE, 
+ 			ACA_MAJOR, ACA_GRADE,
+ 			c.COLL_NAME
+		FROM 
+  		student s
+		LEFT OUTER JOIN 
+		  academic a
+		ON 
+		  s.STU_ID = a.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  a.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+		 order by c.coll_name asc, d.dept_name asc ,stu_name_ko asc, stu_id asc
+	</select>
+	
+	<select id = "selectAllProfessors" resultMap="professorMap">
+		SELECT 
+		    p.PRO_ID, p.PRO_NAME_KO, p.PRO_REG1, p.PRO_MAJOR, p.PRO_LAB_NUM,
+		    d.DEPT_CODE, d.DEPT_NAME,
+		    c.COLL_CODE, c.COLL_NAME
+		FROM 
+		    PROFESSOR p
+		    LEFT OUTER JOIN DEPARTMENT d
+		        ON p.DEPT_CODE = d.DEPT_CODE
+		    LEFT OUTER JOIN COLLEAGE c
+		        ON d.COLL_CODE = c.COLL_CODE
+	</select>
+	
+	<select id = "selectAllEmployees" resultMap="employeeMap">
+		SELECT 
+		    e.EMP_ID, EMP_NAME_KO, EMP_REG1, 
+		    d.DEPT_CODE, DEPT_NAME, DEPT_TEL,
+		    c.COLL_CODE, COLL_NAME
+		FROM 
+		    EMPLOYEE e
+		    LEFT OUTER JOIN DEPARTMENT d
+		        ON e.DEPT_CODE = d.DEPT_CODE
+		    LEFT OUTER JOIN COLLEAGE c
+		        ON d.COLL_CODE = c.COLL_CODE
+	</select>
+
+	<select id="selectProListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(p.PRO_ID)
+			FROM 
+			    PROFESSOR p
+			    LEFT OUTER JOIN DEPARTMENT d
+			        ON p.DEPT_CODE = d.DEPT_CODE
+			    LEFT OUTER JOIN COLLEAGE c
+			        ON d.COLL_CODE = c.COLL_CODE
+				WHERE 1=1
+			<if test = "searchType != null and searchType == 'id'">
+				and (p.PRO_ID like '%' || #{searchWord} || '%')
+			</if>
+			<if test = "searchType != null and searchType == 'name'">
+				and (p.PRO_NAME_KO like '%' || #{searchWord} || '%')
+			</if>
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+	</select>
+	
+	<select id="selectProSearch" parameterType="map" resultMap="professorMap">
+		SELECT  
+			p.PRO_ID, p.PRO_NAME_KO, p.PRO_REG1, p.PRO_MAJOR, p.PRO_LAB_NUM,
+		    d.DEPT_CODE, d.DEPT_NAME,
+		    c.COLL_CODE, c.COLL_NAME
+			FROM 
+			    PROFESSOR p
+			    LEFT OUTER JOIN DEPARTMENT d
+			        ON p.DEPT_CODE = d.DEPT_CODE
+			    LEFT OUTER JOIN COLLEAGE c
+			        ON d.COLL_CODE = c.COLL_CODE
+				WHERE 1=1
+			<if test = "searchType != null and searchType == 'id'">
+				and (p.PRO_ID like '%' || #{searchWord} || '%')
+			</if>
+			<if test = "searchType != null and searchType == 'name'">
+				and (p.PRO_NAME_KO like '%' || #{searchWord} || '%')
+			</if>
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+	</select>
+	
+	
+	<select id="selectEmpListCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(e.EMP_ID)
+		FROM 
+		    EMPLOYEE e
+		    LEFT OUTER JOIN DEPARTMENT d
+		        ON e.DEPT_CODE = d.DEPT_CODE
+		    LEFT OUTER JOIN COLLEAGE c
+		        ON d.COLL_CODE = c.COLL_CODE
+				WHERE 1=1
+			<if test = "searchType != null and searchType == 'id'">
+				and (e.EMP_ID like '%' || #{searchWord} || '%')
+			</if>
+			<if test = "searchType != null and searchType == 'name'">
+				and (E.EMP_NAME_KO like '%' || #{searchWord} || '%')
+			</if>
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+	</select>
+	
+	<select id="selectEmpSearch" parameterType="map" resultMap="employeeMap">
+		
+		SELECT 
+		    e.EMP_ID, EMP_NAME_KO, EMP_REG1, 
+		    d.DEPT_CODE, DEPT_NAME, DEPT_TEL,
+		    c.COLL_CODE, COLL_NAME
+		FROM 
+		    EMPLOYEE e
+		    LEFT OUTER JOIN DEPARTMENT d
+		        ON e.DEPT_CODE = d.DEPT_CODE
+		    LEFT OUTER JOIN COLLEAGE c
+		        ON d.COLL_CODE = c.COLL_CODE	
+				WHERE 1=1
+			<if test = "searchType != null and searchType == 'id'">
+				and (e.EMP_ID like '%' || #{searchWord} || '%')
+			</if>
+			<if test = "searchType != null and searchType == 'name'">
+				and (E.EMP_NAME_KO like '%' || #{searchWord} || '%')
+			</if>
+			<if test="deptName != null and deptName != 'ALL'">
+			    AND d.dept_name = #{deptName}
+			</if>
+			<if test="collCode != null and collCode != 'ALL'">
+			    AND c.coll_code = #{collCode}
+			</if>
+	</select>
+	
+	<select id = "selectStudent" parameterType = "string" resultMap="studentMap">
+		SELECT 
+  			s.STU_ID, STU_NAME_KO, STU_NAME_EN, STU_REG1, STU_REG2, STU_EMAIL, STU_PHONE,
+  			s.STU_PHONE, STU_NATION, STU_GENDER, STU_EMAIL, STU_ADDR1, STU_ADDR2, STU_BANK,
+  			s.STU_ACCOUNT, STU_POSTCODE, PROFILE_NO,
+ 			a.ADMI_DATE, GRAD_DATE, ACA_MAJOR, ACA_MINOR, ACA_DMAJOR, ACA_STATUS, ACA_GRADE,
+			a.ACA_SEMESTER, ACA_AVG_CREDIT, ACA_MAJ1_SCORE, ACA_MAJ2_SCORE, ACA_CUL1_SCORE, ACA_CUL2_SCORE,
+ 			c.COLL_NAME
+		FROM 
+  		student s
+		LEFT OUTER JOIN 
+		  academic a
+		ON 
+		  s.STU_ID = a.STU_ID
+		LEFT OUTER JOIN 
+		  department d
+		ON 
+		  a.DEPT_CODE = d.DEPT_CODE
+		LEFT OUTER JOIN 
+		  colleage c
+		ON 
+		  d.COLL_CODE = c.COLL_CODE
+		 where s.STU_ID = #{stuId} 
+	</select>
+	
+	
+	<select id="selectProfessor" parameterType = "string"  resultMap="professorMap">
+		SELECT  
+			p.PRO_ID, PRO_NAME_KO, PRO_NAME_EN, PRO_REG1, PRO_REG2, PRO_MAJOR, PRO_LAB_NUM, PROFILE_NO, PRO_POSTCODE, 
+			p.PRO_LAB_TEL, PRO_PHONE, PRO_EMAIL, PRO_ADDR1, PRO_ADDR2, PRO_BANK, PRO_ACCOUNT, PRO_GENDER, PROFILE_NO, PROFILE_NO,
+		    d.DEPT_CODE, d.DEPT_NAME,
+		    c.COLL_CODE, c.COLL_NAME
+			FROM 
+			    PROFESSOR p
+			    LEFT OUTER JOIN DEPARTMENT d
+			        ON p.DEPT_CODE = d.DEPT_CODE
+			    LEFT OUTER JOIN COLLEAGE c
+			        ON d.COLL_CODE = c.COLL_CODE
+		 where p.PRO_ID = #{proId} 
+	</select>
+	
+	<select id = "selectEmployee" parameterType = "string" resultMap="employeeMap">
+		SELECT 
+		    e.EMP_ID, EMP_NAME_KO, EMP_NAME_EN, EMP_REG1, EMP_REG2, EMP_EMAIL, PROFILE_NO, EMP_GENDER,
+		    e.EMP_PHONE, EMP_NATION, EMP_ADDR1, EMP_ADDR2, EMP_BANK, EMP_ACCOUNT, EMP_POSTCODE, PROFILE_NO,
+		    d.DEPT_CODE, DEPT_NAME, DEPT_TEL,
+		    c.COLL_CODE, COLL_NAME
+		FROM 
+		    EMPLOYEE e
+		    LEFT OUTER JOIN DEPARTMENT d
+		        ON e.DEPT_CODE = d.DEPT_CODE
+		    LEFT OUTER JOIN COLLEAGE c
+		        ON d.COLL_CODE = c.COLL_CODE
+		where  e.EMP_ID = #{empId}         
+	</select>
+	
+	
+	<select id="getLectureList" resultMap="lectureListMap">
+		select
+		    s.sub_name, h.hall_name, lr.lr_num, l.lec_divide, s.sub_credit,
+		    lrs.lrs_start, lrs.lrs_end, lrs.week_code, w.week_name
+		from lecture l, professor p, lecture_room_schedule lrs, 
+		    subject s, lecture_room lr, hall h, admin_setting ad, week_table w
+		where 1=1
+		and l.pro_id = p.pro_id
+		and l.lec_code = lrs.lec_code
+		and l.sub_code = s.sub_code
+		and lrs.lr_code = lr.lr_code
+		and lr.hall_code = h.hall_code
+		and w.week_code = lrs.week_code
+		and l.lec_open_year = ad.year
+		and l.lec_open_semester = ad.semester
+		and l.lec_status = 'Y'
+		and l.pro_id = #{proId}
+	</select>
+	
+	<update id="updPassword" parameterType="userVO">
+		update users
+		set password = #{password}
+		where user_id = #{userId}
+	</update>
+</mapper>

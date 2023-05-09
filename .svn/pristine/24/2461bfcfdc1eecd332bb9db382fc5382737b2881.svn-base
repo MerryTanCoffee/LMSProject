@@ -1,0 +1,21 @@
+package kr.or.ddit.reference.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ReferenceMapper;
+import kr.or.ddit.reference.service.IReferenceService;
+import kr.or.ddit.reference.vo.ReferenceVO;
+
+@Service
+public class ReferenceServiceImpl implements IReferenceService {
+
+	@Autowired
+	private ReferenceMapper referenceMapper;
+	
+	@Override
+	public void insertReference(ReferenceVO referenceVO) {
+		referenceMapper.insertReference(referenceVO);
+	}
+
+}

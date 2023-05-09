@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.facilty.vo.LockerVO;
+
+@Mapper
+public interface LockerMapper {
+
+	public void insertReserve(LockerVO lockerVO);
+
+}

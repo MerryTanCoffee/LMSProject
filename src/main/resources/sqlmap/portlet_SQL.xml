@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.PortletMapper">
+
+	
+	<insert id="insertPortlet" parameterType="portletVO">
+		insert into portlet(
+			po_cate_id, stu_id, po_yn, po_x, po_y, po_w, po_h
+		) values (
+			#{poCateId}, #{stuId}, #{poYn}, #{poX}, #{poY}, #{poW}, #{poH}
+		)
+	</insert>
+	
+	<select id="selectPortlet" parameterType="string" resultType="portletVO">
+		select po_cate_id, po_yn, po_x, po_y, po_w, po_h
+		from portlet
+		where stu_id = #{stuId} and po_yn = 1
+		order by po_y, po_x asc
+	</select>
+	
+	<select id="selectBoardList" resultType="boardVO">
+		select 
+			bo_no, cate_code, user_id, bo_title, bo_hit, 
+			bo_write_date, bo_modify_date, bo_content
+		from board
+	</select>
+
+</mapper>

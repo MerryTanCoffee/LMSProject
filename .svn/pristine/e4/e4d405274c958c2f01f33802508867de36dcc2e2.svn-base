@@ -1,0 +1,53 @@
+package kr.or.ddit.scholarship.service;
+
+import java.util.List;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.CurrentInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+public interface IScholarshipService {
+
+	// 장학금 수혜 내역 조회
+	public List<ScholarshipListVO> scholarList(ScholarshipListVO sv);
+
+	// 장학금 신청 장학조회 리스트
+	public List<ScholarshipInfoVO> scholarInfoList(ScholarshipInfoVO si);
+
+	// 장학금 신청
+	public ServiceResult insertScholar(ScholarshipListVO sv);
+
+	// 장학금 신청 리스트 
+	public List<ScholarshipListVO> scholarListApp(ScholarshipListVO sv);
+
+	// 장학금 신청현황 상세보기
+	public ScholarshipListVO scholarDetail(int slNo);
+
+	public List<ScholarshipInfoVO> infoList(ScholarshipInfoVO si);
+
+	public List<ScholarshipInfoVO> infoList2(ScholarshipInfoVO si);
+
+	public void insertScholarInfo(ScholarshipInfoVO si);
+
+	public void deleteScholarInfo(String siCode);
+
+	// 관리자 : 승인내역 보기
+	public List<ScholarshipListVO> selectAcceptList(ScholarshipListVO sv);
+
+	// 관리자 : 반려내역 보기
+	public List<ScholarshipListVO> rejectList(ScholarshipListVO sv);
+
+	// 관리자 : 대기내역 보기
+	public List<ScholarshipListVO> waitList(ScholarshipListVO sv);
+
+	public void updateStatus(ScholarshipListVO sv);
+	
+	// 신청 내역 검색해서 보기
+	public List<ScholarshipInfoVO> appList(ScholarshipListVO sv);
+	
+	// 현재 학년도/학기 정보 가져오기
+	public CurrentInfoVO getCurrentInfo();
+
+
+}

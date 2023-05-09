@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li>
+			<h5 class="bc-title">성적</h5>
+		</li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)"> <svg
+					width="17" height="17" viewBox="0 0 17 17" fill="none"
+					xmlns="http://www.w3.org/2000/svg">
+								<path
+						d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z"
+						stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C"
+						stroke-linecap="round" stroke-linejoin="round" />
+							</svg> 성적조회
+		</a></li>
+		<li class="breadcrumb-item active"><a href="javascript:void(0)">학생성적조회</a></li>
+	</ol>
+</div>
+<c:set var="scoreVO" value="${sList[0]}" />
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-header">
+			<div class="card-title">
+				<h4>
+					<span style="font-size: 18px; color: #f96d00;">|</span> 성적조회(과목명:
+${scoreVO.subName})
+				</h4>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-hover table-bordered text-center">
+					<thead>
+						<tr style="background-color: #eeeeee;">
+							<th>등수</th>
+							<th>학번</th>
+							<th>학생이름</th>
+							<th>출석점수</th>
+							<th>과제점수</th>
+							<th>중간점수</th>
+							<th>기말점수</th>
+							<th>성적</th>
+							<th>확정</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${sList}" var="studentScore">
+							<c:set var="subName" value="${studentScore.subName}" />
+							<tr>
+								<td>${studentScore.rank }</td>
+								<td>${studentScore.stuId }</td>
+<%-- 							<td>${studentScore.subName }</td> --%>
+								<td>${studentScore.stuNameKo }</td>
+								<td>${studentScore.atdScore }</td>
+								<td>${studentScore.asgScore }</td>
+								<td>${studentScore.mdtScore }</td>
+								<td>${studentScore.fnlScore }</td>
+								<td>${studentScore.grade }</td>
+								<td class="change">
+								<c:if test="${studentScore.srStatus eq 'N' }" >
+								<button class="btn btn-sm btn-outline-primary sendObjection"
+										type="button"
+										data-stu-id="${studentScore.stuId}"
+										data-lec-code="${studentScore.lecCode}"
+										>확정</button>
+								</c:if>
+								<c:if test="${studentScore.srStatus eq 'Y' }">
+								<button class="btn btn-sm btn-outline-primary" disabled="disabled">확정완료</button>
+								</c:if>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+/* 얘를 눌러서 아이디와 강의코드 값을 담아서 보낸다.*/
+	$(".sendObjection").click(function(){
+		
+		console.log("string클릭됨");
+	//data-stu-id="${studentScore.stuId}"  data-lec-code="${studentScore.lecCode}"
+		let stuId = $(this).data("stuId");
+		let lecCode = $(this).data("lecCode");
+// 		console.log("stuId : " + stuId + ", lecCode : " + lecCode ");
+		sessionStorage.setItem("stuId",stuId);
+		sessionStorage.setItem("lecCode",lecCode);
+		
+		var params = {
+			"stuId":sessionStorage.getItem("stuId")
+			,"lecCode":sessionStorage.getItem("lecCode")
+		}
+		
+		console.log("params : " + JSON.stringify(params));
+		var $this = $(this);
+		$.ajax({
+			type : 'POST',
+			url : '/score/updateLectureEval',
+			contentType:"application/json;charset:utf-8",
+			dataType : "text",
+			data : JSON.stringify(params),
+			success : function(res){
+				 console.log("res>>", JSON.stringify(res));
+				 $this.replaceWith('<button class="btn btn-sm btn-outline-primary" disabled="disabled">확정완료</button>');
+
+			       
+			},
+			error: function(res){
+				console.log("오류",res)
+				
+			}
+		})
+	});
+</script>

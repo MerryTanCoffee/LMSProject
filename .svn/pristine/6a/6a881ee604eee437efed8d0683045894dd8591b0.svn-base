@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper;
+
+
+import kr.or.ddit.portlet.vo.PortletVO;
+
+public interface PortletMapper {
+	
+	// 위젯 설정 값 저장
+	public int insertPortlet(PortletVO portletVO);
+	
+	
+	
+}

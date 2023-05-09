@@ -1,0 +1,25 @@
+package kr.or.ddit.exam.vo;
+
+import kr.or.ddit.lecture.vo.LectureVO;
+import kr.or.ddit.subject.vo.SubjectOpenVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+import lombok.Data;
+
+@Data
+public class ExamVO {
+
+	private String examGubun; 	// 시험구분(중간-M,기말 -Y)
+	private String lecCode;		// 강의계획코드
+	private String examDate;	// 시험일자
+	
+	private String subCode; 
+	private int lecOpenYear; 
+	private int lecOpenSemester; 
+	private int lecDivide;
+	private String lecLanguage;
+	private int lecGrade;
+	private String subSort;
+	private String subName;
+	private int subApplicant;
+
+}

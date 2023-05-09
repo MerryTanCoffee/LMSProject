@@ -1,0 +1,260 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="row" style="padding: 30px;">
+	<div class="col-xl-12">
+		<div class="card dz-card" id="accordion-one">
+			<div class="card-header flex-wrap">
+				<div>
+					<h4 class="card-title"
+						style="color: #22313f; font-weight: 800; font-size: 18px;">${studyName }</h4>
+				</div>
+			</div>
+			<div class="default-tab">
+			
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" data-bs-toggle="tab" href="#home"><i class="la la-user me-2"></i> 참여학생</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" href="#profile"><i class='far fa-calendar-alt'></i> 그룹일정</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" href="#contact"><i class='far fa-window-restore'></i> 시간표비교</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" href="#message"><i class='far fa-comments'></i> 채팅</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane fade show active" id="home" role="tabpanel">
+			<div class="pt-4">
+			
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+					aria-labelledby="home-tab">
+					<div class="card-body pt-0">
+						<div class="table-responsive">
+							<table id="example" class="display table"
+								style="min-width: 845px">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>학번</th>
+										<th>학과</th>
+										<th>이름</th>
+										<th>분류</th>
+									</tr>
+								</thead>
+								<tbody id="yujin">
+									<c:set value="${studyVO }" var="studyList" />
+									<c:choose>
+										<c:when test="${empty studyList}">
+											<tr>
+												<td colspan="5" style="text-align: center;">조회하신 게시글이
+													존재하지 않습니다.</td>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<c:forEach items="${studyVO }" var="study">
+												<tr data-tr-id="${study.stuId}" >
+													<td class="nRum">${study.rnum}</td>
+													<td>${study.stuId }</td>
+													<td>${study.deptName }</td>
+													<td>${study.stuNameKo}</td>
+													<c:choose>
+														<c:when test="${study.smLeader eq 'Y'}">
+															<td>스터디장</td>
+														</c:when>
+														<c:otherwise>
+															<td>스터디원</td>
+														</c:otherwise>
+													</c:choose>
+												</tr>
+											</c:forEach>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<c:if test="${studyL.smLeader eq 'Y'}">
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+						aria-labelledby="home-tab">
+						<div class="card-body pt-0">
+							<div class="table-responsive">
+								<table id="example" class="display table"
+									style="min-width: 845px">
+									
+									<thead>
+										<h5>🖊참여대기</h5>
+										<tr>
+											<th>학번</th>
+											<th>학과</th>
+											<th>이름</th>
+											<th>신청일시</th>
+											<th>지원동기</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:set value="${msgList }" var="msg" />
+										<c:choose>
+											<c:when test="${empty msg}">
+												<tr>
+													<td colspan="5" style="text-align: center;">조회하신 게시글이
+														존재하지 않습니다.</td>
+												</tr>
+											</c:when>
+											<c:otherwise>
+												<c:forEach items="${msgList}" var="msg">
+													<tr data-msg-id="${msg.msgDate}" >
+														<td class ="nStuId">${msg.msgSender}</td>
+														<td class ="nStuAca">${msg.acaMajor}</td>
+														<td class ="nStuNm">${msg.stuNameKo}</td>
+														<td>${msg.msgDate}</td>
+														<td>
+														<button type="button" class="btn btn-primary btn-sm px-4 " data-bs-container="body" data-bs-toggle="popover" data-bs-placement="left" data-bs-content="${msg.msgContent }" data-bs-original-title="Popover in Left" aria-describedby="popover373619">확인</button>
+															</td><td>
+															<button type="button"
+																class="btn tp-btn-light btn-info accept-btn"
+																data-stu-id="${msg.msgSender}" 
+																data-study-code="${studyCode}" data-study-status="Y" data-msg-content ="${msg.msgContent}">수락</button>
+															<button type="button" class="btn tp-btn-light btn-danger reject-btn" 
+															data-stu-id="${msg.msgSender}" 
+															data-study-code="${studyCode}" data-study-status="N" data-msg-content ="${msg.msgContent}">반려</button>
+														</td>
+													</tr>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</c:if>
+	</div>
+	</div>
+		<div class="tab-pane fade" id="profile">
+			<div class="pt-4">
+				<h4>This is profile title</h4>
+				<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+				</p>
+				<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+				</p>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="contact">
+			<div class="pt-4">
+				<h4>This is contact title</h4>
+				<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
+				</p>
+				<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.
+				</p>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="message">
+			<div class="pt-4">
+				<h4>This is message title</h4>
+				<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+				</p>
+				<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+				</p>
+			</div>
+		</div>
+		</div>
+	</div>
+	</div>
+</div>
+<script>
+$(function() {
+    // 각 버튼에 대해 클릭 이벤트 등록
+    var nStuId=null;
+    var nStuAca=null;
+    var nStuNm=null;
+    var lastRnum = null;
+    $('.accept-btn').click(function() {
+        var $this = $(this); // 클릭된 버튼 요소 저장
+        var stuId = $(this).data('stu-id');
+        var studyCode = $(this).data('study-code');
+        var studyStatus = $(this).data('study-status');
+        var msgContent = $(this).data('msg-content');
+        var msgId = $(this).closest('tr').data('msg-id');
+		var obj = {
+			"stuId": stuId,
+            "studyCode": studyCode,
+            "studyStatus": studyStatus,
+            "msgContent" : msgContent
+        };
+        $.ajax({
+			type: "post",
+            url: "/study/insert",
+            dataType: "text",
+            data: obj,
+            success: function(res) {
+				console.log("res>>", res);
+                alert("변경되었습니다");
+                var nStuId = $this.parent().parent().find('.nStuId').text();
+                var nStuAca = $this.parent().parent().find('.nStuAca').text();
+                var nStuNm = $this.parent().parent().find('.nStuNm').text();
+                var lastRnum = parseInt($('#yujin').find('.nRum').text());
+                var nRum = lastRnum + 1;
+				console.log("nStuId>>>", nStuId);
+                $('tr[data-msg-id="' + msgId + '"]').remove();
+
+                var newStudyMemElem = `
+                  <tr>
+                    <td>\${nRum}</td>
+                    <td>\${nStuId}</td> <!-- 이 부분에 값을 넣습니다 -->
+                    <td>\${nStuAca}</td>
+                    <td>\${nStuNm}</td>
+                    <td>스터디원</td>
+                  </tr>
+                `;
+                	$('#yujin').append(newStudyMemElem); 
+            },
+            error: function(err) {
+                console.log("err>>", err);
+                alert("승인신청에 실패");
+                $('.standByDelete').remove();
+            }
+        });
+        
+    });
+  
+        var stuId = $(this).data('stu-id');
+        var studyCode = $(this).data('study-code');
+        var studyStatus = $(this).data('study-status');
+        var msgContent = $(this).data('msg-content');
+    $('.reject-btn').click(function() {
+        var obj = {
+        		 "stuId": stuId,
+                 "studyCode": studyCode,
+                 "studyStatus": studyStatus,
+                 "msgContent" : msgContent
+        };
+        console.log("studyObj>> ", obj);
+        $.ajax({
+            type: "post",
+            url: "/study/insert",
+            dataType: "text",
+            data: obj,
+            success: function(res) {
+                console.log("res>>", res);
+                alert("변경되었습니다");
+                $('.standByDelete').remove();
+            },
+            error: function(err) {
+                console.log("err>>", err);
+                alert("반려 처리에 실패");
+                $('.standByDelete').remove();
+            }
+        });
+    });
+});
+</script>

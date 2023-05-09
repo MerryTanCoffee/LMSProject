@@ -1,0 +1,71 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="page-titles">
+	<ol class="breadcrumb">
+		<li>
+			<h5 class="bc-title">과제</h5>
+		</li>
+		<li class="breadcrumb-item"><a href="javascript:void(0)"> <svg
+					width="17" height="17" viewBox="0 0 17 17" fill="none"
+					xmlns="http://www.w3.org/2000/svg">
+								<path
+						d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z"
+						stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C"
+						stroke-linecap="round" stroke-linejoin="round" />
+							</svg> 과제
+		</a></li>
+		<li class="breadcrumb-item active"><a href="javascript:void(0)">과제</a></li>
+	</ol>
+</div>
+<div class="container-fluid">
+
+	<div class="card">
+		<div class="card-header">
+			<div class="card-title">
+				<h4><span style="font-size:18px; color: #f96d00;">|</span> 몇 주차 과제/ 제출기한 : </h4>
+				<span>과제내용 : 과제입니다</span>
+			</div>
+		</div>
+		<!-- ///////////////////////////card-header ////////////////////-->
+
+		<div class="card-body">
+			<h4><span style="font-size:18px; color: #f96d00;">|</span> 학생목록 </h4>
+			<div class="row">
+				<div class="table-responsive">
+					<table class="table table-bordered text-center">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>이름</th>
+								<th>학번</th>
+								<th>학과</th>
+								<th>학년</th>
+								<th>과제확인</th>
+								<th>과제점수</th>
+								<th>제출확인</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="padding-top:7px;padding-bottom:7px;">1</td>
+								<td style="padding-top:7px;padding-bottom:7px;">윤선희</td>
+								<td style="padding-top:7px;padding-bottom:7px;">20171620</td>
+								<td style="padding-top:7px;padding-bottom:7px;">컴퓨터공학과</td>
+								<td style="padding-top:7px;padding-bottom:7px;">3</td>
+								<td style="padding-top:7px;padding-bottom:7px;">업로드한 파일</td>
+								<td style="padding-top:7px;padding-bottom:7px;">5</td>
+								<td style="padding-top:7px;padding-bottom:7px;">
+									<button class="btn btn-xs btn-primary" value="" style="font-size: 13px;">확인</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</div><!-- container-fluid 끝 -->

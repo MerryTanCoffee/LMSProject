@@ -1,0 +1,99 @@
+package kr.or.ddit.scholarship.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.ScholarshipMapper;
+import kr.or.ddit.scholarship.service.IScholarshipService;
+import kr.or.ddit.scholarship.vo.ScholarshipInfoVO;
+import kr.or.ddit.scholarship.vo.ScholarshipListVO;
+
+@Service
+public class ScholarshipServiceImpl implements IScholarshipService {
+
+	@Autowired
+	private ScholarshipMapper mapper;
+	
+	@Override
+	public List<ScholarshipListVO> scholarList(ScholarshipListVO sv) {
+		return mapper.scholarList(sv);
+	}
+
+	@Override
+	public List<ScholarshipInfoVO> scholarInfoList(ScholarshipInfoVO si) {
+		return mapper.scholarInfoList(si);
+	}
+
+	@Override
+	public ServiceResult insertScholar(ScholarshipListVO sv) {
+		ServiceResult result = null;
+		int cnt = mapper.insertScholar(sv);
+		
+		if(cnt > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<ScholarshipListVO> scholarListApp(ScholarshipListVO sv) {
+		return mapper.scholarListApp(sv);
+	}
+
+	@Override
+	public ScholarshipListVO scholarDetail(int slNo) {
+		return mapper.scholarDetail(slNo);
+	}
+
+	@Override
+	public List<ScholarshipInfoVO> infoList(ScholarshipInfoVO si) {
+		return mapper.infoList(si);
+	}
+
+	@Override
+	public List<ScholarshipInfoVO> infoList2(ScholarshipInfoVO si) {
+		return mapper.infoList2(si);
+	}
+
+	@Override
+	public void insertScholarInfo(ScholarshipInfoVO si) {
+		mapper.insertScholarInfo(si);
+	}
+
+	@Override
+	public void deleteScholarInfo(String siCode) {
+		mapper.deleteScholarInfo(siCode);
+	}
+
+	@Override
+	public List<ScholarshipListVO> selectAcceptList(ScholarshipListVO sv) {
+		return mapper.selectAcceptList(sv);
+	}
+
+	@Override
+	public List<ScholarshipListVO> rejectList(ScholarshipListVO sv) {
+		return mapper.rejectList(sv);
+	}
+
+	@Override
+	public List<ScholarshipListVO> waitList(ScholarshipListVO sv) {
+		return mapper.waitList(sv);
+	}
+
+	@Override
+	public void updateStatus(ScholarshipListVO sv) {
+		mapper.updateStatus(sv);
+	}
+
+	@Override
+	public List<ScholarshipInfoVO> appList(ScholarshipListVO sv) {
+		return mapper.appList(sv);
+	}
+
+}

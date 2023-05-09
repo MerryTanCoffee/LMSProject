@@ -1,0 +1,214 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<div class="row">
+	<!-- 사물함 사용현황 -->
+	<div class="col-xl-5">
+	<div class="card" id="card-title-1">
+		<div class="card-header border-0 pb-0 ">
+			<h3>사물함 이용현황</h3>
+		</div>
+		<div class="card-body d-flex flex-column align-items-center vh-150">
+			<div class="col-sm-4" style="margin: 20px 0;">
+				<label class="form-label">건물</label>
+				<div class="dropdown bootstrap-select default-select form-control">
+					<select id="lock" class="default-select form-control">
+						<option data-display="Select">선택해 주세요.</option>
+						<option value="">공학 3관</option>
+						<option value="">공학 4관</option>
+						<option value="">공학 5관</option>
+						<option value="">공학 6관</option>
+					</select>
+				</div>
+			</div>
+			<ul class="showcase">
+		        <li>
+		            <div class="status"></div>
+		            <small>사용중</small>
+		        </li>
+		        <li>
+		            <div class="status occupied"></div>
+		            <small>사용가능</small>
+		        </li>
+		        <li>
+		            <div class="status selected"></div>
+		            <small>선택</small>
+		        </li>
+		    </ul>
+		    <div class="locker-container">
+		        <div class="line"></div>
+		
+		        <div class="locker-row">
+<!-- 		        	<input type="button" class="locker"> -->
+		            <div class="locker"><p>1</p></div>
+		            <div class="locker"><p>2</p></div>
+		            <div class="locker"><p>3</p></div>
+		            <div class="locker occupied"><p>4</p></div>
+		            <div class="locker occupied"><p>5</p></div>
+		            <div class="locker"><p>6</p></div>
+		            <div class="locker"><p>7</p></div>
+		            <div class="locker"><p>8</p></div>
+		        </div>
+		        <div class="locker-row">
+		            <div class="locker"><p>9</p></div>
+		            <div class="locker occupied"><p>10</p></div>
+		            <div class="locker occupied"><p>11</p></div>
+		            <div class="locker"><p>12</p></div>
+		            <div class="locker"><p>13</p></div>
+		            <div class="locker"><p>14</p></div>
+		            <div class="locker"><p>15</p></div>
+		            <div class="locker"><p>16</p></div>
+		        </div>
+		        <div class="locker-row">
+		            <div class="locker occupied"><p>17</p></div>
+		            <div class="locker"><p>18</p></div>
+		            <div class="locker"><p>19</p></div>
+		            <div class="locker"><p>20</p></div>
+		            <div class="locker"><p>21</p></div>
+		            <div class="locker"><p>22</p></div>
+		            <div class="locker occupied"><p>23</p></div>
+		            <div class="locker occupied"><p>24</p></div>
+		        </div>
+		        <div class="locker-row">
+		            <div class="locker"><p>25</p></div>
+		            <div class="locker"><p>26</p></div>
+		            <div class="locker"><p>27</p></div>
+		            <div class="locker occupied"><p>28</p></div>
+		            <div class="locker"><p>29</p></div>
+		            <div class="locker"><p>30</p></div>
+		            <div class="locker occupied"><p>31</p></div>
+		            <div class="locker"><p>32</p></div>
+		        </div>
+		        <div class="locker-row">
+		            <div class="locker"><p>33</p></div>
+		            <div class="locker"><p>34</p></div>
+		            <div class="locker"><p>35</p></div>
+		            <div class="locker"><p>36</p></div>
+		            <div class="locker"><p>37</p></div>
+		            <div class="locker occupied"><p>38</p></div>
+		            <div class="locker occupied"><p>39</p></div>
+		            <div class="locker occupied"><p>40</p></div>
+		        </div>
+		        <div class="locker-row">
+		            <div class="locker occupied"><p>43</p></div>
+		            <div class="locker"><p>44</p></div>
+		            <div class="locker occupied"><p>45</p></div>
+		            <div class="locker"><p>46</p></div>
+		            <div class="locker occupied"><p>47</p></div>
+		            <div class="locker"><p>48</p></div>
+		            <div class="locker"><p>49</p></div>
+		            <div class="locker"><p>50</p></div>
+		        </div>
+   		 	</div>
+		</div>
+	</div>
+</div>	
+	
+	<!-- 사물함 예약 폼 -->
+		<div class="col-xl-7">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title">사물함 예약</h4>
+				</div>
+				<div class="card-body">
+					<div class="basic-form">
+						<form>
+							<input type="hidden" name="lrNo">
+							<input type="hidden" name="hallCode">
+							<div class="row">
+								<div class="mb-3 col-md-5">
+									<label class="col-lg-4 col-form-label" for="validationCustom02">사용자 <span
+											class="text-danger">*</span></label>
+									<input type="text" class="form-control" placeholder="이름">
+								</div>
+								<div class="mb-3 col-md-5">
+									<label class="col-lg-4 col-form-label" for="validationCustom02">학번 <span
+											class="text-danger">*</span></label>
+									<input type="text" class="form-control" placeholder="학번" name="stuId">
+								</div>
+
+
+							</div>
+							<div class="row">
+								<div class="mb-3 col-md-5">
+									<label class="col-lg-4 col-form-label" for="validationCustom02">사용 시작일 <span
+											class="text-danger">*</span></label>
+									<input type="date" class="form-control" name="lrSdate">
+								</div>
+								<div class="mb-3 col-md-5">
+									<label class="col-lg-4 col-form-label" for="validationCustom02">사용 종료일 <span
+											class="text-danger">*</span></label>
+									<input type="date" class="form-control" name="lrEdate">
+								</div>
+							</div>
+							<div class="row">
+								<div class="mb-3 col-md-5">
+									<label class="col-lg-4 col-form-label" for="validationCustom02">신청일자 </label>
+									<input type="date" class="form-control" placeholder="" name="lrDate">
+								</div>
+							</div>
+
+							<div class="card-footer d-sm-flex justify-content-between align-items-center">
+								<div class="card-footer-link mb-4 mb-sm-0">
+									<p class="card-text d-inline">1번 사물함을 사용하시겠습니까?</p>
+								</div>
+
+								<button type="button" class="btn btn-primary" id="alertStart">신청하기</button>
+							</div>
+
+
+							<!--                                         <div class="mb-3 text-center"> -->
+							<!--                                             <div class="form-check"> -->
+							<!--                                                 <input class="form-check-input" type="checkbox"> -->
+							<!--                                                 <label class="form-check-label"> -->
+							<!--                                                     Check me out -->
+							<!--                                                 </label> -->
+							<!--                                             </div> -->
+							<!--                                         <button type="button" class="btn btn-primary" id="alertStart">신청하기</button> -->
+							<!--                                         </div> -->
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+</div>
+
+
+<script>
+	const container = document.querySelector('.locker-container');
+	const lockers = document.querySelectorAll('.locker-row.locker:not(.occupied)');
+	const lockerSelect = document.getElementById('#lock');
+
+	populateUI();
+
+	// locker 클릭 이벤트
+	container.addEventListener("click", e => {
+		if(
+			e.target.classList.contains('locker')&&
+			!e.target.classList.contains('occupied')
+		) {
+			e.target.classList.toggle('selected');
+
+		}
+	});
+
+</script>
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<script>
+	//         $().ready(function () {
+
+	$("#alertStart").click(function () {
+		Swal.fire({
+			icon: 'success',
+			title: '예약 성공!',
+			text: '사물함 예약이 완료되었습니다.',
+		});
+	});
+//         });
+</script>

@@ -1,0 +1,595 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<style>
+   #imgArea {
+      text-align: center;
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+   }
+       
+   #imgCol {
+      margin-top: 30px;
+      margin-right: 20px;
+   }
+</style>
+
+<c:if test="${sessionScope.userInfo.userType eq 'STU'}">
+	<c:set var="name" value="학적" />
+</c:if>
+<c:if test="${sessionScope.userInfo.userType eq 'PRO'}">
+	<c:set var="name" value="인적" />
+</c:if>
+<c:if test="${sessionScope.userInfo.userType eq 'EMP'}">
+	<c:set var="name" value="인적" />
+</c:if>
+      <!-- 페이지 타이틀 -->
+      <div class="page-titles">
+         <ol class="breadcrumb">
+            <li>
+               <h5 class="bc-title">${name }</h5>
+            </li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">
+                  <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path
+                        d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z"
+                        stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round" />
+                     <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                  </svg>
+                  ${name } </a>
+            </li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">기본사항</a></li>
+         </ol>
+      </div>
+      <div class="container-fluid">
+
+         <!-- /////////////////////////////////header////////////////////////////////////////////////////////////////////////////////////////-->
+
+       <!-- 학적 - 학생 -->
+      <c:if test="${sessionScope.userInfo.userType eq 'STU'}">
+         <div class="row">
+               <div class="col-md-3">
+                  <div class="card" style="height:30vh;">
+                     <div class="card-body">
+                        <div class="col m-0" id="imgCol">
+                           <div class="d-flex justify-content-center" id="imgDiv" style="margin-bottom: 20px;">
+                              <img id="imgArea" src="${pageContext.request.contextPath}/resources/images/profile.png"
+                                 alt="">
+                           </div>
+                           <input type="file" class="form-control" id="inputFile" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            
+            <div class="col-md-9">
+               <div class="card">
+                  <div class="card-body" style="padding-bottom:30px;">
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">국적</label>
+                           <input type="text" id="nation" value="${sessionScope.userInfo.studentVO.stuNation }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">성명</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.stuNameKo }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">영문 성명</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.stuNameEn }" class="form-control"
+                              readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학번</label>
+                           <input type="text" value="${sessionScope.userInfo.userId }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">단과대학</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.collName }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학과</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaMajor }"
+                              class="form-control" readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">부전공</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaMinor }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">복수전공</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaDmajor }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">연락처</label>
+                           <input type="text" id="phone" value="${sessionScope.userInfo.studentVO.stuPhone }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">현재학년</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaGrade }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">현재학기</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaSemester }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학적상태</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.academicVO.acaStatus }"
+                              class="form-control" readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">생년월일</label>
+                           <input type="text" value="${sessionScope.userInfo.studentVO.stuReg1 }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">이메일</label>
+                           <input type="text" id="email" value="${sessionScope.userInfo.studentVO.stuEmail }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">비밀번호</label>
+                           <button type="button" class="btn btn-outline-dark btn-xxs" style="float:right;margin-top:5px;" onclick="passwordChg()">비밀번호 변경</button>
+                           <input type="password" value="${sessionScope.userInfo.password }" name="password"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">우편번호</label>
+                           <button type="button" class="btn btn-outline-dark btn-xxs" style="float:right;margin-top:5px;" onclick="DaumPostcode()">우편번호 찾기</button>
+                           <input type="text" id="postcode" value="${sessionScope.userInfo.studentVO.stuPostcode }" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">주소</label>
+                           <input type="text" id="addr1" value="${sessionScope.userInfo.studentVO.stuAddr1 }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">상세주소</label>
+                           <input type="text" id="addr2" value="${sessionScope.userInfo.studentVO.stuAddr2 }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">은행명</label>
+                           <input type="text" id="bank" value="${sessionScope.userInfo.studentVO.stuBank }" class="form-control"/>
+                        </div>
+                        <div class="col-md-8">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">계좌번호</label>
+                           <input type="text" id="account" value="${sessionScope.userInfo.studentVO.stuAccount }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div style="padding-top:10px;">
+			             <button type="button"  id="chgBtn" class="btn btn btn-primary btn-s fs-6 ms-auto" style="float:right;">수정하기</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- row 끝 -->
+    </c:if>
+  <!-- 학생 인적사항 끝 !!!! -->
+
+	<!-- 교수 인적사항 -->
+       <c:if test="${sessionScope.userInfo.userType eq 'PRO'}">
+         <div class="row">
+               <div class="col-md-3">
+                  <div class="card" style="height:35vh;">
+                     <div class="card-body">
+                        <div class="col" id="imgCol">
+                           <div class="d-flex justify-content-center" id="imgDiv" style="margin-bottom: 20px;">
+                              <img id="imgArea" src="${pageContext.request.contextPath}/resources/images/profile.png"
+                                 alt="">
+                           </div>
+                           <input type="file" class="form-control" id="inputFile" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+           
+
+            <div class="col-md-9">
+               <div class="card">
+                  <div class="card-body" style="padding-bottom:30px;">
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">국적</label>
+                           <input type="text" id="nation" value="${sessionScope.userInfo.professorVO.proNation }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">성명</label>
+                           <input type="text" value="${sessionScope.userInfo.professorVO.proNameKo }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">영문 성명</label>
+                           <input type="text" value="${sessionScope.userInfo.professorVO.proNameEn }" class="form-control"
+                              readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학번</label>
+                           <input type="text" value="${sessionScope.userInfo.userId }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">단과대학</label>
+                           <input type="text" value="${sessionScope.userInfo.professorVO.collName }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학과</label>
+                           <input type="text" value="${sessionScope.userInfo.professorVO.proMajor }"
+                              class="form-control" readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">생년월일</label>
+                           <input type="text" value="${sessionScope.userInfo.professorVO.proReg1 }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">이메일</label>
+                           <input type="text" id="email" value="${sessionScope.userInfo.professorVO.proEmail }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">연락처</label>
+                           <input type="text" id="phone" value="${sessionScope.userInfo.professorVO.proPhone }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">우편번호</label>
+                           <button type="button" class="btn btn-outline-dark btn-xxs" style="float:right;margin-top:5px;" onclick="DaumPostcode()">우편번호 찾기</button>
+                           <input type="text" id="postcode" value="${sessionScope.userInfo.professorVO.proPostcode }" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">주소</label>
+                           <input type="text" id="addr1" value="${sessionScope.userInfo.professorVO.proAddr1 }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">상세주소</label>
+                           <input type="text" id="addr2" value="${sessionScope.userInfo.professorVO.proAddr2 }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">은행명</label>
+                           <input type="text" id="bank" value="${sessionScope.userInfo.professorVO.proBank }" class="form-control"/>
+                        </div>
+                        <div class="col-md-8">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">계좌번호</label>
+                           <input type="text" id="account" value="${sessionScope.userInfo.professorVO.proAccount }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div style="padding-top:10px;">
+			             <button type="button"  id="chgBtn" class="btn btn btn-primary btn-s fs-6 ms-auto" style="float:right;">수정하기</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </c:if>
+        <!-- 교수 인적사항 끝 --> 
+         
+         
+        <!-- 교직원 -->
+             <c:if test="${sessionScope.userInfo.userType eq 'EMP'}">
+         <div class="row">
+               <div class="col-md-3">
+                  <div class="card" style="height:35vh;">
+                     <div class="card-body">
+                        <div class="col" id="imgCol">
+                           <div class="d-flex justify-content-center" id="imgDiv" style="margin-bottom: 20px;">
+                              <img id="imgArea" src="${pageContext.request.contextPath}/resources/images/profile.png"
+                                 alt="">
+                           </div>
+                           <input type="file" class="form-control" id="inputFile" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+           
+
+            <div class="col-md-9">
+               <div class="card">
+                  <div class="card-body" style="padding-bottom:30px;">
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">국적</label>
+                           <input type="text" id="nation" value="${sessionScope.userInfo.employeeVO.empNation }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">성명</label>
+                           <input type="text" value="${sessionScope.userInfo.employeeVO.empNameKo }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-form-label">영문 성명</label>
+                           <input type="text" value="${sessionScope.userInfo.employeeVO.empNameEn }" class="form-control"
+                              readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학번</label>
+                           <input type="text" value="${sessionScope.userInfo.userId }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">단과대학</label>
+                           <input type="text" value="${sessionScope.userInfo.employeeVO.collName }"
+                              class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">학과</label>
+                           <input type="text" value="${sessionScope.userInfo.employeeVO.deptName }"
+                              class="form-control" readonly />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">생년월일</label>
+                           <input type="text" value="${sessionScope.userInfo.employeeVO.empReg1 }" class="form-control"
+                              readonly />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">이메일</label>
+                           <input type="text" id="email" value="${sessionScope.userInfo.employeeVO.empEmail }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">연락처</label>
+                           <input type="text" id="phone" value="${sessionScope.userInfo.employeeVO.empPhone }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">우편번호</label>
+                           <button type="button" class="btn btn-outline-dark btn-xxs" style="float:right;margin-top:5px;" onclick="DaumPostcode()">우편번호 찾기</button>
+                           <input type="text" id="postcode" value="${sessionScope.userInfo.employeeVO.empPostcode }" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">주소</label>
+                           <input type="text" id="addr1" value="${sessionScope.userInfo.employeeVO.empAddr1 }"
+                              class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">상세주소</label>
+                           <input type="text" id="addr2" value="${sessionScope.userInfo.employeeVO.empAddr2 }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                     <div class="row" style="padding-bottom:15px;">
+                        <div class="col-md-4">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">은행명</label>
+                           <input type="text" id="bank" value="${sessionScope.userInfo.employeeVO.empBank }" class="form-control"/>
+                        </div>
+                        <div class="col-md-8">
+                           <label class="col-lg-4 col-col-lg-4 col-form-label">계좌번호</label>
+                           <input type="text" id="account" value="${sessionScope.userInfo.employeeVO.empAccount }"
+                              class="form-control" />
+                        </div>
+                     </div>
+                   	<div style="padding-top:10px;">
+			             <button type="button"  id="chgBtn" class="btn btn btn-primary btn-s fs-6 ms-auto" style="float:right;">수정하기</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </c:if>
+        <!--  교직원  -->
+         
+         
+      </div><!-- container fluid 끝 -->
+      
+<!--       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+<!--       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> -->
+      <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+      <script>
+         $(function () {
+            $("#chgBtn").click(function () {
+
+               var obj = {
+                  "userId": '${userInfo.userId}',
+                  "userType": '${userInfo.userType}',
+                  "phone": $('#phone').val(),
+                  "email": $('#email').val(),
+                  "postcode": $('#postcode').val(),
+                  "addr1": $('#addr1').val(),
+                  "addr2": $('#addr2').val(),
+                  "bank": $('#bank').val(),
+                  "account": $('#account').val()
+               }
+               console.log("stuObj >>>> ", obj);
+               $.ajax({
+                  type: "post",
+                  url: "/user/update",
+                  dataType: "text",
+                  data: obj,
+                  success: function (res) {
+                     console.log("res >>> ", res);
+//                      swal("변경되었습니다");
+					Swal.fire(
+				      '수정 완료',
+				      '개인정보가 수정되었습니다!',
+				      'success'
+					)
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+//                      swal("ERROR : " + textStatus + " : " + errorThrown);
+					Swal.fire({
+				      title: '에러 발생',
+				      html: textStatus + " : " + errorThrown,
+				      icon: 'error'
+					})
+                  }
+               });
+
+            });
+         });
+
+         var inputFile = $("#inputFile");
+
+         inputFile.on("change", function (event) {
+            var files = event.target.files;
+            var file = files[0];
+            var str = "";
+
+            var formData = new FormData();
+            // key : value 형태로 값이 추가된다.
+            formData.append("file", file);
+
+
+            $.ajax({
+               type: "post",
+               url: "/user/uploadAjax",
+               data: formData,
+               dataType: "text",
+               processData: false,
+               contentType: false,
+               success: function (data) {
+//                   swal("변경되었습니다");
+				Swal.fire(
+				      '수정 완료',
+				      '프로필이 변경되었습니다!',
+				      'success'
+				)
+                  if (checkImageType(data)) { // 이미지이면 이미지 태그를 이용한 출력형태
+                     str += "<img id ='imaArea' style='width:200px; height:200px; object-fit:contain;' src = '/user/displayFile?fileName=" + data + "'/>";
+                  }
+                  $("#imgArea").replaceWith(str);
+                  if (!checkImageType(data)) {
+//                      swal("이미지 파일만 업로드 가능합니다.", "warning");
+                     Swal.fire(
+					      '업로드 오류',
+					      '이미지 파일만 업로드가 가능합니다.',
+					      'warning'
+					)
+                     return;
+                  }
+               }
+            });
+         });
+
+         function getOriginalName(fileName) {
+            if (checkImageType(fileName)) {
+               return;
+            }
+            var idx = fileName.indexOf("_") + 1;
+            return fileName.substr(idx);
+         }
+
+
+         function checkImageType(fileName) {
+            var pattern = /jpg|gif|png|jpeg/i;
+            return fileName.match(pattern); // 패턴과 일치하면 true (너 이미지 맞구나?)
+         }
+
+
+         function DaumPostcode() {
+            new daum.Postcode({
+               oncomplete: function (data) {
+                  // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                  // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                  // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                  var addr = ''; // 주소 변수
+                  var extraAddr = ''; // 참고항목 변수
+
+                  //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                  if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                     addr = data.roadAddress;
+                  } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                     addr = data.jibunAddress;
+                  }
+
+                  // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                  if (data.userSelectedType === 'R') {
+                     // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                     // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                     if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                        extraAddr += data.bname;
+                     }
+                     // 건물명이 있고, 공동주택일 경우 추가한다.
+                     if (data.buildingName !== '' && data.apartment === 'Y') {
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                     }
+                     // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                     if (extraAddr !== '') {
+                        extraAddr = ' (' + extraAddr + ')';
+                     }
+                  }
+
+                  // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                  document.getElementById('postcode').value = data.zonecode;
+                  document.getElementById("addr1").value = addr;
+                  // 커서를 상세주소 필드로 이동한다.
+                  document.getElementById("addr2").focus();
+               }
+            }).open();
+         }
+         var userId = '${userInfo.userId}'
+         var userType = '${userInfo.userType}';
+         //stuId를 가지고 프로필 이미지 경로를 가져오는 함수!!
+         function fetchProfileImage(stuId) {
+            return $.ajax({
+               type: "post",
+               url: "/chat/chatMemProfile",
+               dataType: "json",
+               data: { userId: userId, userType: userType }
+            }).then(function (profileRes) {
+               if (profileRes.profile != null) {
+                  let imgSrc = `${pageContext.request.contextPath}/resources/images/profile\${profileRes.profile.profilePath}\${profileRes.profile.profileName}`;
+                  return imgSrc;
+               } else {
+                  return null;
+               }
+            });
+         }
+         fetchProfileImage(userId).then(function (imgSrc) {
+            let str = "";
+            if (imgSrc != null) {
+               $("#imgDiv").html(`<img id="imgArea" src="\${imgSrc}" alt="" >`);
+            }
+
+            
+         });
+         
+         function passwordChg(){
+        	 console.log("비밀번호변경버튼");
+        	 console.log($("input[name=password]").val());
+         }
+      </script>

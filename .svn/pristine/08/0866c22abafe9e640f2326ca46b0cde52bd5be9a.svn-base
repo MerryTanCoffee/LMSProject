@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ConsultMapper">
+	
+	<resultMap type="java.util.Map" id="proTimeMap">
+		<result property="startTime" column="lrs_start"/>
+		<result property="endTime" column="lrs_end"/>
+		<result property="weekCode" column="week_code"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="proConsTimeMap">
+		<result property="consDate" column="cons_date"/>
+		<result property="startTime" column="cons_start"/>
+		<result property="endTime" column="cons_end"/>
+		<result property="weekCode" column="cons_week"/>
+	</resultMap>
+	
+	<select id="getProInfoList" resultType="professorVO">
+		select
+		     PRO_ID, PRO_NAME_KO, PRO_MAJOR, PRO_LAB_TEL, PRO_LAB_NUM
+		from professor
+		where dept_code = #{deptCode}
+	</select>
+
+	<select id="registerList" resultType="consultVO">
+		select
+			con.cons_num, pro.pro_name_ko, con.cons_date, con.cons_start, con.cons_end, con.cons_req_rsn, 
+			con.cons_status, con.cons_obj_rsn, con.cons_interview, con.cons_week
+		from consult con, professor pro
+		where pro.pro_id = con.pro_id
+		and con.stu_id = #{stuId}
+		order by con.cons_date desc, con.cons_start desc
+	</select>
+	
+	<delete id="cancelConsult" parameterType="int">
+		delete from consult
+		where cons_num = #{consNum}
+	</delete>
+	
+	<select id="getProTimeTbl" resultMap="proTimeMap">
+		select 
+		    lrs.lrs_start, lrs.lrs_end, lrs.week_code
+		from lecture l, professor p, lecture_room_schedule lrs
+		where p.pro_id = l.pro_id
+		and l.lec_code = lrs.lec_code
+		and l.lec_open_year = 2023
+		and l.lec_open_semester = 1
+		and p.pro_id = #{proId}
+	</select>
+	
+	<select id="getProConsTimeTbl" resultMap="proConsTimeMap">
+		select
+		    to_char(cons_date, 'MM/DD') as cons_date, cons_start, cons_end, cons_week
+		from professor p, consult c
+		where p.pro_id = c.pro_id
+		and p.pro_id = #{proId}
+	</select>
+	
+	<insert id="consultInsert" parameterType="map">
+		insert into consult
+    		(cons_num, pro_id, stu_id, cons_date, cons_start, cons_end, cons_req_rsn, cons_interview, cons_week)
+		values
+    		(seq_consult.nextval, #{proId}, #{stuId}, #{consDate}, #{consStart}, #{consEnd}, #{consReqRsn} ,#{consInterview}, #{consWeek})
+	</insert>
+	
+	<select id="consultAppListW" resultType="consultVO">
+		select
+			 con.cons_num, con.stu_id, stu.stu_name_ko, con.cons_date, con.cons_start, con.cons_end, con.cons_req_rsn,
+			 con.cons_status, con.cons_obj_rsn, con.cons_interview, con.cons_week
+		from consult con, student stu
+		where stu.stu_id = con.stu_id
+		and con.cons_status = 'W' 
+		and con.pro_id = #{proId}
+		order by con.cons_date desc, con.cons_start desc
+	</select>
+	
+	<select id="consultAppListY" resultType="consultVO">
+		select
+			 con.cons_num, con.stu_id, stu.stu_name_ko, con.cons_date, con.cons_start, con.cons_end, con.cons_req_rsn,
+			 con.cons_status, con.cons_obj_rsn, con.cons_interview, con.cons_week
+		from consult con, student stu
+		where stu.stu_id = con.stu_id
+		and con.cons_status = 'Y'
+		and con.pro_id = #{proId}
+		order by con.cons_date desc, con.cons_start desc
+	</select>
+	
+	<select id="consultAppListN" resultType="consultVO">
+		select
+			 con.cons_num, con.stu_id, stu.stu_name_ko, con.cons_date, con.cons_start, con.cons_end, con.cons_req_rsn,
+			 con.cons_status, con.cons_obj_rsn, con.cons_interview, con.cons_week
+		from consult con, student stu
+		where stu.stu_id = con.stu_id
+		and con.cons_status = 'N'
+		and con.pro_id = #{proId}
+		order by con.cons_date desc, con.cons_start desc
+	</select>
+	
+	<update id="updateStatus" parameterType="consultVO">
+		update consult
+		set cons_status = #{consStatus},
+		    cons_obj_rsn = #{consObjRsn}
+		where cons_status = 'W' 
+		and stu_id = #{stuId}
+		and cons_num = #{consNum}
+	</update>
+	
+	
+</mapper>

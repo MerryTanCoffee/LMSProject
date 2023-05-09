@@ -1,0 +1,20 @@
+package kr.or.ddit.sms.service.impl;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+import kr.or.ddit.mapper.CoolSmsMapper;
+import kr.or.ddit.sms.service.ICoolSmsService;
+import kr.or.ddit.sms.vo.CoolSmsVO;
+
+@Service
+public class CoolSmsServiceImpl implements ICoolSmsService {
+
+	@Inject
+	CoolSmsMapper mapper;
+	
+	@Override
+	public void insert(CoolSmsVO coolsms) throws Exception {
+		mapper.insert(coolsms);
+	}
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ObjectionMapper">
+	<select id="objectionList" resultType="objectionVO">
+		select 
+		    o.obj_no, o.lec_code, o.stu_id, o.obj_reason, o.obj_date, o.obj_content, o.obj_status, o.obj_pre_credit, o.obj_re_credit,
+		    s.sub_name,
+		    p.pro_name_ko
+		from
+		    objection o, subject s, lecture l, professor p
+		where o.lec_code = l.lec_code
+		    and l.sub_code = s.sub_code
+		    and p.pro_id = l.pro_id 
+		    and o.stu_id = #{stuId}
+	</select>
+	
+	
+	<insert id="objectionInsert" parameterType="objectionVO" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="objNo" resultType="int">
+			select seq_objection.nextval from dual
+		</selectKey>
+		insert into objection(
+			obj_no, lec_code, stu_id, obj_reason, obj_date
+			<if test="objContent!=null and objContent!=''">
+			, obj_content
+			</if>
+			<if test="objStatus!=null and objStatus!=''">
+			, obj_status
+			</if>
+			<if test="objPreCredit!=null and objPreCredit!=''">
+			, obj_pre_credit
+			</if>
+			<if test="objReCredit!=null and objReCredit!=''">
+			, obj_re_credit
+			</if>
+		)values(
+			#{objNo}, #{lecCode}, #{stuId}, #{objReason}, sysdate
+			<if test="objContent!=null and objContent!=''">
+			, #{objContent}
+			</if>
+			<if test="objStatus!=null and objStatus!=''">
+			, #{objStatus}
+			</if>
+			<if test="objPreCredit!=null and objPreCredit!=''">
+			, #{objPreCredit}
+			</if>
+			<if test="objReCredit!=null and objReCredit!=''">
+			, #{objReCredit}
+			</if>
+		)
+	</insert>
+<!-- 	
+	<update id="objectionUpdate" parameterType="objectionVO">
+		update objection
+		set
+			atd_score = #{atdScore},
+			mdt_score = #{mdtScore},
+			fnl_score = #{fnlScore},
+			asg_score = #{asgScore},
+			ove_score = #{oveScore}
+		where
+			stu_id = #{stuId}
+	</update>
+	
+	<delete id="objectionDelete">
+		delete from objection
+		where stu_id = #{stuId}
+	</delete> 
+	-->
+	
+</mapper>

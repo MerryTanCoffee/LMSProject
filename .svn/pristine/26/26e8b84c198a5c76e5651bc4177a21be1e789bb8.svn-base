@@ -1,0 +1,75 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.academic.vo.AcademicVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.DepartmentVO;
+import kr.or.ddit.common.vo.PaginationInfoVO;
+import kr.or.ddit.user.vo.EmployeeVO;
+import kr.or.ddit.user.vo.ProfessorVO;
+import kr.or.ddit.user.vo.StudentVO;
+import kr.or.ddit.user.vo.UserVO;
+
+public interface UserMapper {
+
+	public UserVO userCheck(UserVO userVO);
+
+	public UserVO getStudent(UserVO userVO);
+
+	public UserVO getProfessor(UserVO userVO);
+
+	public UserVO getEmployee(UserVO userVO);
+
+	public String getId(Map<String, Object> findMap);
+
+	public int userCheck2(Map<String, Object> findMap);
+
+	public void saveImsiPw(Map<String, Object> findMap);
+
+	public int updateUser(Map<String, Object> userMap);
+
+	public int insertUserType(Map<String, Object> param);
+
+	public int insertUser(Map<String, Object> userMap);
+
+	public void insertAca(Map<String, Object> userMap);
+
+	public List<UserVO> selectAllUsers();
+
+	public List<StudentVO> selectAllStudents();
+
+	public List<ProfessorVO> selectAllProfessors();
+
+	public List<EmployeeVO> selectAllEmployees();
+
+	public List<AcademicVO> selectStuAcademics();
+
+	public List<DepartmentVO> selectAllDeparts(String collCode);
+
+	public int selectStuListCount(PaginationInfoVO<StudentVO> pagingVO);
+
+	public List<StudentVO> selectStuSearch(Map<String, Object> dataMap);
+
+	public int selectProListCount(PaginationInfoVO<ProfessorVO> pagingVO);
+
+	public List<ProfessorVO> selectProSearch(Map<String, Object> dataMap);
+
+	public int selectEmpListCount(PaginationInfoVO<EmployeeVO> pagingVO);
+
+	public List<EmployeeVO> selectEmpSearch(Map<String, Object> dataMap);
+
+	public StudentVO selectStudent(String stuId);
+
+	public ProfessorVO selectProfessor(String proId);
+
+	public EmployeeVO selectEmployee(String empId);
+
+	public List<Map<String, Object>> getLectureList(String proId);
+
+	public int updPassword(UserVO userVO);
+
+
+	
+}

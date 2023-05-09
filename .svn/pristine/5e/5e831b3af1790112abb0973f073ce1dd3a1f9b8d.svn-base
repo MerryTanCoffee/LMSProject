@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CourseMapper">
+	
+	<select id="openList" resultType="courseOpenVO">
+		select
+		    s.sub_code, sub_name, sub_credit,
+		    lec_divide, lec_grade, lec_quota,
+		    pro_name_ko,
+		    d.dept_code, dept_name,
+		    sub_applicant,
+		    lrs_start, lrs_end, week_code
+		from subject s, lecture l, professor p, department d, subject_open so, lecture_room_schedule lrs
+		where s.sub_code = l.sub_code
+		and s.dept_code = d.dept_code
+		and l.pro_id = p.pro_id
+		and l.lec_code = so.lec_code
+		and l.lec_code = lrs.lec_code
+	</select>
+	
+	<select id="deptInfoList" resultType="departmentVO">
+		select
+		    *
+		from department
+		where not dept_code in 'UNIV'
+	</select>
+
+</mapper>

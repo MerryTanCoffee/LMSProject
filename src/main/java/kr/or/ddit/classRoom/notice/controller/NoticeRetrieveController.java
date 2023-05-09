@@ -1,0 +1,80 @@
+package kr.or.ddit.classRoom.notice.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.board.vo.BoardVO;
+import kr.or.ddit.classRoom.notice.service.INoticeService;
+import kr.or.ddit.classRoom.notice.vo.NoticeVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.user.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/lecNotice")
+public class NoticeRetrieveController {
+	
+	@Inject
+	private INoticeService service;
+
+	@GetMapping("list/{lecCode}")
+	public String noticeList(@PathVariable String lecCode, HttpSession session, Model model) {
+		NoticeVO noticeVO = new NoticeVO();
+		noticeVO.setLecCode(lecCode);
+		String subName  = service.selectSubName(lecCode);
+		List<NoticeVO> noticeList = service.selectNoticeList(lecCode);
+		model.addAttribute("subName", subName);
+		model.addAttribute("noticeList", noticeList);
+		model.addAttribute("lecCode", lecCode);
+		log.info("강의코드 : " + lecCode);
+		return "lecNotice/list";
+	}
+	
+	@GetMapping("/detail/{lecNoticeNo}")
+	public String noticeDetail(@PathVariable int lecNoticeNo,Model model) {
+		NoticeVO notice = service.selectNotice(lecNoticeNo);
+		model.addAttribute("notice", notice);
+		return "lecNotice/detail";
+	}
+	
+ 
+	@GetMapping("/form/{lecCode}")
+	public String boardForm(@PathVariable String lecCode, Model model) {
+		String subName  = service.selectSubName(lecCode);
+		model.addAttribute("subName", subName);
+		model.addAttribute("lecCode", lecCode);
+		return "lecNotice/form";
+	}
+	
+	@PostMapping("/insert/{lecCode}")
+	public String insertForm(@PathVariable String lecCode,HttpServletRequest req, NoticeVO noticeVO, Model model) {
+		String goPage="";
+		HttpSession session = req.getSession();
+		UserVO userVO = (UserVO) session.getAttribute("userInfo");
+		String userId = userVO.getUserId();
+		noticeVO.setLecCode(lecCode);
+		noticeVO.setUserId(userId);
+		model.addAttribute("noticeVO", noticeVO);
+		ServiceResult result = service.insertNotice(req,noticeVO);
+		if(result.equals(ServiceResult.OK)) {
+			if(userVO.getUserId().equals(userVO.getProfessorVO().getProId())) {
+				goPage = "redirect:/lecNotice/list/{lecCode}";
+			} 
+		}else {
+			goPage = "lecNotice/form/{lecCode}";
+		}
+		return goPage;
+		
+	}
+}

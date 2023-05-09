@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.NoticeMapper">
+
+	<select id="selectNoticeCount" parameterType="noticeVO"
+		resultType="int">
+		select count(lec_notice_no)
+		from lecture_notice
+		where 1=1
+		and lec_code = #{lecCode}
+	</select>
+
+	<select id="selectNoticeList" parameterType="String"
+		resultType="noticeVO">
+		select
+			b.*
+		from(select
+			a.*, row_number() over (order by a.lec_notice_no desc)rnum
+			from(
+				SELECT n.lec_notice_no, n.ln_title, n.ln_content, n.user_id,
+                       TO_CHAR(n.ln_reg_date, 'yyyy-mm-dd') AS ln_reg_date, n.ln_hit,
+                       n.lec_code, p.pro_name_ko
+                FROM lecture_notice n
+                LEFT OUTER JOIN users u ON n.user_id = u.user_id
+                LEFT OUTER JOIN professor p ON n.user_id = p.pro_id
+                WHERE n.lec_code = #{lecCode}
+				order by lec_notice_no desc
+				)a
+			)b
+	</select>
+
+	<update id="incrementHit" parameterType="int">
+		update lecture_notice
+		set
+			ln_hit = ln_hit+1
+		where lec_notice_no =#{lec_notice_no}
+	</update>
+
+	<select id="selectNotice" parameterType="int" resultType="noticeVO">
+      SELECT
+		  ln.lec_notice_no, ln.ln_title, ln.ln_content, ln.user_id, p.pro_name_ko,
+		  to_char(ln.ln_reg_date, 'yyyy-mm-dd') ln_reg_date, ln.ln_hit, ln.lec_code, l.sub_code, s.sub_name
+	  FROM
+		  lecture_notice ln
+		  LEFT OUTER JOIN lecture l ON l.lec_code = ln.lec_code
+		  LEFT OUTER JOIN subject s ON s.sub_code = l.sub_code
+		  left outer join professor p on p.pro_id = ln.user_id
+	  WHERE
+		  ln.lec_notice_no = #{lecNoticeNo}
+	</select>
+
+
+	<select id="selectSubName" parameterType="String" resultType="String">
+	 select 
+			s.sub_name
+		from lecture l, subject s
+		where l.sub_code = s.sub_code
+		and l.lec_code = #{lecCode}
+	</select>
+	
+	<insert id="insertNotice" parameterType="noticeVO">
+	insert into 
+	lecture_notice(
+		lec_notice_no, lec_code, ln_title, ln_content, ln_reg_date, user_id)
+	values(
+		seq_lec_notice.nextval , #{lecCode}, #{lnTitle}, #{lnContent}, sysdate, #{userId})
+	</insert>
+</mapper>

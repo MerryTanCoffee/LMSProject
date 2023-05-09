@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.study.vo.StudyVO;
+
+public interface StudyMapper {
+
+	public List<StudyVO> selectMyStudy(String userId);
+
+	public StudyVO selectOneStudy(String studyCode);
+
+	
+}

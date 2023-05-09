@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.NoticeMapper">
+
+	<select id="selectNoticeCount" parameterType="noticeVO"
+		resultType="int">
+		select count(lec_notice_no)
+		from lecture_notice
+		where 1=1
+		and lec_code = #{lecCode}
+	</select>
+
+	<select id="selectNoticeList" parameterType="noticeVO"
+		resultType="noticeVO">
+		select
+			b.*
+		from(select
+			a.*, row_number() over (order by a.lec_notice_no desc)rnum
+			from(
+				SELECT n.lec_notice_no, n.ln_title, n.ln_content, n.user_id,
+                       TO_CHAR(n.ln_reg_date, 'yyyy-mm-dd') AS ln_reg_date, n.ln_hit,
+                       n.lec_code,
+                       e.emp_name_ko
+                FROM board_notice n
+                LEFT OUTER JOIN users u ON n.user_id = u.user_id
+                LEFT OUTER JOIN employee e ON n.user_id = e.emp_id
+                WHERE n.lec_code = #{lec_code}
+				order by lec_notice_no desc
+				)a
+			)b
+		<![CDATA[
+		where b.rnum >=#{startRow} and b.rnum <= 100
+		]]>
+	</select>
+
+	<update id="incrementHit" parameterType="int">
+		update lecture_notice
+		set
+			ln_hit = ln_hit+1
+		where lec_notice_no =#{lec_notice_no}
+	</update>
+
+	<select id="selectNotice" parameterType="int" resultType="noticeVO">
+		SELECT
+			lec_notice_no, ln_title, ln_content, user_id,
+			to_char(ln_reg_date,'yyyy-mm-dd') ln_reg_date, ln_hit, lec_code
+		FROM
+			lecture_notice 
+		WHERE
+			lec_notice_no = #{lecNoticeNo}
+	</select>
+
+</mapper>

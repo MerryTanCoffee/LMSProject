@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ReferenceMapper">
+	<insert id="insertReference" parameterType="referenceVO"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="lrNo" order="BEFORE"
+			resultType="int">
+			select SEQ_LECTURE_REFERENCE.nextval
+			from dual
+		</selectKey>
+		insert into LECTURE_REFERENCE (
+			LR_NO, LEC_CODE, LR_FILE_NAME, LR_FILE_PATH, LR_TITLE, LR_FILE_TYPE
+			)values(
+			#{lrNo}, #{lecCode}, #{lrFileName}, #{lrFilePath}, #{lrTitle}, #{lrFileType}
+			)	
+	</insert>
+</mapper>

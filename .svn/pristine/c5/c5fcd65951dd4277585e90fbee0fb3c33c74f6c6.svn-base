@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.BoardMapper">
+	<sql id="boardSearch">
+		<if test="searchType!=null and searchType == 'title'">
+			and(bo_title like '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType!=null and searchType == 'writer'">
+			and(user_id like '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+
+	<resultMap type="boardVO" id="boardMap">
+		<id property="boNo" column="bo_no" />
+		<result property="boNo" column="bo_no" />
+		<result property="studyCode" column="study_code" />
+		<result property="ssStatus" column="ss_status" />
+		<result property="boTitle" column="bo_title" />
+		<result property="boContent" column="bo_content" />
+		<result property="userId" column="user_id" />
+		<result property="boWriteDate" column="bo_write_date" />
+		<result property="boHit" column="bo_hit" />
+		<result property="cateCode" column="cate_code" />
+		<collection property="boardAttachList"
+			resultMap="boardAttachMap" />
+	</resultMap>
+	<resultMap type="boardAttachVO" id="boardAttachMap">
+		<id property="baNo" column="ba_no" />
+		<result property="boNo" column="bo_no" />
+		<result property="baNo" column="ba_no" />
+		<result property="baOrigin" column="ba_origin" />
+		<result property="baSave" column="ba_save" />
+		<result property="baSize" column="ba_size" />
+		<result property="baFancySize" column="ba_fancysize" />
+		<result property="baMime" column="ba_mime" />
+		<result property="baSavePath" column="ba_savepath" />
+		<result property="baDowncount" column="ba_downcount" />
+	</resultMap>
+	<insert id="insertBoard" parameterType="boardVO"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="boNo" order="BEFORE"
+			resultType="int">
+			select seq_board.nextval
+			from dual
+		</selectKey>
+		insert into board(
+		cate_code, bo_no, bo_title, bo_content,
+		bo_write_date ,user_Id ,bo_hit
+		)values(
+		#{cateCode}, #{boNo},
+		#{boTitle}, #{boContent}, sysdate, #{userId} , 0 )
+	</insert>
+	<insert id="insertBoardAttach" parameterType="boardAttachVO">
+		insert into
+		board_attach(ba_no, bo_no, ba_origin,
+		ba_size, ba_fancysize,
+		ba_mime,
+		ba_savepath, ba_downcount , ba_save
+		)values(
+		seq_boardAttach.nextval,#{boNo}, #{baOrigin}, #{baSize},
+		#{baFancySize},
+		#{baMime}, #{baSavePath}, 0, #{baSave} )
+	</insert>
+
+	<select id="selectBoardCount" parameterType="pagingVO"
+		resultType="int">
+		select count(bo_no)
+		from board
+		where 1=1
+		and cate_code = #{cateCode}
+		<include refid="boardSearch" />
+	</select>
+
+	<select id="selectStudyList" parameterType="pagingVO" resultType="boardVO">
+		select
+		b.*
+		from(select
+			a.*, row_number() over (order by a.bo_no desc)rnum
+			from(
+				SELECT b.bo_no, b.bo_title, b.bo_content, b.user_id, 
+				       TO_CHAR(b.bo_write_date,'yyyy-mm-dd') bo_write_date, b.bo_hit, b.cate_code, 
+				       s.stu_name_ko, bs.ss_status
+				FROM board b 
+				LEFT OUTER JOIN users u ON b.user_id = u.user_id 
+				LEFT OUTER JOIN student s ON b.user_id = s.stu_id
+				LEFT OUTER JOIN study_status bs ON b.bo_no = bs.bo_no
+				WHERE b.cate_code = #{cateCode}
+
+				<include refid="boardSearch" />
+				order by bo_no desc
+			)a
+		)b
+		<![CDATA[
+		where b.rnum >=#{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	
+	<select id="selectBoardList" parameterType="pagingVO" resultType="boardVO">
+		select
+		b.*
+		from(select
+			a.*, row_number() over (order by a.bo_no desc)rnum
+			from(
+				SELECT b.bo_no, b.bo_title, b.bo_content, b.user_id, 
+				       TO_CHAR(b.bo_write_date,'yyyy-mm-dd') bo_write_date, b.bo_hit, b.cate_code, 
+				       s.stu_name_ko, bs.ss_status
+				FROM board b 
+				LEFT OUTER JOIN users u ON b.user_id = u.user_id 
+				LEFT OUTER JOIN student s ON b.user_id = s.stu_id
+				LEFT OUTER JOIN study_status bs ON b.bo_no = bs.bo_no
+				WHERE b.cate_code = #{cateCode}
+
+				<include refid="boardSearch" />
+				order by bo_no desc
+			)a
+		)b
+		<![CDATA[
+		where b.rnum >=#{startRow} and b.rnum <= 100
+		]]>
+	</select>
+
+	<update id="incrementHit" parameterType="int">
+		update board
+		set
+		bo_hit =
+		bo_hit+1
+		where bo_no =#{boNo}
+	</update>
+
+	<select id="selectBoard" parameterType="int"
+		resultMap="boardMap">
+		SELECT 
+			b.bo_no, bo_title, bo_content, user_id,
+		    to_char(bo_write_date,'yyyy-mm-dd') bo_write_date, bo_hit,
+		    ba_no, ba_save, ba_size,
+		    ba_fancysize, ba_mime, ba_savepath,
+		    ba_downcount, ba_origin, cate_code,
+		    bs.ss_status, bs.study_code
+		FROM 
+			board b
+		    LEFT OUTER JOIN board_attach ba ON b.bo_no = ba.bo_no
+		    LEFT OUTER JOIN STUDY_status bs ON b.bo_no = bs.bo_no
+		WHERE 
+			b.bo_no = #{boNo}
+	</select>
+	
+	<select id="boardDownload" parameterType="int"
+		resultType="boardAttachVO">
+		select
+		ba_no, bo_no, ba_origin, ba_size, ba_fancysize , ba_mime, ba_savepath,
+		ba_downcount
+		from board_Attach
+		where ba_no = #{baNo}
+	</select>
+
+	<update id="incrementBoardDowncount" parameterType="int">
+		update
+		board_Attach
+		set
+		ba_downcount = ba_downcount +1;
+		where ba_no = #{baNo}
+	</update>
+	
+	<insert id="insertStudy" parameterType="boardVO">
+		insert into study( 
+				study_code, study_title, study_date 
+				)values( #{studyCode},#{boTitle}, sysdate)
+	</insert>
+	
+	<insert id="insertStudyMember" parameterType="boardVO">
+		insert into study_member( 
+				study_code, STU_ID, SM_LEADER ,study_status
+		)values(
+				#{studyCode}, #{userId}, 'Y' , 'Y')
+	</insert>
+
+	<insert id="insertStudyStatus" parameterType="boardVO">
+		insert into study_status(
+			bo_no, ss_status , study_code
+		)values(
+			#{boNo},'N',#{studyCode})
+	</insert>
+
+	<select id="iStudyMem" parameterType="map" resultType="int">
+	    select count(*)
+	    from msg
+	    where msg_sender = #{userId}
+	    and msg_content like '%'||#{boTitle}||'%'
+	    and msg_receiver = #{boWriter}
+	</select>
+
+
+	<select id="getBoardList" resultType="boardVO">
+		select bo_no, bo_title, bo_content, bo_write_date, cate_code
+		from board
+		order by bo_write_date desc
+	</select>	
+</mapper>

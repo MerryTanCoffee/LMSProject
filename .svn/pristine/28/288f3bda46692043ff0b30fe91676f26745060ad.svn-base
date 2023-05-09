@@ -1,0 +1,64 @@
+package kr.or.ddit.classRoom.attendance.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.classRoom.attendance.service.IAtdInsertService;
+import kr.or.ddit.classRoom.attendance.vo.AtdVO;
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.AttendanceMapper;
+
+@Service
+public class AtdInsertServiceImpl implements IAtdInsertService {
+
+	@Inject
+	private AttendanceMapper mapper;
+	
+	@Override
+	public List<AtdVO> selectAtdList(String letCode) {
+		return mapper.selectAtdList(letCode);
+	}
+
+	@Override
+	public ServiceResult updateAtd(Map<String, Object> param) {
+
+			int cnt = 0;
+			Map<String, Object> atdMap = new HashMap<String, Object>();
+			atdMap.put("lecCode",(String) param.get("lecCode"));
+			atdMap.put("stuId",(String) param.get("stuId"));
+			atdMap.put("atdTotal",(String) param.get("atdTotal"));
+			atdMap.put("week1",(String) param.get("week1"));
+			atdMap.put("week2",(String) param.get("week2"));
+			atdMap.put("week3",(String) param.get("week3"));
+			atdMap.put("week4",(String) param.get("week4"));
+			atdMap.put("week5",(String) param.get("week5"));
+			atdMap.put("week6",(String) param.get("week6"));
+			atdMap.put("week7",(String) param.get("week7"));
+			atdMap.put("week8",(String) param.get("week8"));
+			atdMap.put("week9",(String) param.get("week9"));
+			atdMap.put("week10",(String) param.get("week10"));
+			atdMap.put("week11",(String) param.get("week11"));
+			atdMap.put("week12",(String) param.get("week12"));
+			atdMap.put("week13",(String) param.get("week13"));
+			atdMap.put("week14",(String) param.get("week14"));
+			atdMap.put("week15",(String) param.get("week15"));
+			atdMap.put("week16",(String) param.get("week16"));
+			
+				cnt = mapper.updateAtd(atdMap);
+			
+				ServiceResult result = null;
+				
+				if(cnt > 0) {
+					result = ServiceResult.OK;
+				} else {
+					result = ServiceResult.FAILED;
+				}
+				return result;
+	}
+
+}

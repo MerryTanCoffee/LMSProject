@@ -1,0 +1,132 @@
+package kr.or.ddit.course.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.common.vo.CurrentInfoVO;
+import kr.or.ddit.common.vo.DepartmentVO;
+import kr.or.ddit.common.vo.SummaryCourseInfoVO;
+import kr.or.ddit.course.service.ICourseService;
+import kr.or.ddit.course.vo.CourseOpenVO;
+import kr.or.ddit.course.vo.CourseVO;
+import kr.or.ddit.mapper.CourseMapper;
+
+@Service
+public class CourseServiceImpl implements ICourseService {
+
+	@Autowired
+	private CourseMapper courseMapper;
+	
+	@Override
+	public List<CourseOpenVO> openList() {
+		return courseMapper.openList();
+	}
+
+	@Override
+	public List<DepartmentVO> deptInfoList() {
+		return courseMapper.deptInfoList();
+	}
+
+	@Override
+	public List<CourseVO> basketList(String stuId) {
+		return courseMapper.basketList(stuId);
+	}
+	
+	@Transactional
+	@Override
+	public void courseApply(Map<String, Object> courseMap) {
+		// 수강신청하기
+		int cnt = courseMapper.courseApply(courseMap);
+		if(cnt > 0) {
+			// 장바구니 과목 신청시 신청완료 상태로 변환
+			courseMapper.courseBasketUpdate(courseMap);	
+			// 신청 인원 증가
+			courseMapper.increApplicant(courseMap);
+			// 수강 신청 완료시 성적(SCORE_RECORD)테이블에 기본값 인설트하기
+			courseMapper.insertDefaultScore(courseMap);
+			// 수강 신청 완료시 출석부(ATTENDANCE)테이블에 기본값 인설트하기
+			courseMapper.insertDefaultAtd(courseMap);
+		}
+		
+	}
+
+	@Override
+	public ServiceResult basketInsert(Map<String, Object> courseMap) {
+		ServiceResult result = null;
+		
+		int cnt = courseMapper.basketInsert(courseMap);
+		if(cnt > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public void courseCancel(Map<String, Object> courseMap) {
+		String status = (String) courseMap.get("addStatus");
+		
+		if(status.equals("1")) {	// 본수강신청 + 장바구니 한거 취소할 때
+			courseMapper.decreApplicant(courseMap);
+			courseMapper.basketDelete(courseMap);	
+			courseMapper.courseCancel(courseMap);
+		}else if(status.equals("0")) {	// 장바구니만 넣어둔거 취소할 때
+			courseMapper.basketDelete(courseMap);	
+		}
+	}
+
+	@Override
+	public List<CourseOpenVO> courseSearch(Map<String, Object> searchData) {
+		return courseMapper.courseSearch(searchData);
+	}
+
+	@Override
+	public List<CourseOpenVO> getCourseOpenList(String deptCode) {
+		return courseMapper.getCourseOpenList(deptCode);
+	}
+
+	@Override
+	public Map<String, Object> getStuInfo(String userId) {
+		return courseMapper.getStuInfo(userId);
+	}
+
+	@Override
+	public List<Map<String, Object>> getCourseHistory(String userId) {
+		return courseMapper.getCourseHistory(userId);
+	}
+
+	@Override
+	public List<Map<String, Object>> getHistoryDetailList(Map<String, Object> param) {
+		return courseMapper.getHistoryDetailList(param);
+	}
+
+	@Override
+	public Map<String, Object> getTotCredit(String stuId) {
+		
+		return courseMapper.getTotCredit(stuId);
+	}
+
+	@Override
+	public List<SummaryCourseInfoVO> getMyCourseList(String stuId) {
+		return courseMapper.getMyCourseList(stuId);
+	}
+
+	@Override
+	public CurrentInfoVO getCurrentInfo() {
+		return courseMapper.getCurrentInfo();
+	}
+
+	@Override
+	public List<Map<String, Object>> getMyTimeTable(String stuId) {
+		return courseMapper.getMyTimeTable(stuId);
+	}
+
+
+}

@@ -1,0 +1,52 @@
+package kr.or.ddit.facilty.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.facilty.service.LockerService;
+import kr.or.ddit.facilty.vo.HallVO;
+import kr.or.ddit.facilty.vo.LockerVO;
+import kr.or.ddit.mapper.LockerMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class LockerServiceImpl implements LockerService {
+
+	@Autowired
+	private LockerMapper lockerMapper;
+	
+	@Override
+	public List<LockerVO> getLockerListAjax(String hallCode) {
+		return lockerMapper.getLockerListAjax(hallCode);
+	}
+	
+	@Override
+	public void insertReserve(LockerVO lockerVO) {
+		
+		int cnt = lockerMapper.updateStatus(lockerVO);
+		
+		log.info("cnt ::: " + cnt);
+		
+		if(cnt > 0) {
+			lockerMapper.insertReserve(lockerVO);
+		}
+		
+	}
+
+	@Override
+	public List<LockerVO> selecLockerList() {
+		return lockerMapper.selecLockerList();
+	}
+
+	@Override
+	public List<HallVO> hallList() {
+		return lockerMapper.selectHallList();
+	}
+
+	
+
+
+}

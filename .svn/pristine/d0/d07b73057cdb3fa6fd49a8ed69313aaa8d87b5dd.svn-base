@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<style>
+.badge {
+    line-height: 2;
+    border-radius: 0.25rem;
+    font-size: 15px;
+    font-weight: 1000;
+    padding: 5px 12px;
+    border: 0.0625rem solid transparent;
+}
+.form-control:disabled, .form-control[readonly] {
+    background: #f5f5f540;
+    opacity: 1;
+    pointer-events: none;
+}
+.light.badge-success {
+    background-color: #daf5e6;
+    color: #495b72;
+}
+</style>
+<div class="card-deck">
+	<div class="card bg-white">
+		<div class="card-body text-center">
+				<div class="profile-head">
+					<div class="photo-content">
+						<div class="author-profile">
+
+							<div class="author-info"></div>
+						</div>
+					</div>
+					<div class="container">
+						<div class="row">
+							<div class="col">
+								<div class="mb-4">
+									<img src="/resources/images/profile/pic1.jpg" alt="">
+								</div>
+							</div>
+							<div class="col">
+								<div class="mb-4">
+									<label class="form-label">학번</label>
+										 <input type="text" value="${sessionScope.userInfo.userId }" class="form-control" readonly   /> 
+									 <label class="form-label">성명</label> 
+										 <input type="text" value="${sessionScope.userInfo.studentVO.stuNameKo }" class="form-control" readonly />
+									 <label class="form-label">영문 성명</label> 
+										 <input type="text" value="${sessionScope.userInfo.studentVO.stuNameEn }" class="form-control" readonly />
+								</div>
+							</div>
+							<div class="col">
+
+								<div class="mb-4">
+									<label class="form-label">학과</label> 
+										<input type="text" 	value="${acaVO.acaMajor }" class="form-control" readonly /> 
+									<label class="form-label">학년</label> 
+										<input type="text" value="${acaVO.acaGrade }" class="form-control" readonly /> 
+									<label class="form-label">이수학기</label> 
+										<input type="text" value="${acaVO.acaSemester }" class="form-control" readonly />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+	<div class="card-header flex-wrap d-flex justify-content-between border-0">
+	<div>
+		<h1 class="badge badge-success light border-2">인적정보</h1>
+		</div>
+		<ul class="nav nav-tabs dzm-tabs" id="myTab-2" role="tablist">
+			<li class="nav-item" role="presentation">
+			<button type="button" id="chgBtn" class="btn btn-success"><i class="fa-solid fa-gear me-2"></i>변경하기</button>
+			</li>
+		</ul>
+	</div>
+
+<div class="card bg-white">
+		<div class="card-body text-center">
+			<div class="profile-head">
+				<div class="photo-content">
+					<div class="author-profile">
+	
+						<div class="author-info"></div>
+					</div>
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="mb-3">
+								 <label class="form-label">생년월일</label> 
+									 <input type="text" placeholder="${sessionScope.userInfo.studentVO.stuReg1 }" class="form-control" readonly/>
+								<label class="form-label">핸드폰번호</label>
+									 <input type="text" id = "stuPhone" placeholder="${sessionScope.userInfo.studentVO.stuPhone }" class="form-control"> 
+								 <label class="form-label">이메일</label> 
+									 <input type="text" id = "stuEmail" placeholder="${sessionScope.userInfo.studentVO.stuEmail }" class="form-control">
+							</div>
+						</div>
+						<div class="col">
+							<div class="mb-3">
+								<label class="form-label">국가구분</label>
+									 <input type="text" id ="stuNation" placeholder="${sessionScope.userInfo.studentVO.stuNation }" class="form-control" readonly/> 
+								 <label class="form-label">우편번호</label> 
+									 <input type="text" id = "stuPostcode" placeholder="${sessionScope.userInfo.studentVO.stuPostcode }" class="form-control">
+								 <label class="form-label">주소</label> 
+									 <input type="text" id = "stuAddr1" placeholder="${sessionScope.userInfo.studentVO.stuAddr1 }" class="form-control" style="width:207%">
+							</div>
+						</div>	
+						<div class="col">
+	
+							<div class="mb-3">
+								<label class="form-label">은행</label> 
+									<input type="text" id = "stuBank" placeholder="${sessionScope.userInfo.studentVO.stuBank }" class="form-control"/>
+								<label class="form-label">계좌번호</label> 
+									<input type="text" id = "stuAccount"  placeholder="${sessionScope.userInfo.studentVO.stuAccount }" class="form-control"/> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+	$("#chgBtn").click(function(){
+	var stuPhoneVal =  $('#stuPhone').val();
+	var stuEmailVal = $('#stuEmail').val();
+	var stuNationVal =  $('#stuNation').val();
+	var stuPostcodeVal = $('#stuPostcode').val();
+	var stuAddr1Val = $('#stuAddr1').val(); 
+	var stuBankVal = $('#stuBank').val(); 
+	var stuAccountVal =  $('#stuAccount').val();
+	
+	
+		console.log(stuPhoneVal);
+		
+		
+		var stuObj = {
+				'stuPhone' : stuPhoneVal,
+				'stuEmail' : stuEmailVal,
+				'stuNation' : stuNationVal,
+				'stuPostcode' : stuPostcodeVal,
+				'stuAddr1' : stuAddr1Val,
+				'stuBank' : stuBankVal
+			}
+		console.log("stuObj >>>> ", stuObj);
+		$.ajax({
+			type :"post",
+			url : "/STU/update",
+			data : JSON.stringify(stuObj),
+			dataType: "json",
+			contentType : "application/json; charset=utf-8",
+			sucess:function(result){
+				console.log("stuObj >>>>>>" + stuObj)
+				console.log("result : " + result);
+			}
+		});
+	});
+});	
+</script>

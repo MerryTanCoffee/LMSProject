@@ -1,0 +1,16 @@
+package kr.or.ddit.lecture.service;
+
+import java.util.List;
+
+import kr.or.ddit.lecture.vo.LectureRoomVO;
+import kr.or.ddit.lecture.vo.LectureVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+
+public interface ILectureService {
+
+	public List<SubjectVO> subjectList(String deptCode);
+
+
+//	public List<LectureVO> applicationList(String userId);
+
+}

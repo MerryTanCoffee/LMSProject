@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FacilityMapper">
+
+	<!-- 동적 쿼리 -->
+	<sql id="facilityListSearch">
+		<if test="searchWord != null">
+		    and f.fac_name like '%'||#{searchWord}||'%'
+		</if>
+	</sql>
+
+	
+	<select id="getFacility" parameterType="string" resultType="facilityVO">
+		select fac_code, fac_name 
+		from facility
+		where fac_code like '%'||#{facCode}||'%'
+	</select>
+	
+	<insert id="reservation" parameterType="facilityReservationVO">
+		insert into facility_reservation(
+			fr_no,stu_id,fac_code,fr_purpose,fr_usercnt,fr_date,fr_stime,fr_etime
+		) values (
+			seq_facility.nextval,#{stuId},#{facCode},#{frPurpose},#{frUsercnt},sysdate,#{frStime},#{frEtime}
+		)
+	</insert>
+	
+	
+	<select id="getFacilityReservation" parameterType="string" resultType="facilityReservationVO">
+		select fr_no, stu_id ,fac_code, fr_purpose, fr_usercnt, fr_date,  fr_stime, fr_etime
+		from facility_reservation
+		where fac_code = #{facCode}
+	</select>
+	
+	<!-- 나의 시설예약 리스트 -->
+	<select id="facilityReservationList" parameterType="string" resultType="facilityReservationVO">
+		select fr.fr_no, f.fac_code, f.fac_name, fr.fr_purpose, fr.fr_usercnt, fr.fr_date, fr.fr_stime, fr.fr_etime
+		from facility f, facility_reservation fr
+		where  f.fac_code = fr.fac_code
+		and stu_id = #{stuId}
+	</select>
+	
+	<!-- 시설예약 취소 -->
+	<delete id="reservationCancel" parameterType="facilityReservationVO">
+		delete from facility_reservation where stu_id = #{stuId} and fr_no = #{frNo}
+	</delete>	
+	
+	<!-- 페이징 처리 리스트 -->
+	<select id="selectFacilityListCount" parameterType="facilityPaginationInfoVO" resultType="int">
+		select count(fr.fr_no)
+		from facility_reservation fr, facility f
+		where fr.fac_code = f.fac_code
+		<include refid="facilityListSearch"/>
+	</select>
+	
+	<select id="selectFacilityList" parameterType="facilityPaginationInfoVO" resultType="facilityReservationVO">
+		select b.*
+		from(
+			select
+				a.*, row_number() over (order by a.fr_no desc) rnum
+			from(
+				select fr.fr_no, f.fac_code, f.fac_name, fr.fr_purpose, fr.fr_usercnt, fr.fr_date, fr.fr_stime, fr.fr_etime
+				from facility f, facility_reservation fr
+				where  f.fac_code = fr.fac_code
+				and stu_id = #{stuId}
+				<include refid="facilityListSearch"/>
+				order by fr.fr_no desc
+			) a
+		) b
+		<!-- <=에 사용된 꺽새가 SQL구문꺼를 알리기위해 <![CDATA][]>사용 -->
+		<![CDATA[
+		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+</mapper>

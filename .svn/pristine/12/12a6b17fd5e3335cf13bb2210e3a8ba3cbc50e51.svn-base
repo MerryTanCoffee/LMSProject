@@ -1,0 +1,28 @@
+package kr.or.ddit.score.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import kr.or.ddit.score.vo.ScoreVO;
+
+public interface IScoreService {
+
+	public void insert(ScoreVO score) throws Exception;
+	//교수용
+	public List<ScoreVO> list(String proId) throws Exception;
+	//관리자용??
+	public List<ScoreVO> list() throws Exception;
+	
+	//학생용
+	public List<ScoreVO> stuList(String stuId) throws Exception;
+
+	public void delete(String stuId) throws Exception;
+
+	public void update(ScoreVO score) throws Exception;
+
+	public List<ScoreVO> read(String stuId, HttpSession session ) throws Exception;
+	
+	//셀렉트박스용
+	public List<ScoreVO> selectList(String proId) throws Exception;
+}

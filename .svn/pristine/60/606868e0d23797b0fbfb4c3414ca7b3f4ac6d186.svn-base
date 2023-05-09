@@ -1,0 +1,29 @@
+package kr.or.ddit.course.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.common.vo.DepartmentVO;
+import kr.or.ddit.course.service.ICourseService;
+import kr.or.ddit.course.vo.CourseOpenVO;
+import kr.or.ddit.mapper.CourseMapper;
+
+@Service
+public class CourseServiceImpl implements ICourseService {
+
+	@Autowired
+	private CourseMapper courseMapper;
+	
+	@Override
+	public List<CourseOpenVO> openList() {
+		return courseMapper.openList();
+	}
+
+	@Override
+	public List<DepartmentVO> deptInfoList() {
+		return courseMapper.deptInfoList();
+	}
+
+}

@@ -1,0 +1,227 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+th {
+	border: 1px solid black;
+	text-align: center;
+	background-color: rgb(41, 103, 68);
+}
+
+td {
+	border: 1px solid;
+	text-align: center;
+	background-color: white;
+	color: black;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body" style="border: none;">
+					<div class="row">
+						<div class="col-md-1 text-center"
+							style="margin-top: 10px; padding: 0;">학번:</div>
+						<div class="col-md-2">
+							<input type="text" name="" value="${userInfo.userId }"
+								disabled="disabled" class="form-control">
+						</div>
+						<div class="col-md-1 text-center"
+							style="margin-top: 10px; padding: 0;">이름:</div>
+						<div class="col-md-2">
+							<input type="text" name=""
+								value="${sessionScope.userInfo.studentVO.stuNameKo }"
+								disabled="disabled" class="form-control">
+						</div>
+						<div class="col-md-1 text-center"
+							style="margin-top: 10px; padding: 0;">학부(과):</div>
+						<div class="col-md-3">
+							<input type="text" name=""
+								value="${sessionScope.userInfo.studentVO.academicVO.acaMajor }"
+								disabled="disabled" class="form-control">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 여기까지 프로필 -->
+
+	<div class="card dz-card" id="accordion-one"
+		style="width: 100%; height: 300px; overflow: auto">
+		<div class="card-header flex-wrap">
+			<div>
+				<h4 class="card-title"
+					style="color: #22313f; font-weight: 800; font-size: 18px;">
+					증명서 종류 입력</h4>
+
+			</div>
+		</div>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+				aria-labelledby="home-tab">
+				<div class="card-body pt-0">
+					<div>
+						<!-- id="example" 이 부분이 여러기능이 담겨있는 부분이당 -->
+						<table class="display table" width="100%" border="0"
+							cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<th>증명서종류</th>
+									<th>과정구분</th>
+									<th>용도</th>
+									<th>수수료</th>
+									<th>결제</th>
+								</tr>
+							<thead>
+							<tbody>
+								<tr>
+									<td>
+										<!-- 폼페이지 
+									CertificateVO cer : {chNo}, {ciCode}, {stuId}, sysdate, {chPurpose}	
+									-->
+										<form action="/certificate/insert" method="post" id="sbmBtn">
+											<!-- 폼데이터 -->
+											<select name="ciCode" class="form-select" aria-label="Default select example">
+												<option >===증명서를 선택해주세요===</option>
+												<option value="CERSCORE01">성적증명서</option>
+												<option value="CERGRADU01">졸업증명서</option>
+												<option value="CERENROL01">재학증명서</option>
+											</select>
+									</td>
+									<td>${sessionScope.userInfo.studentVO.stuNameKo }</td>
+									<td><input type="text" name="chPurpose"
+										class="form-control" placeholder="용도를 작성해주세요" required /></td>
+									<td>1000원</td>
+									<td><input type="button" style="background-color: white; border: white" id='scoreBtn' value="결제하기"></input></td>
+									</form>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card dz-card" id="accordion-one"
+		style="width: 100%; height: 300px; overflow: auto">
+		<div class="card-header flex-wrap">
+			<div>
+				<h4 class="card-title"
+					style="color: #22313f; font-weight: 800; font-size: 18px;">
+					증명서 결제 내역</h4>
+			</div>
+		</div>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="Preview" role="tabpanel"
+				aria-labelledby="home-tab">
+				<div class="card-body pt-0">
+					<div class="table-responsive">
+						<!-- id="example" 이 부분이 여러기능이 담겨있는 부분이당 -->
+						<table class="display table" width="100%" border="0"
+							cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<th>학번</th>
+									<th>증명서 종류</th>
+									<th>용도</th>
+									<th>처리여부</th>
+									<th>처리일자</th>
+									<th>신청</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 증명서 코드에 따라서 어떻게 처리할지 정해줘야..
+								cerList : List<CertificateVO>
+								 -->
+								<c:forEach items="${cerList}" var="certificateVO">
+									<tr>
+										<td>${userInfo.userId}</td>
+										<td>${certificateVO.ciName}</td>
+										<td>${certificateVO.chPurpose}</td>
+										<td>Y</td>
+										<td>${certificateVO.chIssueDate}</td>
+										<td><c:choose>
+												<c:when test="${certificateVO.ciCode=='CERSCORE01'}">
+													<button style="background-color: white; border: white"
+														class='scoreBtn'
+														onclick="window.open('/certificate/scoreList', '', 'width=800, height=400')">성적증명서
+														신청</button>
+												</c:when>
+												<c:when test="${certificateVO.ciCode=='CERGRADU01'}">
+													<button style="background-color: white; border: white"
+														class='scoreBtn'
+														onclick="window.open('/certificate/graduateList', '', 'width=800, height=400')">졸업증명서
+														신청</button>
+												</c:when>
+												<c:when test="${certificateVO.ciCode=='CERENROL01'}">
+													<button style="background-color: white; border: white"
+														class='scoreBtn'
+														onclick="window.open('/certificate/enrollList', '', 'width=800, height=400')">재학증명서
+														신청</button>
+												</c:when>
+											</c:choose></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://js.bootpay.co.kr/bootpay-4.2.7.min.js"
+	type="application/javascript"></script>
+<head>
+<script>
+$('#scoreBtn').on('click', function() {
+let cName = document.querySelector('select[name="ciCode"] option:checked').textContent;
+let id = '${sessionScope.userInfo.userId}';
+let name = '${sessionScope.userInfo.studentVO.stuNameKo }';
+let phone = '${sessionScope.userInfo.studentVO.stuPhone }';
+let email = '${sessionScope.userInfo.studentVO.stuEmail }';
+
+	Bootpay.requestPayment({
+		"application_id" : "6425498f755e27001ead615f",
+		"price" : 1000,
+		"order_name" : cName,
+		"order_id" : "TEST_ORDER_ID",
+		"tax_free" : 0,
+		"user" : {
+			"id" : id,
+			"username" : name,
+			"phone" : phone,
+			"email" : email
+		},
+		"extra" : {
+			"open_type" : "iframe",
+			"card_quota" : "0,2,3",
+			"display_success_result" : true,
+			"display_error_result" : true,
+			"test_deposit" : true,
+			"show_close_button" : true,
+			"escrow" : false
+		}
+
+	}).error(function (data) {
+		$('.scoreBtn').prop('disabled', true);
+			
+		console.log(data);
+	}).cancel(function (data) {
+		alert("결제가 취소되었습니다 다시 결제해주세요");
+	      //결제가 취소되면 수행됩니다.
+	console.log(data);
+	}).$('#sbmBtn').submit();
+})
+
+</script>

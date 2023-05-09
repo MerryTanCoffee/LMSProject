@@ -1,0 +1,164 @@
+package kr.or.ddit.score.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.apache.catalina.mapper.Mapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.mapper.ObjectionMapper;
+import kr.or.ddit.mapper.ScoreMapper;
+import kr.or.ddit.score.service.IScoreService;
+import kr.or.ddit.score.vo.ObjectionVO;
+import kr.or.ddit.score.vo.ScoreVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class ScoreServiceImpl implements IScoreService {
+	@Inject
+	private ScoreMapper mapper;
+
+	@Inject
+	private ObjectionMapper obmapper;
+
+	@Override
+	public void insert(ScoreVO score) throws Exception {
+		score.totalScore();
+		mapper.insert(score);
+	}
+
+	// 교수용
+	@Override
+	public List<ScoreVO> list(Map<String, String> map) throws Exception {
+		// OVE_SCORE 자동 보정
+		mapper.autoOveScore();
+
+		return mapper.list(map);
+	}
+
+	// 학생용...
+	@Override
+	public List<ScoreVO> stuList(String stuId) throws Exception {
+//		//OVE_SCORE 자동 보정
+		mapper.autoOveScore();
+
+		return mapper.stuList(stuId);
+	}
+
+	// 관리자용
+	@Override
+	public List<ScoreVO> list() throws Exception {
+//		//OVE_SCORE 자동 보정
+//		mapper.autoOveScore();
+
+		return mapper.list();
+	}
+
+	@Override
+	public void delete(Map<String, String> map) throws Exception {
+		mapper.delete(map);
+	}
+
+	@Override
+	public void update(ScoreVO score) throws Exception {
+		score.totalScore();
+		mapper.update(score);
+	}
+
+	@Override
+	public List<ScoreVO> read(String stuId, HttpSession session) throws Exception {
+		List<ScoreVO> score = mapper.read(stuId);
+		return score;
+	}
+
+	// 셀렉트박스 선택용임 아무튼
+	@Override
+	public List<ScoreVO> selectList(String proId) throws Exception {
+		return mapper.selectList(proId);
+	}
+
+	// 학생용 전선 전필 교선 교필 별 학점평균임...
+	@Override
+	public List<ScoreVO> averageList(String stuId) throws Exception {
+		return mapper.averageList(stuId);
+	}
+
+	// 학생용 이의신청 모습 아예 상상이 안가네...
+	@Override
+	public List<ObjectionVO> objectionList(String stuId) throws Exception {
+		return obmapper.objectionList(stuId);
+	}
+
+	@Override
+	public int objectionInsert(ObjectionVO objectionVO) throws Exception {
+		return obmapper.objectionInsert(objectionVO);
+	}
+
+	// 년도 학기 선택 셀렉트박스용
+	@Override
+	public List<ScoreVO> selectboxYearSeme() throws Exception {
+		return mapper.selectboxYearSeme();
+	}
+
+	// 이의신청 리스트 교수화면
+	@Override
+	public List<ObjectionVO> objProList(String proId) throws Exception {
+		return obmapper.objProList(proId);
+	}
+
+	// 교수용 이의신청 수정하기
+	@Transactional
+	@Override
+	public int objectionUpdate(ObjectionVO object) throws Exception {
+		int result = obmapper.objectionUpdate(object);
+
+		result += obmapper.oveUpdate(object);
+
+		log.info("result : " + result);
+
+		return result;
+	}
+
+	// 전필
+	@Override
+	public List<ScoreVO> stuListJP(String stuId) throws Exception {
+		return mapper.stuListJP(stuId);
+	}
+
+	// 전선
+	@Override
+	public List<ScoreVO> stuListJS(String stuId) throws Exception {
+		return mapper.stuListJS(stuId);
+	}
+
+	// 교필
+	@Override
+	public List<ScoreVO> stuListGP(String stuId) throws Exception {
+		return mapper.stuListGP(stuId);
+	}
+
+	// 교선
+	@Override
+	public List<ScoreVO> stuListGS(String stuId) throws Exception {
+		return mapper.stuListGS(stuId);
+	}
+
+	@Override
+	public int objectionDelete(Map<String, String> map) throws Exception {
+		return obmapper.objectionDelete(map);
+	}
+
+	// 교수가 확정눌러주면 강의 평가 디폴트값 업데이트
+	@Override
+	public int updateLectureEval(Map<String, Object> resultMap) throws Exception {
+		mapper.updateCouTake(resultMap);
+		mapper.updateLectureEval(resultMap);
+		return mapper.updateYesNo(resultMap);
+
+	}
+}

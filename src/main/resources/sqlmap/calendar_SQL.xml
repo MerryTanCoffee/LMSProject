@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.CalMapper">
+	<select id="list" resultType="calendarVO">
+		select
+			sc_no, study_code, sc_title, sc_content, sc_sdate, sc_edate, sc_bar_color, sc_font_color
+		from study_calendar
+		where study_code = #{studyCode}
+	</select>
+	<insert id="insert" parameterType="calendarVO" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="scNo" resultType="int">
+			select SEQ_STUDY_CALENDAR.nextval from dual
+		</selectKey>
+		insert into study_calendar(
+			sc_no, study_code, sc_title, sc_content, sc_sdate, sc_edate, sc_bar_color, sc_font_color
+		)values(
+			#{scNo}, #{studyCode}, #{scTitle}, #{scContent}, #{scSdate}, #{scEdate}, #{scBarColor,jdbcType=VARCHAR}, #{scFontColor,jdbcType=VARCHAR}
+		)
+	</insert>
+	<delete id="delete">
+		delete from study_calendar
+		where sc_no = #{scNo}
+	</delete>
+	
+	<update id="update" parameterType="calendarVO">
+		update study_calendar
+		set
+			sc_title = #{scTitle},
+			sc_content = #{scContent},
+			sc_sdate = #{scSdate},
+			sc_edate = #{scEdate},
+			sc_bar_color = #{scBarColor,jdbcType=VARCHAR},
+			sc_font_color = #{scFontColor,jdbcType=VARCHAR}
+		where sc_no = #{scNo} 
+	</update>
+</mapper>

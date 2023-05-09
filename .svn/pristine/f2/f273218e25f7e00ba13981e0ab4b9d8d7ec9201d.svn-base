@@ -1,0 +1,75 @@
+ package kr.or.ddit.submit.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.common.ServiceResult;
+import kr.or.ddit.mapper.SubmitMapper;
+import kr.or.ddit.score.vo.ScoreVO;
+import kr.or.ddit.submit.service.ISubmitService;
+import kr.or.ddit.submit.vo.HomeworkVO;
+import kr.or.ddit.submit.vo.SubmitVO;
+import kr.or.ddit.user.vo.StudentVO;
+
+@Service
+public class SubmitServiceImpl implements ISubmitService {
+
+	@Autowired
+	private SubmitMapper submitMapper;
+	
+	@Override
+	public int insertSubmit(SubmitVO submit) {
+	 	return submitMapper.insertSubmit(submit);
+	}
+
+	@Override
+	public List<HomeworkVO> homeworkList(String lecCode) {
+		return submitMapper.homeworkList(lecCode);
+	}
+
+
+	@Override
+	@Transactional   // 2개의 insert가 세트로 모두 성공해야 함!~~ 1개라도 실패하면 롤백
+	 public ServiceResult insertHomework(HomeworkVO homeworkVO) {
+		ServiceResult result = null;
+			 
+		int status = submitMapper.insertHomework(homeworkVO);
+			if(status >0) {
+				result = ServiceResult.OK;
+			}else {
+				result = ServiceResult.FAILED;
+			}
+		return result;
+	}
+
+
+	@Override
+	public List<StudentVO> lecStuList(String lecCode) {
+		return submitMapper.lecStuList(lecCode);
+	}
+
+	@Override
+	public HomeworkVO homeworkSelectOne(Map<String, Object> paramMap) {
+		return submitMapper.homeworkSelectOne(paramMap);
+	}
+
+	@Override
+	public List<SubmitVO> submitFile(Map<String, String> paramMap) {
+		return submitMapper.submitFile(paramMap);
+	}
+
+	@Override
+	public int submitScore(ScoreVO scoreVO) {
+		return submitMapper.submitScore(scoreVO);
+	}
+
+	@Override
+	public int submitScoreSub(SubmitVO submitVO) {
+		return submitMapper.submitScoreSub(submitVO);
+	}
+
+}

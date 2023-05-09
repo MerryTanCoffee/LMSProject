@@ -1,0 +1,26 @@
+package kr.or.ddit.user.vo;
+
+import lombok.Data;
+
+@Data
+public class ProfessorVO {
+	private String proId;
+	private String deptCode;	// 학과 코드
+	private String proNameKo;
+	private String proNameEn;
+	private int proReg1;
+	private int proReg2;
+	private String proMajor;
+	private String proEmail;
+	private String proPhone;
+	private String proNation;
+	private String proGender;
+	private String proPostcode;
+	private String proAddr1;
+	private String proAddr2;
+	private String proLabNum;	// 연구실 호수
+	private String proLabTel;	// 연구실 연락처
+	private String proBank;
+	private String proAccount;
+	private int profileNo;
+}
